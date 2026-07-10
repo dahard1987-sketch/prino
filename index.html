@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#111318">
+  <title>Prime Tap</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #111318;
+      color: #f7f8fa;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    body {
+      min-height: 100dvh;
+      background: #111318;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    button { font: inherit; }
+
+    .game {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .choice {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      border: 0;
+      color: rgba(255, 255, 255, .66);
+      cursor: pointer;
+      transition: filter 100ms ease, transform 100ms ease;
+    }
+
+    .choice:active { filter: brightness(1.18); }
+
+    .choice--prime {
+      top: 0;
+      padding: calc(env(safe-area-inset-top) + 92px) 24px 64px;
+      background: linear-gradient(160deg, #226c5e 0%, #17483f 100%);
+    }
+
+    .choice--not-prime {
+      bottom: 0;
+      padding: 64px 24px calc(env(safe-area-inset-bottom) + 28px);
+      background: linear-gradient(160deg, #473346 0%, #2d222e 100%);
+    }
+
+    .choice__label {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: clamp(.78rem, 3vw, .95rem);
+      font-weight: 700;
+      letter-spacing: .12em;
+    }
+
+    .choice--prime .choice__label { top: calc(env(safe-area-inset-top) + 108px); }
+    .choice--not-prime .choice__label { bottom: calc(env(safe-area-inset-bottom) + 40px); }
+
+    .divider {
+      position: absolute;
+      z-index: 2;
+      top: 50%;
+      left: 7%;
+      width: 86%;
+      height: 1px;
+      background: rgba(255, 255, 255, .14);
+      pointer-events: none;
+    }
+
+    .number {
+      position: absolute;
+      z-index: 3;
+      top: 50%;
+      left: 50%;
+      min-width: 190px;
+      padding: 18px 30px 20px;
+      border: 1px solid rgba(255, 255, 255, .18);
+      border-radius: 24px;
+      background: rgba(17, 19, 24, .92);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, .35);
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-size: clamp(4.5rem, 24vw, 7.5rem);
+      font-weight: 850;
+      line-height: .9;
+      letter-spacing: -.07em;
+      font-variant-numeric: tabular-nums;
+      pointer-events: none;
+    }
+
+    .number.pop { animation: pop 170ms ease-out; }
+
+    @keyframes pop {
+      0% { opacity: .25; transform: translate(-50%, -50%) scale(.83); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .scoreboard {
+      position: absolute;
+      z-index: 4;
+      top: calc(env(safe-area-inset-top) + 20px);
+      left: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .score {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 999px;
+      background: rgba(17, 19, 24, .3);
+      backdrop-filter: blur(8px);
+    }
+
+    .score__label {
+      color: rgba(255, 255, 255, .62);
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .score__value {
+      font-size: 1.05rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .flash {
+      position: absolute;
+      z-index: 5;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .flash.correct { animation: correct 240ms ease-out; }
+    .flash.wrong { animation: wrong 340ms ease-out; }
+
+    @keyframes correct {
+      0% { opacity: .55; box-shadow: inset 0 0 0 8px #7bf0bf; }
+      100% { opacity: 0; box-shadow: inset 0 0 0 0 #7bf0bf; }
+    }
+
+    @keyframes wrong {
+      0%, 45% { opacity: .65; background: rgba(255, 73, 91, .48); }
+      100% { opacity: 0; }
+    }
+
+    .result {
+      position: absolute;
+      z-index: 10;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(9, 10, 13, .82);
+      backdrop-filter: blur(14px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 180ms ease, visibility 180ms ease;
+    }
+
+    .result.show { opacity: 1; visibility: visible; }
+
+    .result__card {
+      width: min(100%, 360px);
+      padding: 30px 24px 24px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 28px;
+      background: #191c22;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .4);
+      text-align: center;
+    }
+
+    .result__eyebrow {
+      margin: 0 0 10px;
+      color: #ff8793;
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+    }
+
+    .result h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      letter-spacing: -.04em;
+    }
+
+    .result__answer {
+      min-height: 24px;
+      margin: 12px 0 22px;
+      color: rgba(255, 255, 255, .66);
+      font-size: .95rem;
+    }
+
+    .result__stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      padding: 16px;
+      border-radius: 16px;
+      background: #22262e;
+    }
+
+    .stat span { display: block; color: rgba(255, 255, 255, .55); font-size: .72rem; }
+    .stat strong { display: block; margin-top: 4px; font-size: 1.6rem; }
+
+    .restart {
+      width: 100%;
+      min-height: 54px;
+      border: 0;
+      border-radius: 16px;
+      background: #f3f5f7;
+      color: #111318;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .restart:active { transform: scale(.98); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="game" aria-label="소수 판별 게임">
+    <button class="choice choice--prime" type="button" data-answer="prime" aria-label="소수 선택">
+      <span class="choice__label">소수 · PRIME</span>
+    </button>
+    <button class="choice choice--not-prime" type="button" data-answer="not-prime" aria-label="소수가 아님 선택">
+      <span class="choice__label">소수 아님 · NOT PRIME</span>
+    </button>
+
+    <div class="scoreboard" aria-live="polite">
+      <div class="score"><span class="score__label">SCORE</span><span class="score__value" id="score">0</span></div>
+      <div class="score"><span class="score__label">BEST</span><span class="score__value" id="best">0</span></div>
+    </div>
+
+    <div class="divider" aria-hidden="true"></div>
+    <div class="number" id="number" aria-live="assertive">2</div>
+    <div class="flash" id="flash" aria-hidden="true"></div>
+
+    <section class="result" id="result" role="dialog" aria-modal="true" aria-labelledby="result-title">
+      <div class="result__card">
+        <p class="result__eyebrow">GAME OVER</p>
+        <h1 id="result-title">아쉬워요!</h1>
+        <p class="result__answer" id="answer-text"></p>
+        <div class="result__stats">
+          <div class="stat"><span>이번 기록</span><strong id="final-score">0</strong></div>
+          <div class="stat"><span>최고 기록</span><strong id="final-best">0</strong></div>
+        </div>
+        <button class="restart" id="restart" type="button">다시 시작</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const numberEl = document.querySelector('#number');
+    const scoreEl = document.querySelector('#score');
+    const bestEl = document.querySelector('#best');
+    const flashEl = document.querySelector('#flash');
+    const resultEl = document.querySelector('#result');
+    const answerTextEl = document.querySelector('#answer-text');
+    const finalScoreEl = document.querySelector('#final-score');
+    const finalBestEl = document.querySelector('#final-best');
+    const restartButton = document.querySelector('#restart');
+    const choiceButtons = document.querySelectorAll('.choice');
+
+    let currentNumber = 2;
+    let score = 0;
+    let best = Number(localStorage.getItem('prime-tap-best')) || 0;
+    let acceptingInput = true;
+
+    bestEl.textContent = best;
+
+    function isPrime(number) {
+      if (number < 2) return false;
+      if (number === 2) return true;
+      if (number % 2 === 0) return false;
+
+      for (let divisor = 3; divisor <= Math.sqrt(number); divisor += 2) {
+        if (number % divisor === 0) return false;
+      }
+      return true;
+    }
+
+    function getRandomNumber() {
+      let next;
+      do {
+        next = Math.floor(Math.random() * 999) + 1;
+      } while (next === currentNumber);
+      return next;
+    }
+
+    function showNextNumber() {
+      currentNumber = getRandomNumber();
+      numberEl.textContent = currentNumber;
+      numberEl.classList.remove('pop');
+      void numberEl.offsetWidth;
+      numberEl.classList.add('pop');
+    }
+
+    function showFlash(type) {
+      flashEl.className = 'flash';
+      void flashEl.offsetWidth;
+      flashEl.classList.add(type);
+    }
+
+    function choose(answer) {
+      if (!acceptingInput) return;
+      acceptingInput = false;
+
+      const correctAnswer = isPrime(currentNumber) ? 'prime' : 'not-prime';
+      if (answer === correctAnswer) {
+        score += 1;
+        scoreEl.textContent = score;
+
+        if (score > best) {
+          best = score;
+          bestEl.textContent = best;
+          localStorage.setItem('prime-tap-best', String(best));
+        }
+
+        showFlash('correct');
+        showNextNumber();
+        window.setTimeout(() => { acceptingInput = true; }, 120);
+        return;
+      }
+
+      showFlash('wrong');
+      answerTextEl.textContent = isPrime(currentNumber)
+        ? `${currentNumber}은(는) 소수입니다.`
+        : `${currentNumber}은(는) 소수가 아닙니다.`;
+      finalScoreEl.textContent = score;
+      finalBestEl.textContent = best;
+      window.setTimeout(() => {
+        resultEl.classList.add('show');
+        restartButton.focus();
+      }, 220);
+    }
+
+    function restart() {
+      score = 0;
+      scoreEl.textContent = score;
+      resultEl.classList.remove('show');
+      showNextNumber();
+      window.setTimeout(() => { acceptingInput = true; }, 160);
+    }
+
+    choiceButtons.forEach((button) => {
+      button.addEventListener('pointerdown', (event) => {
+        event.preventDefault();
+        choose(button.dataset.answer);
+      });
+    });
+
+    restartButton.addEventListener('click', restart);
+    document.addEventListener('keydown', (event) => {
+      if (resultEl.classList.contains('show')) {
+        if (event.key === 'Enter' || event.key === ' ') restart();
+        return;
+      }
+      if (event.key === 'ArrowUp') choose('prime');
+      if (event.key === 'ArrowDown') choose('not-prime');
+    });
+
+    showNextNumber();
+  </script>
+</body>
+</html>
