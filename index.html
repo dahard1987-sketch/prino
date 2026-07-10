@@ -317,10 +317,25 @@
       return true;
     }
 
+    function getPrimeFactors(number) {
+      const factors = [];
+      let remaining = number;
+
+      for (let divisor = 2; divisor * divisor <= remaining; divisor += divisor === 2 ? 1 : 2) {
+        while (remaining % divisor === 0) {
+          factors.push(divisor);
+          remaining /= divisor;
+        }
+      }
+
+      if (remaining > 1) factors.push(remaining);
+      return factors;
+    }
+
     function getRandomNumber() {
       let next;
       do {
-        next = Math.floor(Math.random() * 999) + 1;
+        next = Math.floor(Math.random() * 299) + 1;
       } while (next === currentNumber);
       return next;
     }
@@ -343,7 +358,8 @@
       if (!acceptingInput) return;
       acceptingInput = false;
 
-      const correctAnswer = isPrime(currentNumber) ? 'prime' : 'not-prime';
+      const currentIsPrime = isPrime(currentNumber);
+      const correctAnswer = currentIsPrime ? 'prime' : 'not-prime';
       if (answer === correctAnswer) {
         score += 1;
         scoreEl.textContent = score;
@@ -361,9 +377,14 @@
       }
 
       showFlash('wrong');
-      answerTextEl.textContent = isPrime(currentNumber)
-        ? `${currentNumber}은(는) 소수입니다.`
-        : `${currentNumber}은(는) 소수가 아닙니다.`;
+      if (currentIsPrime) {
+        answerTextEl.textContent = `${currentNumber}은(는) 소수입니다.`;
+      } else if (currentNumber === 1) {
+        answerTextEl.textContent = '1은 소수도 합성수도 아니며, 소인수분해할 수 없습니다.';
+      } else {
+        const factorization = getPrimeFactors(currentNumber).join(' × ');
+        answerTextEl.textContent = `${currentNumber}은(는) 소수가 아닙니다. ${currentNumber} = ${factorization}`;
+      }
       finalScoreEl.textContent = score;
       finalBestEl.textContent = best;
       window.setTimeout(() => {
