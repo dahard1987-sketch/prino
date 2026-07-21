@@ -303,10 +303,10 @@
 
   <main class="screen game" id="grammar-screen" aria-label="동사의 목적어 분류 게임">
     <div class="grammar-grid grammar-lines">
-      <button class="choice grammar-choice" type="button" data-grammar-answer="gerund"><span class="choice__label">동명사<span class="choice__hint">4사분면</span></span></button>
+      <button class="choice grammar-choice" type="button" data-grammar-answer="gerund"><span class="choice__label">동명사<span class="choice__hint">2사분면</span></span></button>
       <button class="choice grammar-choice" type="button" data-grammar-answer="infinitive"><span class="choice__label">to 부정사<span class="choice__hint">1사분면</span></span></button>
       <button class="choice grammar-choice" type="button" data-grammar-answer="both-same"><span class="choice__label">둘 다<br>(의미 차이 X)<span class="choice__hint">3사분면</span></span></button>
-      <button class="choice grammar-choice" type="button" data-grammar-answer="both-different"><span class="choice__label">둘 다<br>(의미 차이 O)<span class="choice__hint">2사분면</span></span></button>
+      <button class="choice grammar-choice" type="button" data-grammar-answer="both-different"><span class="choice__label">둘 다<br>(의미 차이 O)<span class="choice__hint">4사분면</span></span></button>
     </div>
     <div class="topbar">
       <button class="icon-button" type="button" data-change-player>← 이름 바꾸기</button>
@@ -353,7 +353,9 @@
   <script>
     const PLAYER_NAMES = [
       '박범준', '배승우', '윤해든', '이룩', '이수민', '이우진', '이은수', '이지우',
-      '임윤아', '채범기', '한지아', '가서연', '김경민', '김시아', '이은성', '황민호'
+      '임윤아', '채범기', '한지아', '가서연', '김경민', '김시아', '이은성', '황민호',
+      '강용제', '김예승', '김재윤', '김하준', '박시현', '박이환', '백시율', '이해원',
+      '조현우', '지수연', '황은찬'
     ].sort((a, b) => a.localeCompare(b, 'ko'));
 
     const VERBS = [
@@ -425,6 +427,7 @@
     let currentVerb = VERBS[0];
     let recentVerbs = [];
     let acceptingInput = false;
+    let audioContext = null;
 
     function showScreen(screen) {
       screens.forEach(item => item.classList.toggle('active', item === screen));
@@ -503,6 +506,35 @@
       element.className = 'flash';
       void element.offsetWidth;
       element.classList.add(type);
+    }
+
+    function playFeedbackSound(type) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return;
+      if (!audioContext) audioContext = new AudioContextClass();
+      if (audioContext.state === 'suspended') audioContext.resume();
+
+      const startTime = audioContext.currentTime;
+      const tones = type === 'correct'
+        ? [{ frequency: 523.25, delay: 0, duration: .13 }, { frequency: 659.25, delay: .12, duration: .18 }]
+        : [{ frequency: 190, endFrequency: 105, delay: 0, duration: .3 }];
+
+      tones.forEach(tone => {
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        const toneStart = startTime + tone.delay;
+        const toneEnd = toneStart + tone.duration;
+        oscillator.type = type === 'correct' ? 'sine' : 'sawtooth';
+        oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
+        if (tone.endFrequency) oscillator.frequency.exponentialRampToValueAtTime(tone.endFrequency, toneEnd);
+        gain.gain.setValueAtTime(.0001, toneStart);
+        gain.gain.exponentialRampToValueAtTime(type === 'correct' ? .13 : .09, toneStart + .025);
+        gain.gain.exponentialRampToValueAtTime(.0001, toneEnd);
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+        oscillator.start(toneStart);
+        oscillator.stop(toneEnd);
+      });
     }
 
     function clearAnswerFeedback(activity) {
@@ -607,6 +639,7 @@
       acceptingInput = false;
       const correct = isPrime(currentNumber);
       if (answer === (correct ? 'prime' : 'not-prime')) {
+        playFeedbackSound('correct');
         score += 1;
         primeScoreEl.textContent = score;
         primeBestEl.textContent = Math.max(score, getPlayerBest('prime'));
@@ -620,6 +653,7 @@
         return;
       }
 
+      playFeedbackSound('wrong');
       showFlash(primeFlashEl, 'wrong');
       showAnswerFeedback('prime', 'wrong', '✕ 오답!', `정답: ${correct ? '소수' : '소수 아님'}`, answer);
       if (correct) {
@@ -642,6 +676,7 @@
       if (!acceptingInput || activeActivity !== 'grammar') return;
       acceptingInput = false;
       if (answer === currentVerb.category) {
+        playFeedbackSound('correct');
         score += 1;
         grammarScoreEl.textContent = score;
         grammarBestEl.textContent = Math.max(score, getPlayerBest('grammar'));
@@ -662,6 +697,7 @@
         return;
       }
 
+      playFeedbackSound('wrong');
       showFlash(grammarFlashEl, 'wrong');
       showAnswerFeedback('grammar', 'wrong', '✕ 오답!', `정답: ${CATEGORY_LABELS[currentVerb.category]}`, answer);
       const note = USAGE_NOTES[currentVerb.verb] ? `\n\n${USAGE_NOTES[currentVerb.verb]}` : '';
