@@ -24,7 +24,7 @@
 
     * { box-sizing: border-box; }
     html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; overscroll-behavior: none; }
-    body { min-height: 100dvh; background: #111318; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+    body { min-height: 100dvh; background: #111318; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
     button, input, select { font: inherit; }
     button { color: inherit; }
     [hidden] { display: none !important; }
@@ -133,9 +133,23 @@
     .prime-choice .choice__label { font-size: clamp(1rem, calc(2vmin + .45rem), 1.85rem); }
     .prime-divider { position: absolute; z-index: 2; top: 50%; left: 7%; width: 86%; height: 1px; background: rgba(255,255,255,.14); pointer-events: none; }
 
+    .prime-timer {
+      position: absolute;
+      z-index: 9;
+      top: calc(env(safe-area-inset-top) + 72px);
+      left: 50%;
+      width: min(54vw, 380px);
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .prime-timer__meta { display: flex; justify-content: space-between; margin-bottom: 6px; color: rgba(255,255,255,.72); font-size: clamp(.67rem, 1.35vmin, .88rem); font-weight: 850; }
+    .prime-timer__track { height: clamp(7px, 1vmin, 11px); overflow: hidden; border: 1px solid rgba(255,255,255,.16); border-radius: 999px; background: rgba(17,19,24,.54); }
+    .prime-timer__bar { display: block; width: 100%; height: 100%; border-radius: inherit; background: #7bf0bf; transform-origin: left center; }
+    .prime-timer.urgent .prime-timer__bar { background: #ff6575; }
+
     .center-card {
       position: absolute;
-      z-index: 3;
+      z-index: 19;
       top: 50%;
       left: 50%;
       min-width: min(56vw, 230px);
@@ -295,6 +309,10 @@
         <div class="pill"><span class="pill__label">MY BEST</span><span class="pill__value" id="prime-best">0</span></div>
       </div>
     </div>
+    <div class="prime-timer" id="prime-timer" role="timer" aria-live="off">
+      <div class="prime-timer__meta"><span>남은 시간</span><strong id="prime-timer-label">2.0초</strong></div>
+      <div class="prime-timer__track"><span class="prime-timer__bar" id="prime-timer-bar"></span></div>
+    </div>
     <div class="prime-divider" aria-hidden="true"></div>
     <div class="center-card number" id="number" aria-live="assertive">2</div>
     <div class="flash" id="prime-flash" aria-hidden="true"></div>
@@ -404,6 +422,9 @@
     const grammarBestEl = document.querySelector('#grammar-best');
     const primeFlashEl = document.querySelector('#prime-flash');
     const grammarFlashEl = document.querySelector('#grammar-flash');
+    const primeTimerEl = document.querySelector('#prime-timer');
+    const primeTimerLabelEl = document.querySelector('#prime-timer-label');
+    const primeTimerBarEl = document.querySelector('#prime-timer-bar');
     const primeFeedbackEl = document.querySelector('#prime-feedback');
     const grammarFeedbackEl = document.querySelector('#grammar-feedback');
     const infoModal = document.querySelector('#info-modal');
@@ -428,6 +449,11 @@
     let recentVerbs = [];
     let acceptingInput = false;
     let audioContext = null;
+    let primeTimeoutId = null;
+    let primeTickIntervalId = null;
+    let primeTimerAnimationId = null;
+    let primeDeadline = 0;
+    let primeTimeLimit = 0;
 
     function showScreen(screen) {
       screens.forEach(item => item.classList.toggle('active', item === screen));
@@ -508,33 +534,98 @@
       element.classList.add(type);
     }
 
-    function playFeedbackSound(type) {
+    function prepareAudio() {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) return;
+      if (!AudioContextClass) return null;
       if (!audioContext) audioContext = new AudioContextClass();
       if (audioContext.state === 'suspended') audioContext.resume();
+      return audioContext;
+    }
 
+    function playFeedbackSound(type) {
+      if (!prepareAudio()) return;
       const startTime = audioContext.currentTime;
-      const tones = type === 'correct'
-        ? [{ frequency: 523.25, delay: 0, duration: .13 }, { frequency: 659.25, delay: .12, duration: .18 }]
-        : [{ frequency: 190, endFrequency: 105, delay: 0, duration: .3 }];
+      const toneSets = {
+        correct: [
+          { frequency: 523.25, delay: 0, duration: .13, volume: .13 },
+          { frequency: 659.25, delay: .12, duration: .18, volume: .13 }
+        ],
+        wrong: [
+          { frequency: 392, delay: 0, duration: .14, volume: .1 },
+          { frequency: 293.66, delay: .13, duration: .2, volume: .1 }
+        ],
+        tick: [{ frequency: 880, delay: 0, duration: .045, volume: .055 }]
+      };
+      const tones = toneSets[type] || [];
 
       tones.forEach(tone => {
         const oscillator = audioContext.createOscillator();
         const gain = audioContext.createGain();
         const toneStart = startTime + tone.delay;
         const toneEnd = toneStart + tone.duration;
-        oscillator.type = type === 'correct' ? 'sine' : 'sawtooth';
+        oscillator.type = 'sine';
         oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
-        if (tone.endFrequency) oscillator.frequency.exponentialRampToValueAtTime(tone.endFrequency, toneEnd);
         gain.gain.setValueAtTime(.0001, toneStart);
-        gain.gain.exponentialRampToValueAtTime(type === 'correct' ? .13 : .09, toneStart + .025);
+        gain.gain.exponentialRampToValueAtTime(tone.volume, toneStart + .018);
         gain.gain.exponentialRampToValueAtTime(.0001, toneEnd);
         oscillator.connect(gain);
         gain.connect(audioContext.destination);
         oscillator.start(toneStart);
         oscillator.stop(toneEnd);
       });
+    }
+
+    function resetFlashFeedback() {
+      primeFlashEl.className = 'flash';
+      grammarFlashEl.className = 'flash';
+    }
+
+    function stopPrimeTimer() {
+      window.clearTimeout(primeTimeoutId);
+      window.clearInterval(primeTickIntervalId);
+      window.cancelAnimationFrame(primeTimerAnimationId);
+      primeTimeoutId = null;
+      primeTickIntervalId = null;
+      primeTimerAnimationId = null;
+    }
+
+    function updatePrimeTimer() {
+      const remaining = Math.max(0, primeDeadline - performance.now());
+      const ratio = primeTimeLimit ? remaining / primeTimeLimit : 0;
+      primeTimerBarEl.style.transform = `scaleX(${ratio})`;
+      primeTimerLabelEl.textContent = `${(remaining / 1000).toFixed(1)}초`;
+      primeTimerEl.classList.toggle('urgent', ratio <= .34);
+      if (remaining > 0) primeTimerAnimationId = window.requestAnimationFrame(updatePrimeTimer);
+    }
+
+    function getPrimeExplanation() {
+      if (isPrime(currentNumber)) return `${currentNumber}은(는) 소수입니다.`;
+      if (currentNumber === 1) return '1은 소수도 합성수도 아니며, 소인수분해할 수 없습니다.';
+      return `${currentNumber}은(는) 소수가 아닙니다.\n${currentNumber} = ${getPrimeFactors(currentNumber).join(' × ')}`;
+    }
+
+    function handlePrimeTimeout() {
+      if (!acceptingInput || activeActivity !== 'prime') return;
+      acceptingInput = false;
+      stopPrimeTimer();
+      playFeedbackSound('wrong');
+      showFlash(primeFlashEl, 'wrong');
+      showAnswerFeedback('prime', 'wrong', '✕ 시간 초과!', `정답: ${isPrime(currentNumber) ? '소수' : '소수 아님'}`, null);
+      finishRound(`시간이 초과되었습니다.\n${getPrimeExplanation()}`);
+    }
+
+    function startPrimeTimer() {
+      stopPrimeTimer();
+      primeTimeLimit = currentNumber < 100 ? 2000 : 3000;
+      primeDeadline = performance.now() + primeTimeLimit;
+      primeTimerEl.classList.remove('urgent');
+      primeTimerBarEl.style.transform = 'scaleX(1)';
+      primeTimerLabelEl.textContent = `${(primeTimeLimit / 1000).toFixed(1)}초`;
+      primeTimeoutId = window.setTimeout(handlePrimeTimeout, primeTimeLimit);
+      primeTickIntervalId = window.setInterval(() => {
+        if (performance.now() < primeDeadline - 100) playFeedbackSound('tick');
+      }, 1000);
+      primeTimerAnimationId = window.requestAnimationFrame(updatePrimeTimer);
     }
 
     function clearAnswerFeedback(activity) {
@@ -549,7 +640,7 @@
       const screen = activity === 'prime' ? primeScreen : grammarScreen;
       const feedback = activity === 'prime' ? primeFeedbackEl : grammarFeedbackEl;
       const attribute = activity === 'prime' ? 'data-prime-answer' : 'data-grammar-answer';
-      const selectedButton = screen.querySelector(`[${attribute}="${answer}"]`);
+      const selectedButton = answer ? screen.querySelector(`[${attribute}="${answer}"]`) : null;
       if (selectedButton) selectedButton.classList.add(type === 'correct' ? 'answer-correct' : 'answer-wrong');
       feedback.querySelector('strong').textContent = title;
       feedback.querySelector('span').textContent = detail;
@@ -604,6 +695,8 @@
       acceptingInput = false;
       resultModal.classList.remove('show');
       infoModal.classList.remove('show');
+      resetFlashFeedback();
+      stopPrimeTimer();
       clearAnswerFeedback(activity);
 
       if (activity === 'prime') {
@@ -617,11 +710,15 @@
         showScreen(grammarScreen);
         nextVerb();
       }
-      window.setTimeout(() => { acceptingInput = true; }, 160);
+      window.setTimeout(() => {
+        acceptingInput = true;
+        if (activity === 'prime') startPrimeTimer();
+      }, 160);
     }
 
     function finishRound(message, delay = 720) {
       acceptingInput = false;
+      stopPrimeTimer();
       const best = recordScore(activeActivity, score);
       finalScoreEl.textContent = score;
       finalBestEl.textContent = best;
@@ -637,6 +734,7 @@
     function choosePrime(answer) {
       if (!acceptingInput || activeActivity !== 'prime') return;
       acceptingInput = false;
+      stopPrimeTimer();
       const correct = isPrime(currentNumber);
       if (answer === (correct ? 'prime' : 'not-prime')) {
         playFeedbackSound('correct');
@@ -649,6 +747,7 @@
           clearAnswerFeedback('prime');
           nextPrimeNumber();
           acceptingInput = true;
+          startPrimeTimer();
         }, 650);
         return;
       }
@@ -656,13 +755,7 @@
       playFeedbackSound('wrong');
       showFlash(primeFlashEl, 'wrong');
       showAnswerFeedback('prime', 'wrong', '✕ 오답!', `정답: ${correct ? '소수' : '소수 아님'}`, answer);
-      if (correct) {
-        finishRound(`${currentNumber}은(는) 소수입니다.`);
-      } else if (currentNumber === 1) {
-        finishRound('1은 소수도 합성수도 아니며, 소인수분해할 수 없습니다.');
-      } else {
-        finishRound(`${currentNumber}은(는) 소수가 아닙니다.\n${currentNumber} = ${getPrimeFactors(currentNumber).join(' × ')}`);
-      }
+      finishRound(getPrimeExplanation());
     }
 
     function showUsageNote() {
@@ -713,6 +806,7 @@
 
     function changePlayer() {
       acceptingInput = false;
+      stopPrimeTimer();
       resultModal.classList.remove('show');
       infoModal.classList.remove('show');
       clearAnswerFeedback(activeActivity);
@@ -750,6 +844,7 @@
       }
       playerName = chosenName.slice(0, 20);
       localStorage.setItem('quick-tap-last-player', playerName);
+      prepareAudio();
       startActivity(activeActivity);
     });
 
@@ -792,6 +887,8 @@
         if (event.key === 'ArrowDown') choosePrime('not-prime');
       }
     });
+
+    document.addEventListener('contextmenu', event => event.preventDefault());
   </script>
 </body>
 </html>
