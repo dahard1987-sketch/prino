@@ -253,6 +253,23 @@
     .modal__eyebrow.info { color: #7bf0bf; }
     .modal h2 { margin: 0; font-size: 2rem; letter-spacing: -.04em; }
     .modal__message { margin: 12px 0 20px; color: rgba(255,255,255,.7); font-size: .94rem; line-height: 1.65; white-space: pre-line; }
+    #result-modal .modal__card { overscroll-behavior: contain; }
+    .result-player-toolbar {
+      position: sticky;
+      z-index: 2;
+      top: 0;
+      display: flex;
+      justify-content: flex-end;
+      margin: -8px 0 16px;
+      background: #191c22;
+    }
+    .result-player-toolbar .secondary-button {
+      width: auto;
+      min-height: 44px;
+      padding: 0 17px;
+      border-radius: 999px;
+      font-size: .84rem;
+    }
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 18px; }
     .stat { padding: 14px; border-radius: 15px; background: #22262e; }
     .stat span { display: block; color: rgba(255,255,255,.54); font-size: .7rem; }
@@ -260,7 +277,18 @@
     .leaderboard { margin: 0 0 16px; text-align: left; }
     .leaderboard__title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
     .leaderboard h3 { margin: 0; font-size: .88rem; }
-    .leaderboard__list { margin: 0; padding: 0; list-style: none; border-radius: 14px; overflow: hidden; background: #22262e; }
+    .leaderboard__list {
+      max-height: min(34dvh, 340px);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+      list-style: none;
+      border-radius: 14px;
+      background: #22262e;
+    }
     .leaderboard__row { display: grid; grid-template-columns: 30px 1fr auto; gap: 8px; padding: 10px 13px; border-bottom: 1px solid rgba(255,255,255,.06); font-size: .84rem; }
     .leaderboard__row:last-child { border-bottom: 0; }
     .leaderboard__row.current { color: #7bf0bf; }
@@ -442,6 +470,9 @@
 
   <section class="modal" id="result-modal" role="dialog" aria-modal="true" aria-labelledby="result-title">
     <div class="modal__card">
+      <div class="result-player-toolbar">
+        <button class="secondary-button" id="change-result-player" type="button">플레이어 바꾸기</button>
+      </div>
       <p class="modal__eyebrow">ROUND OVER</p>
       <h2 id="result-title">아쉬워요!</h2>
       <p class="modal__message" id="result-message"></p>
@@ -455,7 +486,6 @@
       </div>
       <div class="modal__actions">
         <button class="primary-button" id="restart" type="button">다시 시작</button>
-        <button class="secondary-button" id="change-result-player" type="button">플레이어 바꾸기</button>
       </div>
       <button class="link-button" id="reset-leaderboard" type="button">이 활동 리더보드 초기화</button>
     </div>
@@ -879,6 +909,8 @@
       leaderboardTitleEl.textContent = activeActivity === 'prime' ? '소수 판별 리더보드' : '동사의 목적어 리더보드';
       renderLeaderboard(activeActivity);
       window.setTimeout(() => {
+        resultModal.querySelector('.modal__card').scrollTop = 0;
+        leaderboardListEl.scrollTop = 0;
         resultModal.classList.add('show');
         restartButton.focus();
       }, delay);
