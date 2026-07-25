@@ -427,11 +427,11 @@
   </section>
 
   <main class="screen game" id="prime-screen" aria-label="소수 판별 게임">
-    <button class="choice prime-choice prime-choice--yes" type="button" data-prime-answer="prime">
-      <span class="choice__label">소수 · PRIME<span class="choice__hint">↑</span></span>
+    <button class="choice prime-choice prime-choice--yes" type="button" data-prime-answer="prime" aria-label="소수, Prime Number">
+      <span class="choice__label">소수 · Prime Number<span class="choice__hint">↑</span></span>
     </button>
-    <button class="choice prime-choice prime-choice--no" type="button" data-prime-answer="not-prime">
-      <span class="choice__label">소수 아님 · NOT PRIME<span class="choice__hint">↓</span></span>
+    <button class="choice prime-choice prime-choice--no" type="button" data-prime-answer="not-prime" aria-label="합성수, Composite Number">
+      <span class="choice__label">합성수 · Composite Number<span class="choice__hint">↓</span></span>
     </button>
     <div class="topbar">
       <button class="icon-button" type="button" data-change-player>← 이름 바꾸기</button>
@@ -512,7 +512,7 @@
   <script>
     const PLAYER_NAMES = [
       '박범준', '배승우', '윤해든', '이룩', '이수민', '이우진', '이은수', '이지우',
-      '임윤아', '채범기', '한지아', '가서연', '김경민', '김시아', '이은성', '황민호',
+      '임윤아', '채범기', '한지아', '가서연', '김경민', '김시아', '이은성',
       '강용제', '김예승', '김재윤', '김하준', '박시현', '박이환', '백시율', '이해원',
       '조현우', '지수연', '황은찬'
     ].sort((a, b) => a.localeCompare(b, 'ko'));
@@ -538,12 +538,12 @@
     };
 
     const USAGE_NOTES = {
-      stop: 'stop + 동명사: 하던 일을 멈추다\nstop + to 부정사: 다른 일을 하기 위해 멈추다\n\n※ to 부정사도 쓸 수 있지만 이때는 목적어가 아니라 목적을 나타내며 의미가 달라집니다.',
-      dislike: 'dislike는 동명사와 to 부정사를 모두 목적어로 쓸 수 있습니다.\n그러나 주로 동명사를 사용합니다.',
-      remember: 'remember + 동명사: 과거에 한 일을 기억하다\nremember + to 부정사: 해야 할 일을 기억하고 하다',
-      forget: 'forget + 동명사: 과거에 한 일을 잊다\nforget + to 부정사: 해야 할 일을 깜빡하다',
-      try: 'try + 동명사: 시험 삼아 한번 해 보다\ntry + to 부정사: 애써 ~하려고 노력하다',
-      regret: 'regret + 동명사: 과거에 한 일을 후회하다\nregret + to 부정사: 유감스럽게도 ~하게 되다(알리다·말하다)'
+      stop: 'stop + 동명사: 하던 일을 멈추다\nstop + to 부정사: ... 하려고 멈추다\n\n※ to 부정사도 쓸 수 있지만 이때는 목적어가 아니라 부사(목적)입니다.',
+      dislike: 'dislike는 동명사와 to 부정사를 모두 목적어로 쓸 수 있지만 주로 동명사를 사용합니다.',
+      remember: 'remember + 동명사: ...했던 것을 기억하다\nremember + to 부정사: ...할 것을 기억하다',
+      forget: 'forget + 동명사: ...했던 것을 잊다\nforget + to 부정사: ...할 것을 잊다',
+      try: 'try + 동명사: 시험 삼아 한번 해 보다\ntry + to 부정사: ...하려고 노력하다',
+      regret: 'regret + 동명사: ...했던 것을 후회하다\nregret + to 부정사: 유감스럽게도 ~하게 되다(알리다·말하다)'
     };
 
     const screens = [...document.querySelectorAll('.screen')];
@@ -750,8 +750,7 @@
 
     function getPrimeExplanation() {
       if (isPrime(currentNumber)) return `${currentNumber}은(는) 소수입니다.`;
-      if (currentNumber === 1) return '1은 소수도 합성수도 아니며, 소인수분해할 수 없습니다.';
-      return `${currentNumber}은(는) 소수가 아닙니다.\n${currentNumber} = ${getPrimeFactors(currentNumber).join(' × ')}`;
+      return `${currentNumber}은(는) 합성수입니다.\n${currentNumber} = ${getPrimeFactors(currentNumber).join(' × ')}`;
     }
 
     function handlePrimeTimeout() {
@@ -760,7 +759,7 @@
       stopPrimeTimer();
       playFeedbackSound('wrong');
       showFlash(primeFlashEl, 'wrong');
-      showAnswerFeedback('prime', 'wrong', '✕ 시간 초과!', `정답: ${isPrime(currentNumber) ? '소수' : '소수 아님'}`, null);
+      showAnswerFeedback('prime', 'wrong', '✕ 시간 초과!', `정답: ${isPrime(currentNumber) ? '소수' : '합성수'}`, null);
       finishRound(`시간이 초과되었습니다.\n${getPrimeExplanation()}`);
     }
 
@@ -870,7 +869,7 @@
 
     function nextPrimeNumber() {
       let next;
-      do { next = Math.floor(Math.random() * 299) + 1; } while (next === currentNumber);
+      do { next = Math.floor(Math.random() * 298) + 2; } while (next === currentNumber);
       currentNumber = next;
       numberEl.textContent = currentNumber;
       animateCard(numberEl);
@@ -957,7 +956,7 @@
 
       playFeedbackSound('wrong');
       showFlash(primeFlashEl, 'wrong');
-      showAnswerFeedback('prime', 'wrong', '✕ 오답!', `정답: ${correct ? '소수' : '소수 아님'}`, answer);
+      showAnswerFeedback('prime', 'wrong', '✕ 오답!', `정답: ${correct ? '소수' : '합성수'}`, answer);
       finishRound(getPrimeExplanation());
     }
 
