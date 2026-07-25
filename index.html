@@ -270,6 +270,24 @@
       border-radius: 999px;
       font-size: .84rem;
     }
+    .button-shortcut {
+      display: inline-grid;
+      place-items: center;
+      min-width: 25px;
+      height: 25px;
+      margin-left: 8px;
+      padding: 0 6px;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 7px;
+      background: rgba(17,19,24,.48);
+      color: #fff;
+      font-family: inherit;
+      font-size: .72rem;
+      font-weight: 900;
+      line-height: 1;
+      vertical-align: middle;
+    }
+    .primary-button .button-shortcut { border-color: rgba(17,19,24,.22); background: rgba(17,19,24,.1); color: #111318; }
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 18px; }
     .stat { padding: 14px; border-radius: 15px; background: #22262e; }
     .stat span { display: block; color: rgba(255,255,255,.54); font-size: .7rem; }
@@ -314,9 +332,9 @@
       user-select: none;
     }
     .info-dismiss input { flex: 0 0 auto; width: 19px; height: 19px; margin: 1px 0 0; accent-color: #7bf0bf; }
-    #info-modal .modal__card { width: min(100%, 560px); padding: 34px 28px 26px; }
-    #info-modal h2 { font-size: clamp(2.2rem, 6vmin, 2.8rem); }
-    #info-modal .modal__message {
+    #info-modal .modal__card, #result-modal .modal__card { width: min(100%, 560px); padding: 34px 28px 26px; }
+    #info-modal h2, #result-modal h2 { font-size: clamp(2.2rem, 6vmin, 2.8rem); }
+    #info-modal .modal__message, #result-modal .modal__message {
       margin: 18px 0 22px;
       padding: 18px 20px;
       border-radius: 16px;
@@ -360,10 +378,10 @@
       .grammar-choice:nth-child(3) .choice-key, .grammar-choice:nth-child(4) .choice-key { top: 10px; }
     }
     @media (min-width: 768px) and (min-height: 600px) {
-      #info-modal .modal__card { width: min(100%, 720px); padding: 48px 50px 40px; border-radius: 34px; }
-      #info-modal .modal__eyebrow { margin-bottom: 15px; font-size: 1rem; }
-      #info-modal h2 { font-size: 3.2rem; }
-      #info-modal .modal__message { margin: 22px 0 30px; padding: 24px 26px; font-size: 1.5rem; line-height: 1.8; }
+      #info-modal .modal__card, #result-modal .modal__card { width: min(100%, 720px); padding: 48px 50px 40px; border-radius: 34px; }
+      #info-modal .modal__eyebrow, #result-modal .modal__eyebrow { margin-bottom: 15px; font-size: 1rem; }
+      #info-modal h2, #result-modal h2 { font-size: 3.2rem; }
+      #info-modal .modal__message, #result-modal .modal__message { margin: 22px 0 30px; padding: 24px 26px; font-size: 1.5rem; line-height: 1.8; }
       #info-modal .info-dismiss { padding: 18px 20px; font-size: 1.08rem; }
       #info-modal .info-dismiss input { width: 23px; height: 23px; }
       #info-modal .primary-button { min-height: 66px; font-size: 1.15rem; }
@@ -471,7 +489,7 @@
   <section class="modal" id="result-modal" role="dialog" aria-modal="true" aria-labelledby="result-title">
     <div class="modal__card">
       <div class="result-player-toolbar">
-        <button class="secondary-button" id="change-result-player" type="button">플레이어 바꾸기</button>
+        <button class="secondary-button" id="change-result-player" type="button" aria-keyshortcuts="C">플레이어 바꾸기<kbd class="button-shortcut" aria-hidden="true">C</kbd></button>
       </div>
       <p class="modal__eyebrow">ROUND OVER</p>
       <h2 id="result-title">아쉬워요!</h2>
@@ -485,7 +503,7 @@
         <ol class="leaderboard__list" id="leaderboard-list"></ol>
       </div>
       <div class="modal__actions">
-        <button class="primary-button" id="restart" type="button">다시 시작</button>
+        <button class="primary-button" id="restart" type="button" aria-keyshortcuts="R">다시 시작<kbd class="button-shortcut" aria-hidden="true">R</kbd></button>
       </div>
       <button class="link-button" id="reset-leaderboard" type="button">이 활동 리더보드 초기화</button>
     </div>
@@ -1071,7 +1089,18 @@
     });
 
     document.addEventListener('keydown', event => {
-      if (resultModal.classList.contains('show')) return;
+      if (resultModal.classList.contains('show')) {
+        const resultShortcut = event.key.toLowerCase();
+        if (resultShortcut === 'c') {
+          event.preventDefault();
+          changeResultPlayerButton.click();
+        }
+        if (resultShortcut === 'r') {
+          event.preventDefault();
+          restartButton.click();
+        }
+        return;
+      }
       if (infoModal.classList.contains('show')) {
         if (event.key === 'Enter' && document.activeElement !== hideWordNoteInput) {
           event.preventDefault();
