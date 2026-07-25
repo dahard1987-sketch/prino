@@ -234,6 +234,122 @@
       100% { opacity: 0; transform: translate(-50%,-50%) scale(1.04); }
     }
 
+    .streak-celebration {
+      position: absolute;
+      z-index: 25;
+      inset: 0;
+      overflow: hidden;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .streak-celebration.show { visibility: visible; }
+    .streak-celebration::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 24%, rgba(255,223,100,.28), transparent 48%);
+      opacity: 0;
+    }
+    .streak-celebration.show::before { animation: streak-glow 1.4s ease-out both; }
+    .streak-celebration.major::before {
+      background:
+        radial-gradient(circle at 50% 28%, rgba(255,241,157,.46), transparent 38%),
+        radial-gradient(circle at 50% 50%, rgba(123,240,191,.18), transparent 68%);
+      animation-duration: 2s;
+    }
+    .streak-celebration__message {
+      position: absolute;
+      z-index: 2;
+      top: 24%;
+      left: 50%;
+      min-width: min(66vw, 420px);
+      padding: 14px 26px 16px;
+      border: 2px solid rgba(255,255,255,.5);
+      border-radius: 999px;
+      background: rgba(17,19,24,.9);
+      box-shadow: 0 16px 50px rgba(0,0,0,.38), 0 0 34px rgba(255,216,90,.3);
+      opacity: 0;
+      transform: translate(-50%,-50%) scale(.65);
+      text-align: center;
+    }
+    .streak-celebration__message::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80px;
+      aspect-ratio: 1;
+      border: 4px solid rgba(255,226,116,.82);
+      border-radius: 50%;
+      opacity: 0;
+      transform: translate(-50%,-50%) scale(.45);
+    }
+    .streak-celebration.show .streak-celebration__message { animation: streak-message 1.4s ease-out both; }
+    .streak-celebration.show .streak-celebration__message::before { animation: streak-ring 1.05s ease-out both; }
+    .streak-celebration__message strong {
+      display: block;
+      color: #fff4ae;
+      font-size: clamp(2rem, 7vmin, 4.2rem);
+      font-weight: 950;
+      line-height: 1;
+      letter-spacing: -.05em;
+      text-shadow: 0 4px 20px rgba(255,198,52,.45);
+    }
+    .streak-celebration__message span {
+      display: block;
+      margin-top: 7px;
+      color: rgba(255,255,255,.86);
+      font-size: clamp(.76rem, 1.8vmin, 1.05rem);
+      font-weight: 850;
+    }
+    .streak-celebration.major .streak-celebration__message {
+      min-width: min(76vw, 560px);
+      padding: 20px 34px 23px;
+      border-width: 4px;
+      box-shadow: 0 22px 80px rgba(0,0,0,.5), 0 0 70px rgba(255,216,90,.58);
+    }
+    .streak-celebration.major .streak-celebration__message strong { font-size: clamp(3.1rem, 10vmin, 6.7rem); }
+    .streak-celebration.major .streak-celebration__message span { font-size: clamp(1rem, 2.5vmin, 1.5rem); }
+    .streak-celebration.major.show .streak-celebration__message { animation-duration: 2s; }
+    .streak-celebration.major.show .streak-celebration__message::before { animation-duration: 1.5s; }
+    .streak-celebration__particles { position: absolute; inset: 0; }
+    .confetti-piece {
+      position: absolute;
+      top: var(--start-y);
+      left: var(--start-x);
+      width: var(--piece-width);
+      height: var(--piece-height);
+      border-radius: 3px;
+      background: var(--color);
+      box-shadow: 0 0 9px color-mix(in srgb, var(--color) 72%, transparent);
+      opacity: 0;
+      transform: translate(-50%,-50%) rotate(0deg) scale(.35);
+    }
+    .streak-celebration.show .confetti-piece {
+      animation: confetti-burst var(--duration) cubic-bezier(.12,.72,.23,1) var(--delay) both;
+    }
+    @keyframes streak-message {
+      0% { opacity: 0; transform: translate(-50%,-50%) scale(.65); }
+      16%,72% { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+      82% { opacity: 1; transform: translate(-50%,-50%) scale(1.04); }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(.96); }
+    }
+    @keyframes streak-ring {
+      0% { opacity: .95; transform: translate(-50%,-50%) scale(.35); }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(5.8); }
+    }
+    @keyframes streak-glow {
+      0% { opacity: 0; }
+      14%,48% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes confetti-burst {
+      0% { opacity: 0; transform: translate(-50%,-50%) rotate(0deg) scale(.35); }
+      8% { opacity: 1; }
+      58% { opacity: 1; transform: translate(calc(-50% + var(--x-mid)), calc(-50% + var(--y-mid))) rotate(var(--spin-mid)) scale(1); }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--x-end)), calc(-50% + var(--y-end))) rotate(var(--spin-end)) scale(.72); }
+    }
+
     .modal {
       position: absolute;
       z-index: 30;
@@ -376,6 +492,8 @@
       }
       .grammar-choice:nth-child(1) .choice-key, .grammar-choice:nth-child(2) .choice-key { top: calc(env(safe-area-inset-top) + 56px); }
       .grammar-choice:nth-child(3) .choice-key, .grammar-choice:nth-child(4) .choice-key { top: 10px; }
+      .streak-celebration__message { top: 50%; left: 18%; min-width: min(31vw, 250px); padding: 12px 18px 14px; }
+      .streak-celebration.major .streak-celebration__message { min-width: min(38vw, 340px); padding: 15px 22px 18px; }
     }
     @media (min-width: 768px) and (min-height: 600px) {
       #info-modal .modal__card, #result-modal .modal__card { width: min(100%, 720px); padding: 48px 50px 40px; border-radius: 34px; }
@@ -386,7 +504,11 @@
       #info-modal .info-dismiss input { width: 23px; height: 23px; }
       #info-modal .primary-button { min-height: 66px; font-size: 1.15rem; }
     }
-    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration: 1ms !important; transition-duration: 1ms !important; } }
+    @media (prefers-reduced-motion: reduce) {
+      .streak-celebration.show .streak-celebration__message { opacity: 1; transform: translate(-50%,-50%) scale(1); animation: none !important; }
+      .streak-celebration::before, .streak-celebration__message::before, .confetti-piece { display: none; }
+      *,*::before,*::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+    }
   </style>
 </head>
 <body>
@@ -473,6 +595,14 @@
     <div class="answer-feedback" id="grammar-feedback" role="status" aria-live="assertive"><strong></strong><span></span></div>
   </main>
 
+  <div class="streak-celebration" id="streak-celebration" role="status" aria-live="polite" aria-atomic="true">
+    <div class="streak-celebration__message">
+      <strong id="streak-celebration-score"></strong>
+      <span id="streak-celebration-caption"></span>
+    </div>
+    <div class="streak-celebration__particles" id="streak-celebration-particles" aria-hidden="true"></div>
+  </div>
+
   <section class="modal" id="info-modal" role="dialog" aria-modal="true" aria-labelledby="info-title">
     <div class="modal__card">
       <p class="modal__eyebrow info">USAGE NOTE</p>
@@ -480,7 +610,7 @@
       <p class="modal__message" id="info-message"></p>
       <label class="info-dismiss" for="hide-word-note">
         <input id="hide-word-note" type="checkbox">
-        <span>이 단어에 대한 설명을 이번 라운드에서는 앞으로 띄우지 않음</span>
+        <span>이 단어에 대한 설명을 앞으로 띄우지 않음</span>
       </label>
       <button class="primary-button" id="info-continue" type="button">계속하기</button>
     </div>
@@ -495,7 +625,7 @@
       <h2 id="result-title">아쉬워요!</h2>
       <p class="modal__message" id="result-message"></p>
       <div class="stats">
-        <div class="stat"><span>이번 연속 기록</span><strong id="final-score">0</strong></div>
+        <div class="stat"><span>이번 기록</span><strong id="final-score">0</strong></div>
         <div class="stat"><span>나의 최고 기록</span><strong id="final-best">0</strong></div>
       </div>
       <div class="leaderboard">
@@ -543,7 +673,7 @@
       remember: 'remember + 동명사: ...했던 것을 기억하다\nremember + to 부정사: ...할 것을 기억하다',
       forget: 'forget + 동명사: ...했던 것을 잊다\nforget + to 부정사: ...할 것을 잊다',
       try: 'try + 동명사: 시험 삼아 한번 해 보다\ntry + to 부정사: ...하려고 노력하다',
-      regret: 'regret + 동명사: ...했던 것을 후회하다\nregret + to 부정사: 유감스럽게도 ~하게 되다(알리다·말하다)'
+      regret: 'regret + 동명사: ...했던 것을 후회하다\nregret + to 부정사: ...하게 되어 유감이다'
     };
 
     const screens = [...document.querySelectorAll('.screen')];
@@ -571,6 +701,10 @@
     const grammarTimerBarEl = document.querySelector('#grammar-timer-bar');
     const primeFeedbackEl = document.querySelector('#prime-feedback');
     const grammarFeedbackEl = document.querySelector('#grammar-feedback');
+    const streakCelebrationEl = document.querySelector('#streak-celebration');
+    const streakCelebrationScoreEl = document.querySelector('#streak-celebration-score');
+    const streakCelebrationCaptionEl = document.querySelector('#streak-celebration-caption');
+    const streakCelebrationParticlesEl = document.querySelector('#streak-celebration-particles');
     const infoModal = document.querySelector('#info-modal');
     const infoTitleEl = document.querySelector('#info-title');
     const infoMessageEl = document.querySelector('#info-message');
@@ -603,6 +737,7 @@
     let grammarTickIntervalId = null;
     let grammarTimerAnimationId = null;
     let grammarDeadline = 0;
+    let streakCelebrationTimeoutId = null;
     const suppressedUsageNotes = new Set();
 
     function showScreen(screen) {
@@ -682,6 +817,79 @@
       element.className = 'flash';
       void element.offsetWidth;
       element.classList.add(type);
+    }
+
+    function getStreakMilestone(value) {
+      if (value >= 100 && value % 100 === 0) return 'major';
+      if (value === 5 || (value >= 10 && value < 100 && value % 10 === 0)) return 'standard';
+      return '';
+    }
+
+    function getNextRoundDelay(value) {
+      const milestone = getStreakMilestone(value);
+      if (milestone === 'major') return 2050;
+      if (milestone === 'standard') return 1500;
+      return 650;
+    }
+
+    function clearStreakCelebration() {
+      window.clearTimeout(streakCelebrationTimeoutId);
+      streakCelebrationTimeoutId = null;
+      streakCelebrationEl.className = 'streak-celebration';
+      streakCelebrationScoreEl.textContent = '';
+      streakCelebrationCaptionEl.textContent = '';
+      streakCelebrationParticlesEl.replaceChildren();
+    }
+
+    function celebrateStreak(value) {
+      const milestone = getStreakMilestone(value);
+      if (!milestone) return;
+
+      clearStreakCelebration();
+      const isMajor = milestone === 'major';
+      const colors = ['#fff2a8', '#7bf0bf', '#ff7888', '#83b9ff', '#c597ff', '#ffb85c'];
+      const particleCount = isMajor ? 84 : 42;
+      const burstOrigins = isMajor
+        ? [{ x: 25, y: 27 }, { x: 50, y: 20 }, { x: 75, y: 27 }]
+        : [{ x: 42, y: 24 }, { x: 58, y: 24 }];
+      const baseRadius = Math.min(window.innerWidth, window.innerHeight) * (isMajor ? .62 : .44);
+      const particles = document.createDocumentFragment();
+
+      for (let index = 0; index < particleCount; index += 1) {
+        const piece = document.createElement('i');
+        const origin = burstOrigins[index % burstOrigins.length];
+        const angle = (Math.PI * 2 * index) / particleCount * burstOrigins.length + Math.random() * .34;
+        const distance = baseRadius * (.52 + Math.random() * .55);
+        const xMid = Math.cos(angle) * distance;
+        const yMid = Math.sin(angle) * distance;
+        const fall = (isMajor ? 210 : 140) + Math.random() * (isMajor ? 150 : 100);
+        const spin = (Math.random() < .5 ? -1 : 1) * (300 + Math.random() * 620);
+        const width = (isMajor ? 7 : 5) + Math.random() * (isMajor ? 8 : 6);
+        const height = width * (1.2 + Math.random() * 1.5);
+
+        piece.className = 'confetti-piece';
+        piece.style.setProperty('--start-x', `${origin.x + (Math.random() - .5) * 4}%`);
+        piece.style.setProperty('--start-y', `${origin.y + (Math.random() - .5) * 4}%`);
+        piece.style.setProperty('--x-mid', `${xMid.toFixed(1)}px`);
+        piece.style.setProperty('--y-mid', `${yMid.toFixed(1)}px`);
+        piece.style.setProperty('--x-end', `${(xMid * 1.12).toFixed(1)}px`);
+        piece.style.setProperty('--y-end', `${(yMid + fall).toFixed(1)}px`);
+        piece.style.setProperty('--spin-mid', `${spin.toFixed(0)}deg`);
+        piece.style.setProperty('--spin-end', `${(spin * 1.75).toFixed(0)}deg`);
+        piece.style.setProperty('--piece-width', `${width.toFixed(1)}px`);
+        piece.style.setProperty('--piece-height', `${height.toFixed(1)}px`);
+        piece.style.setProperty('--color', colors[index % colors.length]);
+        piece.style.setProperty('--delay', `${(Math.random() * (isMajor ? 180 : 100)).toFixed(0)}ms`);
+        piece.style.setProperty('--duration', `${(isMajor ? 1550 : 1100) + Math.random() * 350}ms`);
+        particles.append(piece);
+      }
+
+      streakCelebrationScoreEl.textContent = `${value}연속!`;
+      streakCelebrationCaptionEl.textContent = isMajor ? '엄청난 대기록이에요!' : '좋아요, 계속 가요!';
+      streakCelebrationParticlesEl.append(particles);
+      void streakCelebrationEl.offsetWidth;
+      streakCelebrationEl.classList.add('show', milestone);
+      streakCelebrationTimeoutId = window.setTimeout(clearStreakCelebration, isMajor ? 2200 : 1650);
     }
 
     function prepareAudio() {
@@ -892,6 +1100,7 @@
       resultModal.classList.remove('show');
       infoModal.classList.remove('show');
       resetFlashFeedback();
+      clearStreakCelebration();
       stopPrimeTimer();
       stopGrammarTimer();
       clearAnswerFeedback(activity);
@@ -945,12 +1154,14 @@
         primeBestEl.textContent = Math.max(score, getPlayerBest('prime'));
         showFlash(primeFlashEl, 'correct');
         showAnswerFeedback('prime', 'correct', '✓ 정답!', `연속 ${score}개`, answer);
+        celebrateStreak(score);
+        const nextRoundDelay = getNextRoundDelay(score);
         window.setTimeout(() => {
           clearAnswerFeedback('prime');
           nextPrimeNumber();
           acceptingInput = true;
           startPrimeTimer();
-        }, 650);
+        }, nextRoundDelay);
         return;
       }
 
@@ -979,18 +1190,20 @@
         grammarBestEl.textContent = Math.max(score, getPlayerBest('grammar'));
         showFlash(grammarFlashEl, 'correct');
         showAnswerFeedback('grammar', 'correct', '✓ 정답!', CATEGORY_LABELS[currentVerb.category], answer);
+        celebrateStreak(score);
+        const nextRoundDelay = getNextRoundDelay(score);
         if (getCurrentUsageNote()) {
           window.setTimeout(() => {
             clearAnswerFeedback('grammar');
             showUsageNote();
-          }, 650);
+          }, nextRoundDelay);
         } else {
           window.setTimeout(() => {
             clearAnswerFeedback('grammar');
             nextVerb();
             acceptingInput = true;
             startGrammarTimer();
-          }, 650);
+          }, nextRoundDelay);
         }
         return;
       }
@@ -1017,6 +1230,7 @@
       resultModal.classList.remove('show');
       infoModal.classList.remove('show');
       clearAnswerFeedback(activeActivity);
+      clearStreakCelebration();
       selectedActivityLabel.textContent = ACTIVITY_LABELS[activeActivity];
       showScreen(welcomeScreen);
       window.setTimeout(() => nameSelect.focus(), 0);
@@ -1090,11 +1304,11 @@
     document.addEventListener('keydown', event => {
       if (resultModal.classList.contains('show')) {
         const resultShortcut = event.key.toLowerCase();
-        if (resultShortcut === 'c') {
+        if (event.code === 'KeyC' || resultShortcut === 'c') {
           event.preventDefault();
           changeResultPlayerButton.click();
         }
-        if (resultShortcut === 'r') {
+        if (event.code === 'KeyR' || resultShortcut === 'r') {
           event.preventDefault();
           restartButton.click();
         }
