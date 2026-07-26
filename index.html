@@ -835,7 +835,7 @@
     const ING_QUESTIONS = Array.isArray(window.ING_ITEMS) ? window.ING_ITEMS : [];
     const ING_COOLDOWN = 3;
     const ING_TIME_LIMIT = 7000;
-    // 최초 오답과 아홉 번의 복습을 합쳐 10회 학습하며, 마지막 간격은 55라운드이다.
+    // 복습 차례가 충돌해 건너뛸 때도 마지막 55라운드 간격까지만 사용한다.
     const STUDY_REVIEW_INTERVALS = [1, 2, 3, 5, 8, 13, 21, 34, 55];
     const ING_ANSWER_LABELS = {
       gerund: '동명사 (Gerund)',
@@ -1022,9 +1022,18 @@
         Object.entries(saved?.reviews || {}).forEach(([id, review]) => {
           const stage = Number(review?.stage);
           const due = Number(review?.due);
+          const addedAt = Number(review?.addedAt);
+          const correctStreak = Number(review?.correctStreak);
           if (!validIds.has(id) || !Number.isInteger(stage) || stage < 0 || stage >= STUDY_REVIEW_INTERVALS.length) return;
           if (!Number.isInteger(due) || due < 0) return;
-          reviews[id] = { stage, due };
+          reviews[id] = {
+            stage,
+            due,
+            addedAt: Number.isInteger(addedAt) && addedAt >= 0 ? addedAt : 0,
+            correctStreak: Number.isInteger(correctStreak) && correctStreak >= 0
+              ? Math.min(correctStreak, 1)
+              : stage > 0 ? 1 : 0
+          };
         });
         return { rounds, reviews };
       } catch {
@@ -1071,11 +1080,19 @@
     function getStudySelection(items, getId, recentIds) {
       const dueEntries = Object.entries(studyState.reviews)
         .filter(([, review]) => review.due <= studyState.rounds)
-        .sort((a, b) => a[1].due - b[1].due || a[1].stage - b[1].stage);
+        .sort((a, b) => b[1].addedAt - a[1].addedAt || a[1].due - b[1].due);
       if (dueEntries.length) {
         const dueId = dueEntries[0][0];
         const dueItem = items.find(item => getId(item) === dueId);
-        if (dueItem) return { item: dueItem, id: dueId, isReview: true };
+        if (dueItem) {
+          dueEntries.slice(1).forEach(([, review]) => {
+            const nextStage = Math.min(review.stage + 1, STUDY_REVIEW_INTERVALS.length - 1);
+            review.stage = nextStage;
+            review.due = studyState.rounds + 1 + STUDY_REVIEW_INTERVALS[nextStage];
+          });
+          if (dueEntries.length > 1) saveStudyState();
+          return { item: dueItem, id: dueId, isReview: true };
+        }
       }
 
       const available = items.filter(item => {
@@ -1096,30 +1113,36 @@
       const existing = studyState.reviews[itemId];
       let nextInterval = 0;
       let mastered = false;
+      let correctStreak = 0;
 
       if (!isCorrect) {
         nextInterval = STUDY_REVIEW_INTERVALS[0];
         studyState.reviews[itemId] = {
           stage: 0,
-          due: studyState.rounds + nextInterval
+          due: studyState.rounds + nextInterval,
+          addedAt: studyState.rounds,
+          correctStreak: 0
         };
       } else if (currentStudyItemIsReview && existing) {
-        if (existing.stage >= STUDY_REVIEW_INTERVALS.length - 1) {
+        correctStreak = existing.correctStreak + 1;
+        if (correctStreak >= 2) {
           delete studyState.reviews[itemId];
           mastered = true;
         } else {
-          const nextStage = existing.stage + 1;
+          const nextStage = Math.min(existing.stage + 1, STUDY_REVIEW_INTERVALS.length - 1);
           nextInterval = STUDY_REVIEW_INTERVALS[nextStage];
           studyState.reviews[itemId] = {
             stage: nextStage,
-            due: studyState.rounds + nextInterval
+            due: studyState.rounds + nextInterval,
+            addedAt: existing.addedAt,
+            correctStreak
           };
         }
       }
 
       saveStudyState();
       updateStudyModeUI();
-      return { nextInterval, mastered };
+      return { nextInterval, mastered, correctStreak };
     }
 
     function appendStudyReviewNote(container, interval) {
@@ -1761,9 +1784,9 @@
         grammarBestEl.textContent = studyMode ? getPendingStudyCount() : Math.max(score, getPlayerBest('grammar'));
         showFlash(grammarFlashEl, 'correct');
         const studyDetail = studyResult?.mastered
-          ? '이 항목의 반복 복습을 완료했어요!'
+          ? '2회 연속 정답! 오답 목록에서 제외했어요.'
           : studyResult?.nextInterval
-            ? `${studyResult.nextInterval}라운드 후 다시 복습해요.`
+            ? `${studyResult.correctStreak}회 연속 정답 · ${studyResult.nextInterval}라운드 후 다시 복습해요.`
             : CATEGORY_LABELS[currentVerb.category];
         showAnswerFeedback('grammar', 'correct', '✓ 정답!', studyDetail, answer);
         if (!studyMode) celebrateStreak(score);
@@ -1823,9 +1846,9 @@
         ingBestEl.textContent = studyMode ? getPendingStudyCount() : Math.max(score, getPlayerBest('ing'));
         showFlash(ingFlashEl, 'correct');
         const studyDetail = studyResult?.mastered
-          ? '이 항목의 반복 복습을 완료했어요!'
+          ? '2회 연속 정답! 오답 목록에서 제외했어요.'
           : studyResult?.nextInterval
-            ? `${studyResult.nextInterval}라운드 후 다시 복습해요.`
+            ? `${studyResult.correctStreak}회 연속 정답 · ${studyResult.nextInterval}라운드 후 다시 복습해요.`
             : ING_ANSWER_LABELS[currentIngItem.answer];
         showAnswerFeedback('ing', 'correct', '✓ 정답!', studyDetail, answer);
         if (!studyMode) celebrateStreak(score);
