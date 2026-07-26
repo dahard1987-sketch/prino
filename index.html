@@ -482,7 +482,15 @@
     }
     .ing-result__translation { color: rgba(255,255,255,.95); font-size: clamp(1.18rem, 2.5vmin, 1.55rem); font-weight: 700; line-height: 1.75; }
     .ing-result__grammar { color: rgba(255,255,255,.94); font-size: clamp(1.15rem, 2.35vmin, 1.45rem); font-weight: 800; line-height: 1.7; }
-    .ing-meaning-emphasis { color: #fff1a8; font-weight: 950; text-decoration: underline; text-decoration-thickness: .12em; text-underline-offset: .14em; }
+    .ing-meaning-emphasis {
+      color: #fff1a8;
+      font-weight: 950;
+      text-decoration-line: underline;
+      text-decoration-thickness: .12em;
+      text-underline-offset: .2em;
+      text-decoration-color: #ffcb5c;
+      text-decoration-skip-ink: none;
+    }
     .modal__actions { display: grid; gap: 9px; }
     .modal__actions .primary-button { margin-top: 0; }
     .link-button { margin-top: 13px; border: 0; background: transparent; color: rgba(255,255,255,.5); cursor: pointer; font-size: .78rem; text-decoration: underline; text-underline-offset: 3px; }
@@ -1173,27 +1181,47 @@
     }
 
     function getIngGrammarExplanation(item) {
-      const { before } = parseMarkedText(item.marked);
+      const { before, after } = parseMarkedText(item.marked);
       const words = before.trim().replace(/[.,!?]+$/, '').split(/\s+/).filter(Boolean);
       const previousWord = words.at(-1) || '';
       const previousPhrase = previousWord === 'up' && words.length > 1
         ? `${words.at(-2)} up`
         : previousWord;
+      const nextWord = after.trim().replace(/^[.,!?]+/, '').split(/\s+/).filter(Boolean)[0] || '';
+      const nounLabels = {
+        baby: '아기', dog: '개', sun: '태양', water: '물',
+        girl: '소녀', man: '남자', students: '학생들', bird: '새', woman: '여자',
+        children: '아이들', boy: '소년', horse: '말', leaves: '나뭇잎들',
+        someone: '누군가', me: '나', him: '그',
+        bag: '가방', car: '객차', pool: '수영장', room: '방', machine: '기계',
+        lamp: '램프', lot: '주차 공간', stick: '지팡이', shoes: '신발', rod: '낚싯대',
+        boat: '배', gloves: '장갑', oil: '기름', desk: '책상', rink: '링크',
+        cart: '카트', school: '학교', glass: '잔', table: '탁자', cap: '모자'
+      };
+      const objectParticle = noun => {
+        const lastCode = noun.charCodeAt(noun.length - 1) - 0xac00;
+        const hasFinalConsonant = lastCode >= 0 && lastCode <= 11171 && lastCode % 28 !== 0;
+        return `${noun}${hasFinalConsonant ? '을' : '를'}`;
+      };
+      const modifiedNoun = nounLabels[item.role === 'noun-modifier-before' || item.role === 'noun-purpose' ? nextWord : previousWord];
+      const plainSentence = item.marked.replace(/[\[\]]/g, '');
+      const subjectMatch = plainSentence.match(/^(.+?)\s+(?:is|takes|keeps|makes|can)\b/i);
+      const complementSubject = before.trim().replace(/\s+(?:is|was)$/i, '');
       const explanations = {
-        subject: '문장의 주어',
+        subject: subjectMatch ? `“${subjectMatch[1]}”가 문장의 주어` : '동명사구가 문장의 주어',
         'verb-object': `동사 ${previousPhrase}의 목적어`,
         'preposition-object': `전치사 ${previousWord}의 목적어`,
-        complement: '주어의 내용을 설명하는 보어',
+        complement: `“${complementSubject}”의 내용을 설명하는 보어`,
         'fixed-expression': 'There is no use -ing 관용 표현',
         'omitted-preposition': '생략된 전치사 in의 목적어',
         'worth-complement': '형용사 worth 뒤의 동명사',
-        'noun-purpose': '뒤 명사의 용도를 나타내는 동명사',
-        progressive: `be동사 ${previousWord} + 현재분사 (진행형)`,
-        'noun-modifier-before': '뒤 명사를 앞에서 꾸미는 현재분사',
-        'noun-modifier-after': '앞 명사를 뒤에서 꾸미는 현재분사',
-        'object-complement': '목적어의 목적격 보어',
-        'simultaneous-action': '동시 동작을 나타내는 분사구문',
-        'adjective-complement': '주어의 상태를 설명하는 보어'
+        'noun-purpose': modifiedNoun ? `${modifiedNoun}의 용도를 나타내는 동명사` : '뒤 명사의 용도를 나타내는 동명사',
+        progressive: `be동사 ${previousWord} + 현재분사로 만든 진행형`,
+        'noun-modifier-before': modifiedNoun ? `${objectParticle(modifiedNoun)} 꾸며주는 현재분사` : '뒤 명사를 꾸며주는 현재분사',
+        'noun-modifier-after': modifiedNoun ? `${objectParticle(modifiedNoun)} 꾸며주는 현재분사` : '앞 명사를 꾸며주는 현재분사',
+        'object-complement': modifiedNoun ? `${modifiedNoun}의 동작을 설명하는 목적격 보어` : '목적어의 동작을 설명하는 목적격 보어',
+        'simultaneous-action': `${words[0] === 'She' ? '그녀' : '그'}의 동시 동작을 나타내는 현재분사`,
+        'adjective-complement': `“${complementSubject}”의 상태를 설명하는 보어`
       };
       return explanations[item.role] || '문장 속 -ing의 문법 역할';
     }
@@ -1247,7 +1275,7 @@
       translationLabel.textContent = '해석';
       const translation = document.createElement('div');
       translation.className = 'ing-result__translation';
-      appendEmphasizedMeaning(translation, item.translation, item.emphasis);
+      appendEmphasizedMeaning(translation, item.translation, item.focus);
       translationSection.append(translationLabel, translation);
       wrapper.append(translationSection);
 
