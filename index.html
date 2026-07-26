@@ -854,7 +854,15 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .streak-celebration.show .streak-celebration__message { opacity: 1; transform: translate(-50%,-50%) scale(1); animation: none !important; }
-      .streak-celebration::before, .streak-celebration__message::before, .confetti-piece { display: none; }
+      .streak-celebration::before, .streak-celebration__message::before { display: none; }
+      .streak-celebration.show .confetti-piece {
+        opacity: .92;
+        animation: none !important;
+        transform:
+          translate(calc(-50% + var(--x-mid)), calc(-50% + var(--y-mid)))
+          rotate(var(--spin-mid))
+          scale(1);
+      }
       *,*::before,*::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
     }
 
@@ -2098,14 +2106,16 @@
       const startTime = audioContext.currentTime;
       const toneSets = {
         correct: [
-          { frequency: 523.25, delay: 0, duration: .13, volume: .13 },
-          { frequency: 659.25, delay: .12, duration: .18, volume: .13 }
+          { frequency: 587.33, delay: 0, duration: .11, volume: .22, wave: 'triangle' },
+          { frequency: 739.99, delay: .085, duration: .12, volume: .22, wave: 'triangle' },
+          { frequency: 880, delay: .17, duration: .19, volume: .2, wave: 'triangle' }
         ],
         wrong: [
-          { frequency: 392, delay: 0, duration: .14, volume: .1 },
-          { frequency: 293.66, delay: .13, duration: .2, volume: .1 }
+          { frequency: 880, delay: 0, duration: .12, volume: .18, wave: 'triangle' },
+          { frequency: 739.99, delay: .095, duration: .15, volume: .17, wave: 'triangle' },
+          { frequency: 587.33, endFrequency: 440, delay: .21, duration: .32, volume: .17, wave: 'triangle' }
         ],
-        tick: [{ frequency: 880, delay: 0, duration: .045, volume: .055 }]
+        tick: [{ frequency: 1046.5, delay: 0, duration: .045, volume: .075, wave: 'triangle' }]
       };
       const tones = toneSets[type] || [];
 
@@ -2114,8 +2124,11 @@
         const gain = audioContext.createGain();
         const toneStart = startTime + tone.delay;
         const toneEnd = toneStart + tone.duration;
-        oscillator.type = 'sine';
+        oscillator.type = tone.wave || 'triangle';
         oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
+        if (tone.endFrequency) {
+          oscillator.frequency.exponentialRampToValueAtTime(tone.endFrequency, toneEnd);
+        }
         gain.gain.setValueAtTime(.0001, toneStart);
         gain.gain.exponentialRampToValueAtTime(tone.volume, toneStart + .018);
         gain.gain.exponentialRampToValueAtTime(.0001, toneEnd);
