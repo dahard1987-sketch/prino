@@ -1,7 +1,7 @@
 {
   "name": "Quick Tap 영어·수학",
   "short_name": "Quick Tap",
-  "description": "소수 판별과 동사의 목적어를 빠르게 연습하는 활동",
+  "description": "소수 판별, 동사의 목적어, 동명사와 현재분사를 빠르게 연습하는 활동",
   "lang": "ko",
   "start_url": "./",
   "scope": "./",
