@@ -432,15 +432,45 @@
     .modal__eyebrow.info { color: #7bf0bf; }
     .modal h2 { margin: 0; overflow-wrap: anywhere; font-size: 2rem; letter-spacing: -.04em; text-wrap: balance; }
     .modal__message { margin: 12px 0 20px; color: rgba(255,255,255,.7); font-size: .94rem; line-height: 1.65; white-space: pre-line; }
-    #result-modal .modal__card { overscroll-behavior: contain; }
+    #result-modal .modal__card,
+    #study-explanation-modal .modal__card {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      overscroll-behavior: contain;
+    }
+    .result-modal__header,
+    .study-explanation-toolbar { flex: 0 0 auto; }
+    .result-scroll-content,
+    .study-explanation-scroll {
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+    }
     .result-player-toolbar {
       display: flex;
       justify-content: space-between;
       gap: 8px;
       margin: -8px 0 16px;
     }
+    .study-explanation-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+    .study-explanation-toolbar strong {
+      color: #ffcb5c;
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: -.02em;
+    }
     .result-player-toolbar .secondary-button,
-    .result-player-toolbar .primary-button {
+    .result-player-toolbar .primary-button,
+    .study-explanation-toolbar .secondary-button {
       width: auto;
       min-height: 44px;
       margin-top: 0;
@@ -598,7 +628,8 @@
       .score-group { gap: 5px; }
       .game-timer { width: min(46vw, 200px); }
       .result-player-toolbar .secondary-button,
-      .result-player-toolbar .primary-button { min-height: 44px; padding-inline: 13px; font-size: .78rem; }
+      .result-player-toolbar .primary-button,
+      .study-explanation-toolbar .secondary-button { min-height: 44px; padding-inline: 13px; font-size: .78rem; }
     }
     @media (max-width: 360px) {
       .topbar { left: 6px; right: 6px; gap: 4px; }
@@ -795,31 +826,41 @@
     </div>
   </section>
 
-  <section class="modal" id="study-explanation-modal" role="dialog" aria-modal="true" aria-label="학습 해설">
+  <section class="modal" id="study-explanation-modal" role="dialog" aria-modal="true" aria-labelledby="study-explanation-title">
     <div class="modal__card">
-      <div class="modal__message" id="study-explanation-message"></div>
-      <button class="primary-button" id="study-explanation-continue" type="button">다음 문제</button>
+      <div class="study-explanation-toolbar">
+        <strong id="study-explanation-title">오답 해설</strong>
+        <button class="secondary-button" type="button" data-change-player aria-keyshortcuts="C">플레이어 바꾸기<kbd class="button-shortcut" aria-hidden="true">C</kbd></button>
+      </div>
+      <div class="study-explanation-scroll">
+        <div class="modal__message" id="study-explanation-message"></div>
+        <button class="primary-button" id="study-explanation-continue" type="button">다음 문제</button>
+      </div>
     </div>
   </section>
 
   <section class="modal" id="result-modal" role="dialog" aria-modal="true" aria-labelledby="result-title">
     <div class="modal__card">
-      <div class="result-player-toolbar">
-        <button class="secondary-button" id="change-result-player" type="button" aria-keyshortcuts="C">플레이어 바꾸기<kbd class="button-shortcut" aria-hidden="true">C</kbd></button>
-        <button class="primary-button" id="restart" type="button" aria-keyshortcuts="R">다시 시작<kbd class="button-shortcut" aria-hidden="true">R</kbd></button>
+      <div class="result-modal__header">
+        <div class="result-player-toolbar">
+          <button class="secondary-button" id="change-result-player" type="button" aria-keyshortcuts="C">플레이어 바꾸기<kbd class="button-shortcut" aria-hidden="true">C</kbd></button>
+          <button class="primary-button" id="restart" type="button" aria-keyshortcuts="R">다시 시작<kbd class="button-shortcut" aria-hidden="true">R</kbd></button>
+        </div>
+        <p class="modal__eyebrow">ROUND OVER</p>
+        <h2 id="result-title">아쉬워요!</h2>
       </div>
-      <p class="modal__eyebrow">ROUND OVER</p>
-      <h2 id="result-title">아쉬워요!</h2>
-      <div class="modal__message" id="result-message"></div>
-      <div class="stats">
-        <div class="stat"><span>이번 기록</span><strong id="final-score">0</strong></div>
-        <div class="stat"><span>나의 최고 기록</span><strong id="final-best">0</strong></div>
+      <div class="result-scroll-content" id="result-scroll-content">
+        <div class="modal__message" id="result-message"></div>
+        <div class="stats">
+          <div class="stat"><span>이번 기록</span><strong id="final-score">0</strong></div>
+          <div class="stat"><span>나의 최고 기록</span><strong id="final-best">0</strong></div>
+        </div>
+        <div class="leaderboard">
+          <div class="leaderboard__title"><h3 id="leaderboard-title">리더보드</h3></div>
+          <ol class="leaderboard__list" id="leaderboard-list"></ol>
+        </div>
+        <button class="link-button" id="reset-leaderboard" type="button">이 활동 리더보드 초기화</button>
       </div>
-      <div class="leaderboard">
-        <div class="leaderboard__title"><h3 id="leaderboard-title">리더보드</h3></div>
-        <ol class="leaderboard__list" id="leaderboard-list"></ol>
-      </div>
-      <button class="link-button" id="reset-leaderboard" type="button">이 활동 리더보드 초기화</button>
     </div>
   </section>
 
@@ -934,6 +975,7 @@
     const studyExplanationMessageEl = document.querySelector('#study-explanation-message');
     const studyExplanationContinueButton = document.querySelector('#study-explanation-continue');
     const resultModal = document.querySelector('#result-modal');
+    const resultScrollContentEl = document.querySelector('#result-scroll-content');
     const resultTitleEl = document.querySelector('#result-title');
     const resultMessageEl = document.querySelector('#result-message');
     const finalScoreEl = document.querySelector('#final-score');
@@ -1804,7 +1846,7 @@
       leaderboardTitleEl.textContent = `${ACTIVITY_LABELS[activeActivity]} 리더보드`;
       renderLeaderboard(activeActivity);
       window.setTimeout(() => {
-        resultModal.querySelector('.modal__card').scrollTop = 0;
+        resultScrollContentEl.scrollTop = 0;
         leaderboardListEl.scrollTop = 0;
         resultModal.classList.add('show');
         restartButton.focus();
@@ -2084,6 +2126,12 @@
         return;
       }
       if (studyExplanationModal.classList.contains('show')) {
+        const studyShortcut = event.key.toLowerCase();
+        if (event.code === 'KeyC' || studyShortcut === 'c') {
+          event.preventDefault();
+          studyExplanationModal.querySelector('[data-change-player]').click();
+          return;
+        }
         if (event.key === 'Enter') {
           event.preventDefault();
           studyExplanationContinueButton.click();
