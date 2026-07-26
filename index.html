@@ -83,7 +83,7 @@
     }
 
     .panel { width: min(100%, 520px); min-width: 0; }
-    .menu .panel { width: min(100%, 820px); min-width: 0; }
+    .menu .panel { width: min(100%, 1080px); min-width: 0; }
     .welcome__back {
       width: auto;
       margin: 0 0 24px;
@@ -137,7 +137,7 @@
 
     .menu__header { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
     .activity-chip { display: inline-flex; margin-bottom: 18px; padding: 9px 13px; border-radius: 999px; background: #22262e; color: #7bf0bf; font-size: clamp(.78rem, 1.45vmin, 1rem); font-weight: 850; }
-    .activity-list { display: grid; min-width: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .activity-list { display: grid; min-width: 0; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
     .activity-card {
       position: relative;
       width: 100%;
@@ -155,6 +155,8 @@
     .activity-card--prime { background: linear-gradient(155deg, #226c5e, #163d36); }
     .activity-card--grammar { background: linear-gradient(155deg, #7250a5, #3d2d58); }
     .activity-card--ing { background: linear-gradient(155deg, #a45848, #55312c); }
+    .activity-card--sentence-error { background: linear-gradient(155deg, #3d6f91, #243c59); }
+    .activity-card:disabled { cursor: not-allowed; filter: grayscale(.65) brightness(.72); }
     .activity-card__icon { display: block; margin-bottom: 36px; color: rgba(255,255,255,.96); font-size: clamp(2rem, 4vmin, 3rem); font-weight: 500; letter-spacing: -.04em; }
     .activity-card strong { display: block; font-size: clamp(1.35rem, 2.8vmin, 2rem); letter-spacing: -.03em; }
     .activity-card small { display: block; margin-top: 8px; color: rgba(255,255,255,.76); font-size: clamp(.86rem, 1.55vmin, 1rem); line-height: 1.48; }
@@ -179,6 +181,44 @@
     .ing-choice--gerund .choice__label { position: absolute; top: calc(env(safe-area-inset-top) + 108px); left: 0; width: 100%; }
     .ing-choice--participle .choice__label { position: absolute; bottom: calc(env(safe-area-inset-bottom) + 38px); left: 0; width: 100%; }
     .ing-choice .choice__label { font-size: clamp(1.08rem, calc(2.4vmin + .5rem), 2.25rem); }
+    .sentence-error-choice { left: 0; width: 100%; height: 50%; color: rgba(255,255,255,.94); }
+    .sentence-error-choice--incorrect { top: 0; background: linear-gradient(160deg, #824657, #4d2c39); }
+    .sentence-error-choice--correct { bottom: 0; background: linear-gradient(160deg, #226c5e, #17483f); }
+    .sentence-error-word {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .04em;
+      font-size: clamp(3.8rem, 18vw, 5.8rem);
+      font-weight: 950;
+      line-height: .8;
+      letter-spacing: -.08em;
+      text-shadow: 0 8px 28px rgba(0,0,0,.22);
+    }
+    .sentence-error-key {
+      position: absolute;
+      z-index: 20;
+      top: 50%;
+      display: grid;
+      place-items: center;
+      width: 44px;
+      aspect-ratio: 1;
+      border: 2px solid rgba(255,255,255,.48);
+      border-radius: 13px;
+      background: rgba(17,19,24,.72);
+      box-shadow: 0 8px 20px rgba(0,0,0,.24);
+      color: #fff;
+      font-family: inherit;
+      font-size: 1.3rem;
+      font-weight: 950;
+      line-height: 1;
+      transform: translateY(-50%);
+    }
+    .sentence-error-choice--incorrect .sentence-error-key { left: 18px; }
+    .sentence-error-choice--correct .sentence-error-key { right: 18px; }
+    .sentence-error-divider { position: absolute; z-index: 2; top: 50%; left: 7%; width: 86%; height: 1px; background: rgba(255,255,255,.16); pointer-events: none; }
     .ing-sentence {
       width: min(88vw, 920px);
       min-width: 0;
@@ -192,6 +232,33 @@
       letter-spacing: -.025em;
       text-wrap: balance;
     }
+    .sentence-error-card {
+      width: min(88vw, 980px);
+      min-width: 0;
+      max-height: min(38dvh, 330px);
+      overflow: hidden;
+      padding: clamp(24px, 4.5vmin, 44px) clamp(22px, 5vw, 64px);
+      font-family: "Avenir Next", "Trebuchet MS", Arial, sans-serif;
+      font-size: clamp(1.45rem, calc(2.8vmin + .55rem), 3.1rem);
+      font-weight: 750;
+      line-height: 1.42;
+      letter-spacing: -.025em;
+      overflow-wrap: anywhere;
+      text-wrap: balance;
+    }
+    .sentence-error-empty {
+      position: absolute;
+      z-index: 22;
+      inset: 0;
+      display: grid;
+      place-content: center;
+      gap: 16px;
+      padding: 30px;
+      background: #111318;
+      text-align: center;
+    }
+    .sentence-error-empty p { margin: 0; font-size: clamp(1.2rem, 3vmin, 1.7rem); font-weight: 800; }
+    .sentence-error-empty .secondary-button { width: auto; padding-inline: 24px; }
     .marked-ing {
       color: #fff1a8;
       font-weight: 950;
@@ -456,6 +523,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: 12px;
       margin-bottom: 14px;
       text-align: left;
@@ -466,9 +534,11 @@
       font-weight: 900;
       letter-spacing: -.02em;
     }
+    .study-explanation-actions { display: flex; gap: 8px; margin-left: auto; }
     .result-player-toolbar .secondary-button,
     .result-player-toolbar .primary-button,
-    .study-explanation-toolbar .secondary-button {
+    .study-explanation-toolbar .secondary-button,
+    .study-explanation-toolbar .primary-button {
       width: auto;
       min-height: 44px;
       margin-top: 0;
@@ -560,6 +630,54 @@
       text-decoration-color: #ffcb5c;
       text-decoration-skip-ink: none;
     }
+    .sentence-error-result { display: grid; gap: 9px; text-align: left; }
+    .sentence-error-result__answer {
+      padding: 12px 16px;
+      border: 2px solid rgba(123,240,191,.42);
+      border-radius: 15px;
+      background: rgba(35,83,67,.5);
+      color: #b7ffdf;
+      font-size: clamp(1rem, 2.15vmin, 1.35rem);
+      font-weight: 900;
+      text-align: center;
+    }
+    .sentence-error-result__section { padding: 14px 16px; border-radius: 13px; background: #22262e; }
+    .sentence-error-result__label { display: block; margin-bottom: 7px; color: rgba(255,255,255,.68); font-size: clamp(.76rem, 1.4vmin, .92rem); font-weight: 900; letter-spacing: .06em; }
+    .sentence-diff {
+      color: #fff;
+      font-family: "Avenir Next", "Trebuchet MS", Arial, sans-serif;
+      font-size: clamp(1.12rem, 2.5vmin, 1.55rem);
+      font-weight: 750;
+      line-height: 1.5;
+    }
+    .sentence-diff__delete {
+      padding: 0 .08em;
+      color: #ff9ba8;
+      font-weight: 900;
+      text-decoration-thickness: .12em;
+      text-decoration-color: #ff6575;
+    }
+    .sentence-diff__insert {
+      padding: 0 .1em .04em;
+      border-bottom: .12em solid #7bf0bf;
+      background: rgba(55,139,108,.2);
+      color: #a9f8d7;
+      font-weight: 950;
+      text-decoration: none;
+    }
+    .sentence-change-list { display: flex; flex-wrap: wrap; gap: 7px; }
+    .sentence-change-chip {
+      display: inline-flex;
+      padding: 7px 10px;
+      border: 1px solid rgba(255,203,92,.3);
+      border-radius: 999px;
+      background: rgba(91,72,31,.28);
+      color: #fff1a8;
+      font-size: clamp(.82rem, 1.7vmin, 1rem);
+      font-weight: 850;
+      line-height: 1.35;
+    }
+    .sentence-error-result__text { color: rgba(255,255,255,.95); font-size: clamp(1.02rem, 2.2vmin, 1.32rem); font-weight: 700; line-height: 1.55; }
     .link-button { min-height: 44px; margin-top: 8px; border: 0; background: transparent; color: rgba(255,255,255,.62); cursor: pointer; font-size: .8rem; text-decoration: underline; text-underline-offset: 3px; }
     .info-dismiss {
       display: flex;
@@ -592,8 +710,8 @@
       text-align: left;
     }
     #study-explanation-modal .modal__message { margin: 0 0 12px; }
-    #result-modal #result-message.has-ing-explanation,
-    #study-explanation-modal #study-explanation-message.has-ing-explanation { padding: 0; background: transparent; }
+    #result-modal #result-message.has-rich-explanation,
+    #study-explanation-modal #study-explanation-message.has-rich-explanation { padding: 0; background: transparent; }
     #study-explanation-modal .primary-button { margin-top: 0; }
 
     @media (hover: hover) {
@@ -615,6 +733,20 @@
       .activity-card { min-height: 145px; padding: 20px 50px 20px 22px; }
       .activity-card__icon { margin-bottom: 18px; }
     }
+    @media (min-width: 600px), (orientation: landscape) {
+      .sentence-error-choice { top: 0; bottom: auto; width: 50%; height: 100%; }
+      .sentence-error-choice--incorrect { left: 0; }
+      .sentence-error-choice--correct { right: 0; left: auto; }
+      .sentence-error-word {
+        top: 19%;
+        bottom: 17%;
+        flex-direction: column;
+        justify-content: space-between;
+        font-size: clamp(5rem, 11vmin, 8.5rem);
+      }
+      .sentence-error-key { top: 50%; }
+      .sentence-error-divider { top: 7%; bottom: 7%; left: 50%; width: 1px; height: auto; }
+    }
     @media (max-width: 480px) {
       .topbar { left: 10px; right: 10px; gap: 7px; }
       .icon-button { min-height: 38px; padding: 0 11px; font-size: .74rem; }
@@ -627,7 +759,8 @@
       .game-timer { width: min(46vw, 200px); }
       .result-player-toolbar .secondary-button,
       .result-player-toolbar .primary-button,
-      .study-explanation-toolbar .secondary-button { min-height: 44px; padding-inline: 13px; font-size: .78rem; }
+      .study-explanation-toolbar .secondary-button,
+      .study-explanation-toolbar .primary-button { min-height: 44px; padding-inline: 13px; font-size: .78rem; }
     }
     @media (max-width: 360px) {
       .topbar { left: 6px; right: 6px; gap: 4px; }
@@ -656,6 +789,7 @@
       .ing-choice--gerund .choice__label { top: calc(env(safe-area-inset-top) + 88px); }
       .ing-choice--participle .choice__label { bottom: calc(env(safe-area-inset-bottom) + 24px); }
       .ing-sentence { max-height: 34dvh; padding: 16px 30px; font-size: clamp(1.3rem, 4.1vmin, 2.3rem); }
+      .sentence-error-card { max-height: 34dvh; padding: 16px 30px; font-size: clamp(1.2rem, 3.7vmin, 2.15rem); }
       .streak-celebration__message { top: 50%; left: 18%; min-width: min(31vw, 250px); padding: 12px 18px 14px; }
       .streak-celebration.major .streak-celebration__message { min-width: min(38vw, 340px); padding: 15px 22px 18px; }
     }
@@ -722,6 +856,11 @@
           <span class="activity-card__icon">-ing</span>
           <strong>동명사 / 현재분사</strong>
           <small>문장 속 -ing가 명사인지 분사인지 판단해요.</small>
+        </button>
+        <button class="activity-card activity-card--sentence-error" id="sentence-error-start" type="button" data-start="sentence-error">
+          <span class="activity-card__icon">✓ / ✕</span>
+          <strong>문장 오류 찾기</strong>
+          <small>문장이 맞는지 틀린지 판단하고 바르게 고쳐 봐요.</small>
         </button>
       </div>
     </div>
@@ -804,6 +943,39 @@
     <div class="answer-feedback" id="ing-feedback" role="status" aria-live="assertive"><strong></strong><span></span></div>
   </main>
 
+  <main class="screen game" id="sentence-error-screen" aria-label="문장 오류 찾기 게임">
+    <button class="choice sentence-error-choice sentence-error-choice--correct" type="button" data-sentence-error-answer="correct" aria-label="2번, 맞는 문장, Correct">
+      <span class="sentence-error-word" aria-hidden="true"><span>맞</span><span>음</span></span>
+      <kbd class="sentence-error-key" aria-hidden="true">2</kbd>
+    </button>
+    <button class="choice sentence-error-choice sentence-error-choice--incorrect" type="button" data-sentence-error-answer="incorrect" aria-label="1번, 틀린 문장, Incorrect">
+      <span class="sentence-error-word" aria-hidden="true"><span>틀</span><span>림</span></span>
+      <kbd class="sentence-error-key" aria-hidden="true">1</kbd>
+    </button>
+    <div class="topbar">
+      <div class="topbar__actions">
+        <button class="icon-button" type="button" data-change-player><span class="button-label--wide">← 이름 바꾸기</span><span class="button-label--short">← 이름</span></button>
+        <button class="icon-button study-toggle" type="button" data-study-toggle aria-pressed="false">학습 모드</button>
+      </div>
+      <div class="score-group">
+        <div class="pill"><span class="pill__label" id="sentence-error-score-label">연속</span><span class="pill__value" id="sentence-error-score">0</span></div>
+        <div class="pill"><span class="pill__label" id="sentence-error-best-label">최고</span><span class="pill__value" id="sentence-error-best">0</span></div>
+      </div>
+    </div>
+    <div class="game-timer" id="sentence-error-timer" role="timer" aria-live="off">
+      <div class="game-timer__meta"><span>남은 시간</span><strong id="sentence-error-timer-label">7.0초</strong></div>
+      <div class="game-timer__track"><span class="game-timer__bar" id="sentence-error-timer-bar"></span></div>
+    </div>
+    <div class="sentence-error-divider" aria-hidden="true"></div>
+    <div class="center-card sentence-error-card" id="sentence-error-sentence" aria-live="assertive"></div>
+    <div class="sentence-error-empty" id="sentence-error-empty" hidden>
+      <p>등록된 문장 오류 문제가 없습니다.</p>
+      <button class="secondary-button" id="sentence-error-empty-back" type="button">활동 선택으로</button>
+    </div>
+    <div class="flash" id="sentence-error-flash" aria-hidden="true"></div>
+    <div class="answer-feedback" id="sentence-error-feedback" role="status" aria-live="assertive"><strong></strong><span></span></div>
+  </main>
+
   <div class="streak-celebration" id="streak-celebration" role="status" aria-live="polite" aria-atomic="true">
     <div class="streak-celebration__message">
       <strong id="streak-celebration-score"></strong>
@@ -828,7 +1000,10 @@
     <div class="modal__card">
       <div class="study-explanation-toolbar">
         <strong id="study-explanation-title">오답 해설</strong>
-        <button class="secondary-button" type="button" data-change-player aria-keyshortcuts="C">플레이어 바꾸기<kbd class="button-shortcut" aria-hidden="true">C</kbd></button>
+        <div class="study-explanation-actions">
+          <button class="secondary-button" type="button" data-change-player aria-keyshortcuts="C">플레이어 바꾸기<kbd class="button-shortcut" aria-hidden="true">C</kbd></button>
+          <button class="primary-button" type="button" data-restart-activity aria-keyshortcuts="R">다시 시작<kbd class="button-shortcut" aria-hidden="true">R</kbd></button>
+        </div>
       </div>
       <div class="study-explanation-scroll">
         <div class="modal__message" id="study-explanation-message"></div>
@@ -863,6 +1038,7 @@
   </section>
 
   <script src="ing-data.js"></script>
+  <script src="sentence-error-data.js"></script>
   <script>
     const PLAYER_NAMES = [
       '박범준', '배승우', '윤해든', '이룩', '이수민', '이우진', '이은수', '이지우',
@@ -889,8 +1065,10 @@
     const ACTIVITY_LABELS = {
       prime: '소수 판별',
       grammar: '동사의 목적어',
-      ing: '동명사 / 현재분사'
+      ing: '동명사 / 현재분사',
+      'sentence-error': '문장 오류 찾기'
     };
+    const STUDY_ACTIVITY_KEYS = new Set(['grammar', 'ing', 'sentence-error']);
     const ROUND_OVER_TITLES = [
       '아쉬워요!',
       '잘 하지~',
@@ -912,11 +1090,20 @@
     const ING_QUESTIONS = Array.isArray(window.ING_ITEMS) ? window.ING_ITEMS : [];
     const ING_COOLDOWN = 3;
     const ING_TIME_LIMIT = 7000;
+    const SENTENCE_ERROR_TIME_LIMIT = 7000;
+    const SENTENCE_ERROR_COOLDOWN = 4;
+    const SENTENCE_ERROR_VARIANTS = new Set(['incorrect', 'correct']);
+    const SENTENCE_ERROR_DIFF_TYPES = new Set(['same', 'delete', 'insert']);
+    const SENTENCE_ERROR_ITEMS = validateSentenceErrorItems(window.SENTENCE_ERROR_ITEMS);
     // 복습 차례가 충돌해 건너뛸 때도 마지막 55라운드 간격까지만 사용한다.
     const STUDY_REVIEW_INTERVALS = [1, 2, 3, 5, 8, 13, 21, 34, 55];
     const ING_ANSWER_LABELS = {
       gerund: '동명사 (Gerund)',
       participle: '현재분사 (Participle)'
+    };
+    const SENTENCE_ERROR_ANSWER_LABELS = {
+      correct: '맞는 문장',
+      incorrect: '틀린 문장'
     };
 
     const screens = [...document.querySelectorAll('.screen')];
@@ -926,6 +1113,8 @@
     const primeScreen = document.querySelector('#prime-screen');
     const grammarScreen = document.querySelector('#grammar-screen');
     const ingScreen = document.querySelector('#ing-screen');
+    const sentenceErrorScreen = document.querySelector('#sentence-error-screen');
+    const sentenceErrorStartButton = document.querySelector('#sentence-error-start');
     const nameForm = document.querySelector('#name-form');
     const nameSelect = document.querySelector('#name-select');
     const customNameInput = document.querySelector('#custom-name');
@@ -936,19 +1125,27 @@
     const numberEl = document.querySelector('#number');
     const verbEl = document.querySelector('#verb');
     const ingSentenceEl = document.querySelector('#ing-sentence');
+    const sentenceErrorSentenceEl = document.querySelector('#sentence-error-sentence');
+    const sentenceErrorEmptyEl = document.querySelector('#sentence-error-empty');
+    const sentenceErrorEmptyBackButton = document.querySelector('#sentence-error-empty-back');
     const primeScoreEl = document.querySelector('#prime-score');
     const grammarScoreEl = document.querySelector('#grammar-score');
     const ingScoreEl = document.querySelector('#ing-score');
+    const sentenceErrorScoreEl = document.querySelector('#sentence-error-score');
     const grammarScoreLabelEl = document.querySelector('#grammar-score-label');
     const ingScoreLabelEl = document.querySelector('#ing-score-label');
+    const sentenceErrorScoreLabelEl = document.querySelector('#sentence-error-score-label');
     const primeBestEl = document.querySelector('#prime-best');
     const grammarBestEl = document.querySelector('#grammar-best');
     const ingBestEl = document.querySelector('#ing-best');
+    const sentenceErrorBestEl = document.querySelector('#sentence-error-best');
     const grammarBestLabelEl = document.querySelector('#grammar-best-label');
     const ingBestLabelEl = document.querySelector('#ing-best-label');
+    const sentenceErrorBestLabelEl = document.querySelector('#sentence-error-best-label');
     const primeFlashEl = document.querySelector('#prime-flash');
     const grammarFlashEl = document.querySelector('#grammar-flash');
     const ingFlashEl = document.querySelector('#ing-flash');
+    const sentenceErrorFlashEl = document.querySelector('#sentence-error-flash');
     const primeTimerEl = document.querySelector('#prime-timer');
     const primeTimerLabelEl = document.querySelector('#prime-timer-label');
     const primeTimerBarEl = document.querySelector('#prime-timer-bar');
@@ -958,9 +1155,13 @@
     const ingTimerEl = document.querySelector('#ing-timer');
     const ingTimerLabelEl = document.querySelector('#ing-timer-label');
     const ingTimerBarEl = document.querySelector('#ing-timer-bar');
+    const sentenceErrorTimerEl = document.querySelector('#sentence-error-timer');
+    const sentenceErrorTimerLabelEl = document.querySelector('#sentence-error-timer-label');
+    const sentenceErrorTimerBarEl = document.querySelector('#sentence-error-timer-bar');
     const primeFeedbackEl = document.querySelector('#prime-feedback');
     const grammarFeedbackEl = document.querySelector('#grammar-feedback');
     const ingFeedbackEl = document.querySelector('#ing-feedback');
+    const sentenceErrorFeedbackEl = document.querySelector('#sentence-error-feedback');
     const streakCelebrationEl = document.querySelector('#streak-celebration');
     const streakCelebrationScoreEl = document.querySelector('#streak-celebration-score');
     const streakCelebrationParticlesEl = document.querySelector('#streak-celebration-particles');
@@ -983,6 +1184,34 @@
     const restartButton = document.querySelector('#restart');
     const changeResultPlayerButton = document.querySelector('#change-result-player');
     const resetLeaderboardButton = document.querySelector('#reset-leaderboard');
+    const ACTIVITY_SCREENS = {
+      prime: primeScreen,
+      grammar: grammarScreen,
+      ing: ingScreen,
+      'sentence-error': sentenceErrorScreen
+    };
+    const ACTIVITY_FEEDBACK = {
+      prime: primeFeedbackEl,
+      grammar: grammarFeedbackEl,
+      ing: ingFeedbackEl,
+      'sentence-error': sentenceErrorFeedbackEl
+    };
+    const ACTIVITY_ANSWER_ATTRIBUTES = {
+      prime: 'data-prime-answer',
+      grammar: 'data-grammar-answer',
+      ing: 'data-ing-answer',
+      'sentence-error': 'data-sentence-error-answer'
+    };
+    const ACTIVITY_SCORE_UI = {
+      grammar: { score: grammarScoreEl, scoreLabel: grammarScoreLabelEl, best: grammarBestEl, bestLabel: grammarBestLabelEl },
+      ing: { score: ingScoreEl, scoreLabel: ingScoreLabelEl, best: ingBestEl, bestLabel: ingBestLabelEl },
+      'sentence-error': {
+        score: sentenceErrorScoreEl,
+        scoreLabel: sentenceErrorScoreLabelEl,
+        best: sentenceErrorBestEl,
+        bestLabel: sentenceErrorBestLabelEl
+      }
+    };
 
     let playerName = '';
     let activeActivity = '';
@@ -990,8 +1219,13 @@
     let currentNumber = 2;
     let currentVerb = VERBS[0];
     let currentIngItem = ING_QUESTIONS[0];
+    let currentSentenceErrorItem = SENTENCE_ERROR_ITEMS[0];
+    let currentSentenceErrorVariant = 'incorrect';
     let recentVerbs = [];
     let recentIngIndexes = [];
+    let recentSentenceErrorIds = [];
+    let recentSentenceErrorVerdicts = [];
+    const sentenceErrorLastVariantById = new Map();
     let currentIngIndex = 0;
     let studyMode = false;
     let studyState = { rounds: 0, reviews: {} };
@@ -1013,11 +1247,130 @@
     let ingTickIntervalId = null;
     let ingTimerAnimationId = null;
     let ingDeadline = 0;
+    let sentenceErrorTimeoutId = null;
+    let sentenceErrorTickIntervalId = null;
+    let sentenceErrorTimerAnimationId = null;
+    let sentenceErrorDeadline = 0;
     let streakCelebrationTimeoutId = null;
     const suppressedUsageNotes = new Set();
 
     function showScreen(screen) {
       screens.forEach(item => item.classList.toggle('active', item === screen));
+    }
+
+    function tokenizeSentenceForDiff(sentence) {
+      return sentence.match(/\s+|[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*|[^\s\p{L}\p{N}]/gu) || [];
+    }
+
+    function mergeSentenceDiffSegments(segments) {
+      return segments.reduce((merged, segment) => {
+        const previous = merged.at(-1);
+        if (previous?.type === segment.type) previous.text += segment.text;
+        else merged.push({ type: segment.type, text: segment.text });
+        return merged;
+      }, []);
+    }
+
+    function generateSentenceDiff(incorrect, correct) {
+      const before = tokenizeSentenceForDiff(incorrect);
+      const after = tokenizeSentenceForDiff(correct);
+      const table = Array.from({ length: before.length + 1 }, () => Array(after.length + 1).fill(0));
+
+      for (let left = before.length - 1; left >= 0; left -= 1) {
+        for (let right = after.length - 1; right >= 0; right -= 1) {
+          table[left][right] = before[left] === after[right]
+            ? table[left + 1][right + 1] + 1
+            : Math.max(table[left + 1][right], table[left][right + 1]);
+        }
+      }
+
+      const segments = [];
+      let left = 0;
+      let right = 0;
+      while (left < before.length && right < after.length) {
+        if (before[left] === after[right]) {
+          segments.push({ type: 'same', text: before[left] });
+          left += 1;
+          right += 1;
+        } else if (table[left + 1][right] >= table[left][right + 1]) {
+          segments.push({ type: 'delete', text: before[left] });
+          left += 1;
+        } else {
+          segments.push({ type: 'insert', text: after[right] });
+          right += 1;
+        }
+      }
+      while (left < before.length) segments.push({ type: 'delete', text: before[left++] });
+      while (right < after.length) segments.push({ type: 'insert', text: after[right++] });
+      return mergeSentenceDiffSegments(segments);
+    }
+
+    function validateSentenceErrorItems(rawItems) {
+      if (!Array.isArray(rawItems)) {
+        console.warn('[문장 오류 찾기] SENTENCE_ERROR_ITEMS 배열을 찾을 수 없습니다.');
+        return [];
+      }
+
+      const seenIds = new Set();
+      const validItems = [];
+      rawItems.forEach((rawItem, index) => {
+        const id = typeof rawItem?.id === 'string' ? rawItem.id.trim() : '';
+        const incorrect = typeof rawItem?.incorrect === 'string' ? rawItem.incorrect.trim() : '';
+        const correct = typeof rawItem?.correct === 'string' ? rawItem.correct.trim() : '';
+        const rule = typeof rawItem?.rule === 'string' ? rawItem.rule.trim() : '';
+        const explanation = typeof rawItem?.explanation === 'string' ? rawItem.explanation.trim() : '';
+        const warningPrefix = `[문장 오류 찾기] ${id || `항목 ${index + 1}`}`;
+
+        if (!id || seenIds.has(id)) {
+          console.warn(`${warningPrefix}: 비어 있거나 중복된 ID라서 제외했습니다.`);
+          return;
+        }
+        seenIds.add(id);
+        if (!incorrect || !correct || incorrect === correct || !rule || !explanation) {
+          console.warn(`${warningPrefix}: 필수 문장·규칙·설명이 없거나 두 문장이 같아서 제외했습니다.`);
+          return;
+        }
+
+        let diff = null;
+        if (rawItem.diff != null) {
+          if (!Array.isArray(rawItem.diff) || rawItem.diff.some(segment => (
+            !segment || !SENTENCE_ERROR_DIFF_TYPES.has(segment.type) || typeof segment.text !== 'string'
+          ))) {
+            console.warn(`${warningPrefix}: 지원하지 않는 diff 형식이라서 항목을 제외했습니다.`);
+            return;
+          }
+          const explicitDiff = rawItem.diff.map(segment => ({ type: segment.type, text: segment.text }));
+          const rebuiltIncorrect = explicitDiff
+            .filter(segment => segment.type !== 'insert')
+            .map(segment => segment.text)
+            .join('');
+          const rebuiltCorrect = explicitDiff
+            .filter(segment => segment.type !== 'delete')
+            .map(segment => segment.text)
+            .join('');
+          if (rebuiltIncorrect === incorrect && rebuiltCorrect === correct) diff = explicitDiff;
+          else console.warn(`${warningPrefix}: 명시적 diff가 문장을 재현하지 못해 자동 diff로 대체했습니다.`);
+        }
+
+        const variants = Array.isArray(rawItem.variants)
+          ? [...new Set(rawItem.variants.filter(variant => SENTENCE_ERROR_VARIANTS.has(variant)))]
+          : ['incorrect', 'correct'];
+        validItems.push({
+          id,
+          incorrect,
+          correct,
+          rule,
+          explanation,
+          translation: typeof rawItem.translation === 'string' ? rawItem.translation.trim() : '',
+          category: typeof rawItem.category === 'string' ? rawItem.category : '',
+          level: typeof rawItem.level === 'string' ? rawItem.level : '',
+          tags: Array.isArray(rawItem.tags) ? rawItem.tags.filter(tag => typeof tag === 'string') : [],
+          weight: Number.isFinite(Number(rawItem.weight)) && Number(rawItem.weight) > 0 ? Number(rawItem.weight) : 1,
+          variants: variants.length ? variants : ['incorrect', 'correct'],
+          diff: diff || generateSentenceDiff(incorrect, correct)
+        });
+      });
+      return validItems;
     }
 
     function populateNames() {
@@ -1090,6 +1443,7 @@
     function getStudyItemIds(activity = activeActivity) {
       if (activity === 'grammar') return new Set(VERBS.map(item => item.verb));
       if (activity === 'ing') return new Set(ING_QUESTIONS.map((item, index) => String(index)));
+      if (activity === 'sentence-error') return new Set(SENTENCE_ERROR_ITEMS.map(item => item.id));
       return new Set();
     }
 
@@ -1122,7 +1476,7 @@
     }
 
     function saveStudyState() {
-      if (!studyMode || activeActivity === 'prime' || !playerName) return;
+      if (!studyMode || !STUDY_ACTIVITY_KEYS.has(activeActivity) || !playerName) return;
       localStorage.setItem(getStudyStorageKey(), JSON.stringify(studyState));
     }
 
@@ -1131,9 +1485,10 @@
     }
 
     function updateStudyModeUI() {
-      const isEnglishActivity = activeActivity === 'grammar' || activeActivity === 'ing';
+      const isEnglishActivity = STUDY_ACTIVITY_KEYS.has(activeActivity);
       grammarScreen.classList.toggle('study-mode', studyMode && activeActivity === 'grammar');
       ingScreen.classList.toggle('study-mode', studyMode && activeActivity === 'ing');
+      sentenceErrorScreen.classList.toggle('study-mode', studyMode && activeActivity === 'sentence-error');
       document.querySelectorAll('[data-study-toggle]').forEach(button => {
         button.setAttribute('aria-pressed', String(studyMode));
         button.textContent = studyMode ? '학습 종료' : '학습 모드';
@@ -1141,20 +1496,29 @@
       studyModeInput.checked = studyMode;
       if (!isEnglishActivity) return;
 
-      const scoreLabel = activeActivity === 'grammar' ? grammarScoreLabelEl : ingScoreLabelEl;
-      const bestLabel = activeActivity === 'grammar' ? grammarBestLabelEl : ingBestLabelEl;
-      const bestValue = activeActivity === 'grammar' ? grammarBestEl : ingBestEl;
-      scoreLabel.textContent = studyMode ? '학습' : '연속';
-      bestLabel.textContent = studyMode ? '복습 대기' : '최고';
-      bestValue.textContent = studyMode ? getPendingStudyCount() : getPlayerBest(activeActivity);
+      const ui = ACTIVITY_SCORE_UI[activeActivity];
+      ui.scoreLabel.textContent = studyMode ? '학습' : '연속';
+      ui.bestLabel.textContent = studyMode ? '복습 대기' : '최고';
+      ui.best.textContent = studyMode ? getPendingStudyCount() : getPlayerBest(activeActivity);
     }
 
     function updateWelcomeModeCopy() {
-      const isStudySelection = activeActivity !== 'prime' && studyModeInput.checked;
+      const isStudySelection = STUDY_ACTIVITY_KEYS.has(activeActivity) && studyModeInput.checked;
       selectedActivityLabel.textContent = `${ACTIVITY_LABELS[activeActivity]}${isStudySelection ? ' · 학습 모드' : ''}`;
       welcomeSubtitleEl.textContent = isStudySelection
         ? '시간 제한 없이 진행하며, 틀린 문제의 복습 일정은 플레이어별로 이 기기에 저장됩니다.'
         : '이름별 최고 연속 정답 기록이 이 기기의 리더보드에 저장됩니다.';
+    }
+
+    function pickWeightedItem(items) {
+      if (!items.length) return null;
+      const total = items.reduce((sum, item) => sum + (Number(item.weight) > 0 ? Number(item.weight) : 1), 0);
+      let target = Math.random() * total;
+      for (const item of items) {
+        target -= Number(item.weight) > 0 ? Number(item.weight) : 1;
+        if (target <= 0) return item;
+      }
+      return items.at(-1);
     }
 
     function getStudySelection(items, getId, recentIds) {
@@ -1183,7 +1547,7 @@
         ? available
         : items.filter(item => !studyState.reviews[getId(item)]);
       const candidates = fallback.length ? fallback : items;
-      const item = candidates[Math.floor(Math.random() * candidates.length)];
+      const item = pickWeightedItem(candidates);
       const id = getId(item);
       return { item, id, isReview: Boolean(studyState.reviews[id]) };
     }
@@ -1225,8 +1589,9 @@
       return { nextInterval, mastered, correctStreak };
     }
 
-    function showStudyExplanation(content) {
-      studyExplanationMessageEl.classList.toggle('has-ing-explanation', typeof content !== 'string');
+    function showStudyExplanation(content, title = '오답 해설') {
+      document.querySelector('#study-explanation-title').textContent = title;
+      studyExplanationMessageEl.classList.toggle('has-rich-explanation', typeof content !== 'string');
       studyExplanationMessageEl.replaceChildren();
       if (typeof content === 'string') {
         const explanation = document.createElement('div');
@@ -1367,6 +1732,7 @@
       primeFlashEl.className = 'flash';
       grammarFlashEl.className = 'flash';
       ingFlashEl.className = 'flash';
+      sentenceErrorFlashEl.className = 'flash';
     }
 
     function stopPrimeTimer() {
@@ -1636,6 +2002,111 @@
       return wrapper;
     }
 
+    function appendSentenceDiff(container, item, version) {
+      item.diff.forEach(segment => {
+        if (version === 'incorrect' && segment.type === 'insert') return;
+        if (version === 'correct' && segment.type === 'delete') return;
+        if (segment.type === 'delete') {
+          const deleted = document.createElement('del');
+          deleted.className = 'sentence-diff__delete';
+          deleted.textContent = segment.text;
+          container.append(deleted);
+          return;
+        }
+        if (segment.type === 'insert') {
+          const inserted = document.createElement('ins');
+          inserted.className = 'sentence-diff__insert';
+          inserted.textContent = segment.text;
+          container.append(inserted);
+          return;
+        }
+        container.append(document.createTextNode(segment.text));
+      });
+    }
+
+    function getSentenceChangeSummaries(item) {
+      const summaries = [];
+      let deleted = '';
+      let inserted = '';
+      const flush = () => {
+        const before = deleted.trim();
+        const after = inserted.trim();
+        if (before && after) summaries.push(`${before} → ${after}`);
+        else if (before) summaries.push(`${before} 삭제`);
+        else if (after) summaries.push(`${after} 추가`);
+        deleted = '';
+        inserted = '';
+      };
+
+      item.diff.forEach(segment => {
+        if (segment.type === 'same') {
+          if (segment.text.trim()) flush();
+          return;
+        }
+        if (segment.type === 'delete') deleted += segment.text;
+        if (segment.type === 'insert') inserted += segment.text;
+      });
+      flush();
+      return summaries;
+    }
+
+    function createSentenceErrorSection(labelText, className = 'sentence-error-result__text') {
+      const section = document.createElement('div');
+      section.className = 'sentence-error-result__section';
+      const label = document.createElement('span');
+      label.className = 'sentence-error-result__label';
+      label.textContent = labelText;
+      const content = document.createElement('div');
+      content.className = className;
+      section.append(label, content);
+      return { section, content };
+    }
+
+    function createSentenceErrorExplanation(item, presentedVariant, timedOut = false) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'sentence-error-result';
+
+      const answer = document.createElement('div');
+      answer.className = 'sentence-error-result__answer';
+      answer.textContent = `${timedOut ? '시간 초과 · ' : ''}정답: ${SENTENCE_ERROR_ANSWER_LABELS[presentedVariant]}`;
+      wrapper.append(answer);
+
+      const incorrect = createSentenceErrorSection('틀린 문장', 'sentence-diff');
+      appendSentenceDiff(incorrect.content, item, 'incorrect');
+      wrapper.append(incorrect.section);
+
+      const correct = createSentenceErrorSection('맞는 문장', 'sentence-diff');
+      appendSentenceDiff(correct.content, item, 'correct');
+      wrapper.append(correct.section);
+
+      const summaries = getSentenceChangeSummaries(item);
+      if (summaries.length) {
+        const changes = createSentenceErrorSection('바뀐 부분', 'sentence-change-list');
+        summaries.forEach(summary => {
+          const chip = document.createElement('span');
+          chip.className = 'sentence-change-chip';
+          chip.textContent = summary;
+          changes.content.append(chip);
+        });
+        wrapper.append(changes.section);
+      }
+
+      const rule = createSentenceErrorSection('규칙');
+      rule.content.textContent = item.rule;
+      wrapper.append(rule.section);
+
+      const explanation = createSentenceErrorSection('이유');
+      explanation.content.textContent = item.explanation;
+      wrapper.append(explanation.section);
+
+      if (item.translation) {
+        const translation = createSentenceErrorSection('해석');
+        translation.content.textContent = item.translation;
+        wrapper.append(translation.section);
+      }
+      return wrapper;
+    }
+
     function handleIngTimeout() {
       if (!acceptingInput || activeActivity !== 'ing') return;
       acceptingInput = false;
@@ -1659,20 +2130,73 @@
       ingTimerAnimationId = window.requestAnimationFrame(updateIngTimer);
     }
 
+    function stopSentenceErrorTimer() {
+      window.clearTimeout(sentenceErrorTimeoutId);
+      window.clearInterval(sentenceErrorTickIntervalId);
+      window.cancelAnimationFrame(sentenceErrorTimerAnimationId);
+      sentenceErrorTimeoutId = null;
+      sentenceErrorTickIntervalId = null;
+      sentenceErrorTimerAnimationId = null;
+    }
+
+    function updateSentenceErrorTimer() {
+      const remaining = Math.max(0, sentenceErrorDeadline - performance.now());
+      const ratio = remaining / SENTENCE_ERROR_TIME_LIMIT;
+      sentenceErrorTimerBarEl.style.transform = `scaleX(${ratio})`;
+      sentenceErrorTimerLabelEl.textContent = `${(remaining / 1000).toFixed(1)}초`;
+      sentenceErrorTimerEl.classList.toggle('urgent', ratio <= .34);
+      if (remaining > 0) sentenceErrorTimerAnimationId = window.requestAnimationFrame(updateSentenceErrorTimer);
+    }
+
+    function handleSentenceErrorTimeout() {
+      if (!acceptingInput || activeActivity !== 'sentence-error') return;
+      acceptingInput = false;
+      stopSentenceErrorTimer();
+      playFeedbackSound('wrong');
+      showFlash(sentenceErrorFlashEl, 'wrong');
+      const expected = currentSentenceErrorVariant === 'correct' ? 'correct' : 'incorrect';
+      showAnswerFeedback(
+        'sentence-error',
+        'wrong',
+        '✕ 시간 초과!',
+        `정답: ${SENTENCE_ERROR_ANSWER_LABELS[expected]}`,
+        null,
+        expected
+      );
+      finishRound(createSentenceErrorExplanation(currentSentenceErrorItem, currentSentenceErrorVariant, true));
+    }
+
+    function startSentenceErrorTimer() {
+      stopSentenceErrorTimer();
+      sentenceErrorDeadline = performance.now() + SENTENCE_ERROR_TIME_LIMIT;
+      sentenceErrorTimerEl.classList.remove('urgent');
+      sentenceErrorTimerBarEl.style.transform = 'scaleX(1)';
+      sentenceErrorTimerLabelEl.textContent = `${(SENTENCE_ERROR_TIME_LIMIT / 1000).toFixed(1)}초`;
+      sentenceErrorTimeoutId = window.setTimeout(handleSentenceErrorTimeout, SENTENCE_ERROR_TIME_LIMIT);
+      sentenceErrorTickIntervalId = window.setInterval(() => {
+        if (performance.now() < sentenceErrorDeadline - 100) playFeedbackSound('tick');
+      }, 1000);
+      sentenceErrorTimerAnimationId = window.requestAnimationFrame(updateSentenceErrorTimer);
+    }
+
     function clearAnswerFeedback(activity) {
-      const screen = activity === 'prime' ? primeScreen : activity === 'grammar' ? grammarScreen : ingScreen;
-      const feedback = activity === 'prime' ? primeFeedbackEl : activity === 'grammar' ? grammarFeedbackEl : ingFeedbackEl;
+      const screen = ACTIVITY_SCREENS[activity];
+      const feedback = ACTIVITY_FEEDBACK[activity];
+      if (!screen || !feedback) return;
       screen.querySelectorAll('.choice').forEach(button => button.classList.remove('answer-correct', 'answer-wrong'));
       feedback.className = 'answer-feedback';
     }
 
-    function showAnswerFeedback(activity, type, title, detail, answer) {
+    function showAnswerFeedback(activity, type, title, detail, answer, correctAnswer = '') {
       clearAnswerFeedback(activity);
-      const screen = activity === 'prime' ? primeScreen : activity === 'grammar' ? grammarScreen : ingScreen;
-      const feedback = activity === 'prime' ? primeFeedbackEl : activity === 'grammar' ? grammarFeedbackEl : ingFeedbackEl;
-      const attribute = activity === 'prime' ? 'data-prime-answer' : activity === 'grammar' ? 'data-grammar-answer' : 'data-ing-answer';
+      const screen = ACTIVITY_SCREENS[activity];
+      const feedback = ACTIVITY_FEEDBACK[activity];
+      const attribute = ACTIVITY_ANSWER_ATTRIBUTES[activity];
+      if (!screen || !feedback || !attribute) return;
       const selectedButton = answer ? screen.querySelector(`[${attribute}="${answer}"]`) : null;
       if (selectedButton) selectedButton.classList.add(type === 'correct' ? 'answer-correct' : 'answer-wrong');
+      const correctButton = correctAnswer ? screen.querySelector(`[${attribute}="${correctAnswer}"]`) : null;
+      if (type === 'wrong' && correctButton && correctButton !== selectedButton) correctButton.classList.add('answer-correct');
       feedback.querySelector('strong').textContent = title;
       feedback.querySelector('span').textContent = detail;
       void feedback.offsetWidth;
@@ -1756,7 +2280,66 @@
       animateCard(ingSentenceEl);
     }
 
+    function getForcedSentenceErrorVerdict() {
+      if (recentSentenceErrorVerdicts.length < 3) return '';
+      const lastThree = recentSentenceErrorVerdicts.slice(-3);
+      return lastThree.every(verdict => verdict === lastThree[0])
+        ? lastThree[0] === 'correct' ? 'incorrect' : 'correct'
+        : '';
+    }
+
+    function pickSentenceErrorVariant(item, isReview) {
+      const forcedVerdict = getForcedSentenceErrorVerdict();
+      if (forcedVerdict && item.variants.includes(forcedVerdict)) return forcedVerdict;
+      const previousVariant = sentenceErrorLastVariantById.get(item.id);
+      const oppositeVariant = previousVariant === 'correct' ? 'incorrect' : 'correct';
+      if (isReview && previousVariant && item.variants.includes(oppositeVariant)) return oppositeVariant;
+      return item.variants[Math.floor(Math.random() * item.variants.length)];
+    }
+
+    function nextSentenceErrorItem() {
+      if (!SENTENCE_ERROR_ITEMS.length) return false;
+      const forcedVerdict = getForcedSentenceErrorVerdict();
+      let selection;
+
+      if (studyMode) {
+        selection = getStudySelection(
+          SENTENCE_ERROR_ITEMS,
+          item => item.id,
+          recentSentenceErrorIds
+        );
+      } else {
+        let candidates = SENTENCE_ERROR_ITEMS.filter(item => !recentSentenceErrorIds.includes(item.id));
+        if (!candidates.length) candidates = SENTENCE_ERROR_ITEMS;
+        if (forcedVerdict) {
+          const balancedCandidates = candidates.filter(item => item.variants.includes(forcedVerdict));
+          if (balancedCandidates.length) candidates = balancedCandidates;
+        }
+        const item = pickWeightedItem(candidates);
+        selection = { item, id: item.id, isReview: false };
+      }
+
+      currentSentenceErrorItem = selection.item;
+      currentStudyItemId = studyMode ? selection.id : '';
+      currentStudyItemIsReview = studyMode && selection.isReview;
+      currentSentenceErrorVariant = pickSentenceErrorVariant(currentSentenceErrorItem, currentStudyItemIsReview);
+      sentenceErrorLastVariantById.set(currentSentenceErrorItem.id, currentSentenceErrorVariant);
+      recentSentenceErrorIds.push(currentSentenceErrorItem.id);
+      if (recentSentenceErrorIds.length > SENTENCE_ERROR_COOLDOWN) recentSentenceErrorIds.shift();
+      recentSentenceErrorVerdicts.push(currentSentenceErrorVariant);
+      if (recentSentenceErrorVerdicts.length > 3) recentSentenceErrorVerdicts.shift();
+      sentenceErrorSentenceEl.textContent = currentSentenceErrorItem[currentSentenceErrorVariant];
+      animateCard(sentenceErrorSentenceEl);
+      return true;
+    }
+
     function startActivity(activity) {
+      const screen = ACTIVITY_SCREENS[activity];
+      if (!screen) {
+        console.warn(`[Quick Tap] 알 수 없는 활동: ${activity}`);
+        showScreen(menuScreen);
+        return;
+      }
       activeActivity = activity;
       score = 0;
       acceptingInput = false;
@@ -1768,10 +2351,12 @@
       stopPrimeTimer();
       stopGrammarTimer();
       stopIngTimer();
+      stopSentenceErrorTimer();
       clearAnswerFeedback(activity);
+      sentenceErrorEmptyEl.hidden = true;
       currentStudyItemId = '';
       currentStudyItemIsReview = false;
-      if (studyMode && activity !== 'prime') studyState = loadStudyState();
+      if (studyMode && STUDY_ACTIVITY_KEYS.has(activity)) studyState = loadStudyState();
       updateStudyModeUI();
 
       if (activity === 'prime') {
@@ -1785,17 +2370,30 @@
         grammarBestEl.textContent = studyMode ? getPendingStudyCount() : getPlayerBest('grammar');
         showScreen(grammarScreen);
         nextVerb();
-      } else {
+      } else if (activity === 'ing') {
         ingScoreEl.textContent = '0';
         ingBestEl.textContent = studyMode ? getPendingStudyCount() : getPlayerBest('ing');
         showScreen(ingScreen);
         nextIngItem();
+      } else if (activity === 'sentence-error') {
+        sentenceErrorScoreEl.textContent = '0';
+        sentenceErrorBestEl.textContent = studyMode ? getPendingStudyCount() : getPlayerBest('sentence-error');
+        showScreen(sentenceErrorScreen);
+        if (!nextSentenceErrorItem()) {
+          sentenceErrorEmptyEl.hidden = false;
+          sentenceErrorStartButton.disabled = true;
+          return;
+        }
       }
       window.setTimeout(() => {
         acceptingInput = true;
         if (activity === 'prime') startPrimeTimer();
         if (activity === 'grammar' && !studyMode) startGrammarTimer();
         if (activity === 'ing' && !studyMode) startIngTimer();
+        if (activity === 'sentence-error' && !studyMode) startSentenceErrorTimer();
+        if (document.activeElement?.closest('.modal')) {
+          screen.querySelector('.choice')?.focus({ preventScroll: true });
+        }
       }, 160);
     }
 
@@ -1804,18 +2402,23 @@
       clearAnswerFeedback(activeActivity);
       if (activeActivity === 'grammar') nextVerb();
       if (activeActivity === 'ing') nextIngItem();
+      if (activeActivity === 'sentence-error') nextSentenceErrorItem();
       window.setTimeout(() => {
         acceptingInput = true;
+        if (activeActivity === 'sentence-error' && !studyMode) startSentenceErrorTimer();
+        ACTIVITY_SCREENS[activeActivity]?.querySelector('.choice')?.focus({ preventScroll: true });
       }, 120);
     }
 
     function toggleStudyMode() {
-      if (!acceptingInput || (activeActivity !== 'grammar' && activeActivity !== 'ing')) return;
+      if (!acceptingInput || !STUDY_ACTIVITY_KEYS.has(activeActivity)) return;
       studyMode = !studyMode;
       studyModeInput.checked = studyMode;
       score = 0;
       recentVerbs = [];
       recentIngIndexes = [];
+      recentSentenceErrorIds = [];
+      recentSentenceErrorVerdicts = [];
       startActivity(activeActivity);
     }
 
@@ -1831,11 +2434,12 @@
       stopPrimeTimer();
       stopGrammarTimer();
       stopIngTimer();
+      stopSentenceErrorTimer();
       const best = recordScore(activeActivity, score);
       resultTitleEl.textContent = getRandomRoundOverTitle();
       finalScoreEl.textContent = score;
       finalBestEl.textContent = best;
-      resultMessageEl.classList.toggle('has-ing-explanation', typeof message !== 'string');
+      resultMessageEl.classList.toggle('has-rich-explanation', typeof message !== 'string');
       resultMessageEl.replaceChildren();
       if (typeof message === 'string') resultMessageEl.textContent = message;
       else resultMessageEl.append(message);
@@ -2001,11 +2605,96 @@
       finishRound(createIngResultExplanation(currentIngItem));
     }
 
+    function chooseSentenceError(answer) {
+      if (!acceptingInput || activeActivity !== 'sentence-error' || !currentSentenceErrorItem) return;
+      acceptingInput = false;
+      stopSentenceErrorTimer();
+      const expected = currentSentenceErrorVariant;
+
+      if (answer === expected) {
+        const studyResult = studyMode ? recordStudyAnswer(currentStudyItemId, true) : null;
+        playFeedbackSound('correct');
+        score += 1;
+        sentenceErrorScoreEl.textContent = score;
+        sentenceErrorBestEl.textContent = studyMode
+          ? getPendingStudyCount()
+          : Math.max(score, getPlayerBest('sentence-error'));
+        showFlash(sentenceErrorFlashEl, 'correct');
+        const studyDetail = studyResult?.mastered
+          ? '2회 연속 정답! 오답 목록에서 제외했어요.'
+          : studyResult?.correctStreak
+            ? `${studyResult.correctStreak}회 연속 정답`
+            : expected === 'correct' ? '그대로 쓰면 됩니다.' : '바르게 고쳐 볼게요.';
+        showAnswerFeedback(
+          'sentence-error',
+          'correct',
+          expected === 'correct' ? '✓ 맞는 문장입니다.' : '✓ 오류를 찾았습니다.',
+          studyDetail,
+          answer
+        );
+        if (!studyMode) celebrateStreak(score);
+        const nextRoundDelay = studyMode ? 650 : getNextRoundDelay(score);
+
+        if (expected === 'incorrect') {
+          window.setTimeout(() => {
+            clearAnswerFeedback('sentence-error');
+            showStudyExplanation(
+              createSentenceErrorExplanation(currentSentenceErrorItem, currentSentenceErrorVariant),
+              '교정 해설'
+            );
+          }, nextRoundDelay);
+          return;
+        }
+
+        window.setTimeout(() => {
+          clearAnswerFeedback('sentence-error');
+          nextSentenceErrorItem();
+          acceptingInput = true;
+          if (!studyMode) startSentenceErrorTimer();
+        }, nextRoundDelay);
+        return;
+      }
+
+      if (studyMode) {
+        recordStudyAnswer(currentStudyItemId, false);
+        score += 1;
+        sentenceErrorScoreEl.textContent = score;
+        sentenceErrorBestEl.textContent = getPendingStudyCount();
+      }
+      playFeedbackSound('wrong');
+      showFlash(sentenceErrorFlashEl, 'wrong');
+      showAnswerFeedback(
+        'sentence-error',
+        'wrong',
+        studyMode ? '✕ 다시 확인해요!' : '✕ 오답!',
+        `정답: ${SENTENCE_ERROR_ANSWER_LABELS[expected]}`,
+        answer,
+        expected
+      );
+      const explanation = createSentenceErrorExplanation(
+        currentSentenceErrorItem,
+        currentSentenceErrorVariant
+      );
+      if (studyMode) {
+        window.setTimeout(() => {
+          clearAnswerFeedback('sentence-error');
+          showStudyExplanation(explanation);
+        }, 650);
+        return;
+      }
+      finishRound(explanation);
+    }
+
     function chooseActivity(activity) {
+      if (!ACTIVITY_SCREENS[activity]) return;
+      if (activity === 'sentence-error' && !SENTENCE_ERROR_ITEMS.length) {
+        startActivity(activity);
+        return;
+      }
       activeActivity = activity;
       studyMode = false;
       studyModeInput.checked = false;
-      studyModeOption.hidden = activity === 'prime';
+      studyModeOption.hidden = !STUDY_ACTIVITY_KEYS.has(activity);
       updateWelcomeModeCopy();
       showScreen(welcomeScreen);
       window.setTimeout(() => nameSelect.focus(), 0);
@@ -2024,12 +2713,13 @@
       stopPrimeTimer();
       stopGrammarTimer();
       stopIngTimer();
+      stopSentenceErrorTimer();
       resultModal.classList.remove('show');
       infoModal.classList.remove('show');
       studyExplanationModal.classList.remove('show');
       clearAnswerFeedback(activeActivity);
       clearStreakCelebration();
-      studyModeOption.hidden = activeActivity === 'prime';
+      studyModeOption.hidden = !STUDY_ACTIVITY_KEYS.has(activeActivity);
       studyModeInput.checked = studyMode;
       updateWelcomeModeCopy();
       showScreen(welcomeScreen);
@@ -2037,6 +2727,11 @@
     }
 
     populateNames();
+    sentenceErrorStartButton.disabled = !SENTENCE_ERROR_ITEMS.length;
+    if (!SENTENCE_ERROR_ITEMS.length) {
+      sentenceErrorStartButton.setAttribute('aria-disabled', 'true');
+      sentenceErrorStartButton.querySelector('small').textContent = '등록된 문장 오류 문제가 없습니다.';
+    }
     const previousPlayer = localStorage.getItem('quick-tap-last-player');
     if (previousPlayer) {
       if (PLAYER_NAMES.includes(previousPlayer)) {
@@ -2066,7 +2761,7 @@
         return;
       }
       playerName = chosenName.slice(0, 20);
-      studyMode = activeActivity !== 'prime' && studyModeInput.checked;
+      studyMode = STUDY_ACTIVITY_KEYS.has(activeActivity) && studyModeInput.checked;
       localStorage.setItem('quick-tap-last-player', playerName);
       prepareAudio();
       startActivity(activeActivity);
@@ -2074,6 +2769,9 @@
 
     document.querySelectorAll('[data-start]').forEach(button => button.addEventListener('click', () => chooseActivity(button.dataset.start)));
     document.querySelectorAll('[data-change-player]').forEach(button => button.addEventListener('click', changePlayer));
+    document.querySelectorAll('[data-restart-activity]').forEach(button => {
+      button.addEventListener('click', () => startActivity(activeActivity));
+    });
     document.querySelectorAll('[data-study-toggle]').forEach(button => button.addEventListener('click', toggleStudyMode));
     document.querySelectorAll('[data-prime-answer]').forEach(button => {
       button.addEventListener('pointerdown', event => { event.preventDefault(); choosePrime(button.dataset.primeAnswer); });
@@ -2083,6 +2781,12 @@
     });
     document.querySelectorAll('[data-ing-answer]').forEach(button => {
       button.addEventListener('pointerdown', event => { event.preventDefault(); chooseIng(button.dataset.ingAnswer); });
+    });
+    document.querySelectorAll('[data-sentence-error-answer]').forEach(button => {
+      button.addEventListener('pointerdown', event => {
+        event.preventDefault();
+        chooseSentenceError(button.dataset.sentenceErrorAnswer);
+      });
     });
 
     infoContinueButton.addEventListener('click', () => {
@@ -2098,6 +2802,7 @@
     studyExplanationContinueButton.addEventListener('click', continueStudySession);
     restartButton.addEventListener('click', () => startActivity(activeActivity));
     changeResultPlayerButton.addEventListener('click', changePlayer);
+    sentenceErrorEmptyBackButton.addEventListener('click', backToActivityMenu);
     resetLeaderboardButton.addEventListener('click', () => {
       const label = ACTIVITY_LABELS[activeActivity];
       if (!window.confirm(`${label} 리더보드의 모든 기록을 지울까요?`)) return;
@@ -2107,10 +2812,16 @@
       if (activeActivity === 'prime') primeBestEl.textContent = '0';
       if (activeActivity === 'grammar') grammarBestEl.textContent = '0';
       if (activeActivity === 'ing') ingBestEl.textContent = '0';
+      if (activeActivity === 'sentence-error') sentenceErrorBestEl.textContent = '0';
       startActivity(activeActivity);
     });
 
     document.addEventListener('keydown', event => {
+      const target = event.target;
+      if (
+        target instanceof HTMLElement
+        && (target.matches('input, select, textarea') || target.isContentEditable)
+      ) return;
       if (resultModal.classList.contains('show')) {
         const resultShortcut = event.key.toLowerCase();
         if (event.code === 'KeyC' || resultShortcut === 'c') {
@@ -2135,6 +2846,11 @@
         if (event.code === 'KeyC' || studyShortcut === 'c') {
           event.preventDefault();
           studyExplanationModal.querySelector('[data-change-player]').click();
+          return;
+        }
+        if (event.code === 'KeyR' || studyShortcut === 'r') {
+          event.preventDefault();
+          studyExplanationModal.querySelector('[data-restart-activity]').click();
           return;
         }
         if (event.key === 'Enter') {
@@ -2165,6 +2881,19 @@
       if (activeActivity === 'ing') {
         if (event.key === 'ArrowUp') chooseIng('gerund');
         if (event.key === 'ArrowDown') chooseIng('participle');
+      }
+
+      if (activeActivity === 'sentence-error') {
+        const correctKeys = new Set(['ArrowDown', 'ArrowRight', '2']);
+        const incorrectKeys = new Set(['ArrowUp', 'ArrowLeft', '1']);
+        if (correctKeys.has(event.key)) {
+          event.preventDefault();
+          chooseSentenceError('correct');
+        }
+        if (incorrectKeys.has(event.key)) {
+          event.preventDefault();
+          chooseSentenceError('incorrect');
+        }
       }
     });
 
