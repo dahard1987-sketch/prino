@@ -186,7 +186,16 @@
     .ing-choice--gerund { top: 0; background: linear-gradient(160deg, #9b5747, #63372f); }
     .ing-choice--participle { bottom: 0; background: linear-gradient(160deg, #315e76, #263f57); }
     .ing-choice--gerund .choice__label { position: absolute; top: calc(env(safe-area-inset-top) + 142px); left: 0; width: 100%; }
-    .ing-choice--participle .choice__label { position: absolute; bottom: calc(env(safe-area-inset-bottom) + 38px); left: 0; width: 100%; }
+    .ing-choice--participle .choice__label {
+      position: absolute;
+      bottom: calc(env(safe-area-inset-bottom) + 38px);
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    .ing-choice--participle .choice__hint { order: -1; margin: 0 0 7px; }
     .ing-choice .choice__label { font-size: clamp(1.08rem, calc(2.4vmin + .5rem), 2.25rem); }
     .sentence-error-choice { left: 0; width: 100%; height: 50%; color: rgba(255,255,255,.94); }
     .sentence-error-choice--incorrect { top: 0; background: linear-gradient(160deg, #824657, #4d2c39); }
@@ -1258,10 +1267,10 @@
 
   <main class="screen game" id="ing-screen" aria-label="동명사와 현재분사 판단 게임">
     <button class="choice ing-choice ing-choice--gerund" type="button" data-ing-answer="gerund" aria-label="동명사, Gerund">
-      <span class="choice__label">동명사 · Gerund<span class="choice__hint">↑</span></span>
+      <span class="choice__label">동명사(Gerund)<span class="choice__hint">↑</span></span>
     </button>
     <button class="choice ing-choice ing-choice--participle" type="button" data-ing-answer="participle" aria-label="현재분사, Participle">
-      <span class="choice__label">현재분사 · Participle<span class="choice__hint">↓</span></span>
+      <span class="choice__label">현재분사(Participle)<span class="choice__hint">↓</span></span>
     </button>
     <div class="topbar">
       <div class="topbar__actions">
@@ -1438,8 +1447,8 @@
     // 복습 차례가 충돌해 건너뛸 때도 마지막 55라운드 간격까지만 사용한다.
     const STUDY_REVIEW_INTERVALS = [1, 2, 3, 5, 8, 13, 21, 34, 55];
     const ING_ANSWER_LABELS = {
-      gerund: '동명사 (Gerund)',
-      participle: '현재분사 (Participle)'
+      gerund: '동명사(Gerund)',
+      participle: '현재분사(Participle)'
     };
     const SENTENCE_ERROR_ANSWER_LABELS = {
       correct: '맞음',
