@@ -169,7 +169,16 @@
     .prime-choice--yes { top: 0; padding-top: 100px; background: linear-gradient(160deg, #226c5e, #17483f); }
     .prime-choice--no { bottom: 0; padding-bottom: 72px; background: linear-gradient(160deg, #473346, #2d222e); }
     .prime-choice--yes .choice__label { position: absolute; top: calc(env(safe-area-inset-top) + 142px); left: 0; width: 100%; }
-    .prime-choice--no .choice__label { position: absolute; bottom: calc(env(safe-area-inset-bottom) + 38px); left: 0; width: 100%; }
+    .prime-choice--no .choice__label {
+      position: absolute;
+      bottom: calc(env(safe-area-inset-bottom) + 38px);
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    .prime-choice--no .choice__hint { order: -1; margin: 0 0 7px; }
     .prime-choice .choice__label { font-size: clamp(1.08rem, calc(2.4vmin + .5rem), 2.25rem); }
     .prime-divider { position: absolute; z-index: 2; top: 50%; left: 7%; width: 86%; height: 1px; background: rgba(255,255,255,.14); pointer-events: none; }
 
@@ -201,40 +210,27 @@
     .sentence-error-guides { display: contents; }
     .sentence-error-guide {
       display: inline-flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 7px;
-      min-height: 42px;
-      padding: 7px 14px;
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 999px;
-      background: rgba(17,19,24,.82);
-      box-shadow: 0 9px 24px rgba(0,0,0,.2);
-      color: rgba(255,255,255,.86);
+      gap: 5px;
+      color: #fff;
       font-size: clamp(.92rem, 2vmin, 1.15rem);
       font-weight: 850;
       letter-spacing: -.02em;
       white-space: nowrap;
     }
-    .sentence-error-guide__incorrect { grid-area: incorrect; }
-    .sentence-error-guide__correct { grid-area: correct; }
-    .sentence-error-stage .sentence-error-card { grid-area: sentence; }
-    .sentence-error-guide kbd {
-      display: inline-grid;
-      place-items: center;
-      width: 27px;
-      height: 27px;
-      border: 1px solid rgba(255,255,255,.34);
-      border-radius: 8px;
-      background: rgba(255,255,255,.08);
-      color: rgba(255,255,255,.9);
-      font-family: inherit;
-      font-size: .78rem;
+    .sentence-error-guide::before,
+    .sentence-error-guide::after {
+      font-size: .82em;
       font-weight: 900;
       line-height: 1;
     }
-    .sentence-error-guide__incorrect { color: #ffc1ca; }
-    .sentence-error-guide__correct { color: #a9f8d7; }
+    .sentence-error-guide__incorrect::after { content: "↑"; }
+    .sentence-error-guide__correct::before { content: "↓"; }
+    .sentence-error-guide__incorrect { grid-area: incorrect; }
+    .sentence-error-guide__correct { grid-area: correct; }
+    .sentence-error-stage .sentence-error-card { grid-area: sentence; }
     .sentence-error-divider { position: absolute; z-index: 2; top: 50%; left: 7%; width: 86%; height: 1px; background: rgba(255,255,255,.16); pointer-events: none; }
     .ing-sentence {
       width: min(88vw, 920px);
@@ -354,7 +350,10 @@
       line-height: 1;
     }
     .grammar-choice:nth-child(1) .choice-key, .grammar-choice:nth-child(2) .choice-key { top: calc(env(safe-area-inset-top) + 76px); }
-    .grammar-choice:nth-child(3) .choice-key, .grammar-choice:nth-child(4) .choice-key { top: 18px; }
+    .grammar-choice:nth-child(3) .choice-key, .grammar-choice:nth-child(4) .choice-key {
+      top: auto;
+      bottom: calc(env(safe-area-inset-bottom) + 18px);
+    }
     .grammar-choice:nth-child(odd) .choice-key { left: 18px; }
     .grammar-choice:nth-child(even) .choice-key { right: 18px; }
     .grammar-lines::before, .grammar-lines::after { content: ""; position: absolute; z-index: 2; background: rgba(255,255,255,.16); pointer-events: none; }
@@ -775,7 +774,14 @@
         width: min(76vw, 680px);
       }
       .sentence-error-guide__incorrect,
-      .sentence-error-guide__correct { grid-area: auto; }
+      .sentence-error-guide__correct {
+        grid-area: auto;
+        flex-direction: row;
+      }
+      .sentence-error-guide__incorrect::before { content: "←"; }
+      .sentence-error-guide__incorrect::after { content: none; }
+      .sentence-error-guide__correct::before { content: none; }
+      .sentence-error-guide__correct::after { content: "→"; }
     }
     @media (max-width: 480px) {
       .topbar { left: 10px; right: 10px; gap: 7px; }
@@ -815,7 +821,10 @@
         padding: 12px 16px;
       }
       .grammar-choice:nth-child(1) .choice-key, .grammar-choice:nth-child(2) .choice-key { top: calc(env(safe-area-inset-top) + 56px); }
-      .grammar-choice:nth-child(3) .choice-key, .grammar-choice:nth-child(4) .choice-key { top: 10px; }
+      .grammar-choice:nth-child(3) .choice-key, .grammar-choice:nth-child(4) .choice-key {
+        top: auto;
+        bottom: calc(env(safe-area-inset-bottom) + 10px);
+      }
       .ing-choice--gerund .choice__label { top: calc(env(safe-area-inset-top) + 112px); }
       .ing-choice--participle .choice__label { bottom: calc(env(safe-area-inset-bottom) + 24px); }
       .ing-sentence { max-height: 34dvh; padding: 16px 30px; font-size: clamp(1.3rem, 4.1vmin, 2.3rem); }
@@ -989,20 +998,14 @@
       color: var(--ink);
     }
     .sentence-error-guide {
-      gap: 7px;
-      padding: 8px 15px;
-      border: 2px solid var(--ink);
-      border-radius: 12px;
-      background: var(--paper);
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
       box-shadow: none;
-      color: var(--ink);
     }
-    .sentence-error-guide kbd {
-      border-color: var(--steel);
-      background: var(--surface);
-      color: var(--ink);
-    }
-    .sentence-error-guide__incorrect, .sentence-error-guide__correct { color: var(--ink); }
+    .sentence-error-guide__incorrect { color: #fff; }
+    .sentence-error-guide__correct { color: var(--ink); }
     .sentence-error-empty { background: var(--powder); color: var(--ink); }
     .marked-ing, .ing-meaning-emphasis {
       padding-inline: .08em;
@@ -1294,14 +1297,14 @@
       </div>
     </div>
     <div class="game-timer" id="sentence-error-timer" role="timer" aria-live="off">
-      <div class="game-timer__meta"><span>남은 시간</span><strong id="sentence-error-timer-label">7.0초</strong></div>
+      <div class="game-timer__meta"><span>남은 시간</span><strong id="sentence-error-timer-label">10.0초</strong></div>
       <div class="game-timer__track"><span class="game-timer__bar" id="sentence-error-timer-bar"></span></div>
     </div>
     <div class="sentence-error-divider" aria-hidden="true"></div>
     <div class="sentence-error-stage">
       <div class="sentence-error-guides" aria-hidden="true">
-        <span class="sentence-error-guide sentence-error-guide__incorrect"><kbd>1</kbd>틀림</span>
-        <span class="sentence-error-guide sentence-error-guide__correct"><kbd>2</kbd>맞음</span>
+        <span class="sentence-error-guide sentence-error-guide__incorrect">틀림</span>
+        <span class="sentence-error-guide sentence-error-guide__correct">맞음</span>
       </div>
       <div class="center-card sentence-error-card" id="sentence-error-sentence" aria-live="assertive"></div>
     </div>
@@ -1427,7 +1430,7 @@
     const ING_QUESTIONS = Array.isArray(window.ING_ITEMS) ? window.ING_ITEMS : [];
     const ING_COOLDOWN = 3;
     const ING_TIME_LIMIT = 7000;
-    const SENTENCE_ERROR_TIME_LIMIT = 7000;
+    const SENTENCE_ERROR_TIME_LIMIT = 10000;
     const SENTENCE_ERROR_COOLDOWN = 4;
     const SENTENCE_ERROR_VARIANTS = new Set(['incorrect', 'correct']);
     const SENTENCE_ERROR_DIFF_TYPES = new Set(['same', 'delete', 'insert']);
