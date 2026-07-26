@@ -147,9 +147,10 @@
       max-height: min(38dvh, 330px);
       overflow: hidden;
       padding: clamp(22px, 4vmin, 38px) clamp(24px, 5vw, 60px);
-      font-size: clamp(1.35rem, calc(3vmin + .5rem), 3rem);
+      font-family: "Avenir Next", "Trebuchet MS", Arial, sans-serif;
+      font-size: clamp(1.55rem, calc(3.25vmin + .55rem), 3.35rem);
       font-weight: 700;
-      line-height: 1.35;
+      line-height: 1.4;
       letter-spacing: -.025em;
       text-wrap: balance;
     }
@@ -158,8 +159,9 @@
       font-weight: 950;
       text-decoration-line: underline;
       text-decoration-thickness: .13em;
-      text-underline-offset: .13em;
+      text-underline-offset: .24em;
       text-decoration-color: #ffcb5c;
+      text-decoration-skip-ink: none;
     }
 
     .game-timer {
@@ -469,12 +471,17 @@
       font-weight: 900;
       text-align: center;
     }
-    .ing-result__section { padding: 16px 18px; border-radius: 15px; background: #22262e; }
-    .ing-result__label { display: block; margin-bottom: 7px; color: rgba(255,255,255,.5); font-size: .72rem; font-weight: 900; letter-spacing: .08em; }
-    .ing-result__sentence { color: #fff; font-size: clamp(1rem, 2.1vmin, 1.28rem); font-weight: 700; line-height: 1.65; }
-    .ing-result__translation { color: rgba(255,255,255,.92); font-size: clamp(.98rem, 2vmin, 1.22rem); font-weight: 650; line-height: 1.7; }
-    .ing-result__meaning { margin-top: 9px; color: #fff1a8; font-size: clamp(.92rem, 1.9vmin, 1.12rem); font-weight: 800; line-height: 1.65; }
-    .ing-result__grammar { color: rgba(255,255,255,.9); font-size: clamp(.94rem, 1.9vmin, 1.15rem); font-weight: 650; line-height: 1.7; }
+    .ing-result__section { padding: 19px 21px; border-radius: 15px; background: #22262e; }
+    .ing-result__label { display: block; margin-bottom: 9px; color: rgba(255,255,255,.56); font-size: clamp(.82rem, 1.55vmin, 1rem); font-weight: 900; letter-spacing: .08em; }
+    .ing-result__sentence {
+      color: #fff;
+      font-family: "Avenir Next", "Trebuchet MS", Arial, sans-serif;
+      font-size: clamp(1.2rem, 2.65vmin, 1.65rem);
+      font-weight: 750;
+      line-height: 1.7;
+    }
+    .ing-result__translation { color: rgba(255,255,255,.95); font-size: clamp(1.18rem, 2.5vmin, 1.55rem); font-weight: 700; line-height: 1.75; }
+    .ing-result__grammar { color: rgba(255,255,255,.94); font-size: clamp(1.15rem, 2.35vmin, 1.45rem); font-weight: 800; line-height: 1.7; }
     .ing-meaning-emphasis { color: #fff1a8; font-weight: 950; text-decoration: underline; text-decoration-thickness: .12em; text-underline-offset: .14em; }
     .modal__actions { display: grid; gap: 9px; }
     .modal__actions .primary-button { margin-top: 0; }
@@ -545,7 +552,7 @@
       .grammar-choice:nth-child(3) .choice-key, .grammar-choice:nth-child(4) .choice-key { top: 10px; }
       .ing-choice--gerund .choice__label { top: calc(env(safe-area-inset-top) + 88px); }
       .ing-choice--participle .choice__label { bottom: calc(env(safe-area-inset-bottom) + 24px); }
-      .ing-sentence { max-height: 34dvh; padding: 16px 30px; font-size: clamp(1.15rem, 3.8vmin, 2rem); }
+      .ing-sentence { max-height: 34dvh; padding: 16px 30px; font-size: clamp(1.3rem, 4.1vmin, 2.3rem); }
       .streak-celebration__message { top: 50%; left: 18%; min-width: min(31vw, 250px); padding: 12px 18px 14px; }
       .streak-celebration.major .streak-celebration__message { min-width: min(38vw, 340px); padding: 15px 22px 18px; }
     }
@@ -762,27 +769,11 @@
     };
 
     const ING_QUESTIONS = Array.isArray(window.ING_ITEMS) ? window.ING_ITEMS : [];
-    const ING_COOLDOWN = 12;
+    const ING_COOLDOWN = 3;
     const ING_TIME_LIMIT = 7000;
     const ING_ANSWER_LABELS = {
       gerund: '동명사 (Gerund)',
       participle: '현재분사 (Participle)'
-    };
-    const ING_ROLE_DETAILS = {
-      subject: ['문장의 주어', `굵게 표시된 -ing 명사구 전체가 ‘…하는 것’을 뜻하며 문장의 주어로 쓰였습니다.`],
-      'verb-object': ['동사의 목적어', `-ing 명사구가 앞 동사가 나타내는 행동의 대상, 즉 동사의 목적어로 쓰였습니다.`],
-      'preposition-object': ['전치사의 목적어', `-ing 명사구가 전치사 뒤에서 전치사의 목적어로 쓰였습니다.`],
-      complement: ['주격 보어', `-ing 명사구가 주어의 내용이 무엇인지 설명하는 주격 보어로 쓰였습니다.`],
-      'fixed-expression': ['관용 표현의 동명사', `‘There is no use -ing’에서 -ing는 ‘…하는 것’을 뜻하는 동명사입니다.`],
-      'omitted-preposition': ['전치사의 목적어 (in 생략)', `spend time / have difficulty 뒤의 -ing는 생략된 전치사 in의 목적어로 이해할 수 있습니다.`],
-      'worth-complement': ['worth 뒤의 동명사', `worth 뒤에서 ‘…하는 것’을 뜻하는 동명사가 가치 판단의 내용을 보충합니다.`],
-      'noun-purpose': ['뒤 명사의 용도', `-ing가 동작 중인 상태가 아니라 뒤 명사를 무엇에 쓰는지 나타냅니다. 따라서 ‘…하는 것에 쓰는’으로 해석합니다.`],
-      progressive: ['진행형을 만드는 현재분사', `be동사와 현재분사가 함께 진행형을 만들어, 주어가 그 동작을 하고 있는 중임을 나타냅니다.`],
-      'noun-modifier-before': ['앞에서 명사를 꾸미는 현재분사', `현재분사가 뒤의 명사를 꾸며 그 명사가 하고 있는 동작이나 상태를 나타냅니다.`],
-      'noun-modifier-after': ['뒤에서 명사를 꾸미는 현재분사', `현재분사구가 앞의 명사를 뒤에서 꾸며 그 명사가 하고 있는 동작을 설명합니다.`],
-      'object-complement': ['목적격 보어인 현재분사', `현재분사가 목적어의 동작이나 상태를 설명하는 목적격 보어로 쓰였습니다.`],
-      'simultaneous-action': ['동시 동작을 나타내는 현재분사', `현재분사구가 주절의 동작과 동시에 일어난 동작을 ‘…하면서’의 뜻으로 나타냅니다.`],
-      'adjective-complement': ['주어의 상태를 설명하는 현재분사', `현재분사형 형용사가 보어로 쓰여 주어가 흥미나 놀라움을 일으키는 성질을 설명합니다.`]
     };
 
     const screens = [...document.querySelectorAll('.screen')];
@@ -1181,6 +1172,32 @@
       return { before: match[1], target: match[2], after: match[3] };
     }
 
+    function getIngGrammarExplanation(item) {
+      const { before } = parseMarkedText(item.marked);
+      const words = before.trim().replace(/[.,!?]+$/, '').split(/\s+/).filter(Boolean);
+      const previousWord = words.at(-1) || '';
+      const previousPhrase = previousWord === 'up' && words.length > 1
+        ? `${words.at(-2)} up`
+        : previousWord;
+      const explanations = {
+        subject: '문장의 주어',
+        'verb-object': `동사 ${previousPhrase}의 목적어`,
+        'preposition-object': `전치사 ${previousWord}의 목적어`,
+        complement: '주어의 내용을 설명하는 보어',
+        'fixed-expression': 'There is no use -ing 관용 표현',
+        'omitted-preposition': '생략된 전치사 in의 목적어',
+        'worth-complement': '형용사 worth 뒤의 동명사',
+        'noun-purpose': '뒤 명사의 용도를 나타내는 동명사',
+        progressive: `be동사 ${previousWord} + 현재분사 (진행형)`,
+        'noun-modifier-before': '뒤 명사를 앞에서 꾸미는 현재분사',
+        'noun-modifier-after': '앞 명사를 뒤에서 꾸미는 현재분사',
+        'object-complement': '목적어의 목적격 보어',
+        'simultaneous-action': '동시 동작을 나타내는 분사구문',
+        'adjective-complement': '주어의 상태를 설명하는 보어'
+      };
+      return explanations[item.role] || '문장 속 -ing의 문법 역할';
+    }
+
     function appendMarkedSentence(container, marked) {
       const { before, target, after } = parseMarkedText(marked);
       container.append(document.createTextNode(before));
@@ -1216,7 +1233,7 @@
       sentenceSection.className = 'ing-result__section';
       const sentenceLabel = document.createElement('span');
       sentenceLabel.className = 'ing-result__label';
-      sentenceLabel.textContent = 'ORIGINAL';
+      sentenceLabel.textContent = '예문';
       const sentence = document.createElement('div');
       sentence.className = 'ing-result__sentence';
       appendMarkedSentence(sentence, item.marked);
@@ -1231,24 +1248,17 @@
       const translation = document.createElement('div');
       translation.className = 'ing-result__translation';
       appendEmphasizedMeaning(translation, item.translation, item.emphasis);
-      const meaning = document.createElement('div');
-      meaning.className = 'ing-result__meaning';
-      meaning.append(document.createTextNode('표시 부분: '));
-      appendEmphasizedMeaning(meaning, item.meaning, item.emphasis);
-      translationSection.append(translationLabel, translation, meaning);
+      translationSection.append(translationLabel, translation);
       wrapper.append(translationSection);
 
       const grammarSection = document.createElement('div');
       grammarSection.className = 'ing-result__section';
       const grammarLabel = document.createElement('span');
       grammarLabel.className = 'ing-result__label';
-      grammarLabel.textContent = '문법 설명';
+      grammarLabel.textContent = '설명';
       const grammar = document.createElement('div');
       grammar.className = 'ing-result__grammar';
-      const [roleLabel, explanation] = ING_ROLE_DETAILS[item.role] || ['문법 역할', '문장에서 -ing의 역할을 확인하세요.'];
-      const role = document.createElement('strong');
-      role.textContent = `${roleLabel}: `;
-      grammar.append(role, document.createTextNode(explanation));
+      grammar.textContent = getIngGrammarExplanation(item);
       grammarSection.append(grammarLabel, grammar);
       wrapper.append(grammarSection);
 
