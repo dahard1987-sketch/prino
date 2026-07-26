@@ -168,7 +168,7 @@
     .prime-choice { left: 0; width: 100%; height: 50%; color: rgba(255,255,255,.92); }
     .prime-choice--yes { top: 0; padding-top: 100px; background: linear-gradient(160deg, #226c5e, #17483f); }
     .prime-choice--no { bottom: 0; padding-bottom: 72px; background: linear-gradient(160deg, #473346, #2d222e); }
-    .prime-choice--yes .choice__label { position: absolute; top: calc(env(safe-area-inset-top) + 108px); left: 0; width: 100%; }
+    .prime-choice--yes .choice__label { position: absolute; top: calc(env(safe-area-inset-top) + 142px); left: 0; width: 100%; }
     .prime-choice--no .choice__label { position: absolute; bottom: calc(env(safe-area-inset-bottom) + 38px); left: 0; width: 100%; }
     .prime-choice .choice__label { font-size: clamp(1.08rem, calc(2.4vmin + .5rem), 2.25rem); }
     .prime-divider { position: absolute; z-index: 2; top: 50%; left: 7%; width: 86%; height: 1px; background: rgba(255,255,255,.14); pointer-events: none; }
@@ -176,7 +176,7 @@
     .ing-choice { left: 0; width: 100%; height: 50%; color: rgba(255,255,255,.92); }
     .ing-choice--gerund { top: 0; background: linear-gradient(160deg, #9b5747, #63372f); }
     .ing-choice--participle { bottom: 0; background: linear-gradient(160deg, #315e76, #263f57); }
-    .ing-choice--gerund .choice__label { position: absolute; top: calc(env(safe-area-inset-top) + 108px); left: 0; width: 100%; }
+    .ing-choice--gerund .choice__label { position: absolute; top: calc(env(safe-area-inset-top) + 142px); left: 0; width: 100%; }
     .ing-choice--participle .choice__label { position: absolute; bottom: calc(env(safe-area-inset-bottom) + 38px); left: 0; width: 100%; }
     .ing-choice .choice__label { font-size: clamp(1.08rem, calc(2.4vmin + .5rem), 2.25rem); }
     .sentence-error-choice { left: 0; width: 100%; height: 50%; color: rgba(255,255,255,.94); }
@@ -800,7 +800,7 @@
       }
       .grammar-choice:nth-child(1) .choice-key, .grammar-choice:nth-child(2) .choice-key { top: calc(env(safe-area-inset-top) + 56px); }
       .grammar-choice:nth-child(3) .choice-key, .grammar-choice:nth-child(4) .choice-key { top: 10px; }
-      .ing-choice--gerund .choice__label { top: calc(env(safe-area-inset-top) + 88px); }
+      .ing-choice--gerund .choice__label { top: calc(env(safe-area-inset-top) + 112px); }
       .ing-choice--participle .choice__label { bottom: calc(env(safe-area-inset-bottom) + 24px); }
       .ing-sentence { max-height: 34dvh; padding: 16px 30px; font-size: clamp(1.3rem, 4.1vmin, 2.3rem); }
       .sentence-error-stage .sentence-error-card { max-height: 46dvh; padding: 16px 30px; font-size: clamp(1.9rem, calc(5.2vmin + .5rem), 3.3rem); }
@@ -973,12 +973,17 @@
       color: var(--ink);
     }
     .sentence-error-guide {
+      gap: 0;
+      overflow: hidden;
+      padding: 0;
       border: 2px solid var(--ink);
       border-radius: 12px;
       background: var(--paper);
       box-shadow: none;
       color: var(--ink);
     }
+    .sentence-error-guide span { padding: 8px 15px; }
+    .sentence-error-guide__correct { border-left: 2px solid var(--steel); }
     .sentence-error-guide kbd {
       border-color: var(--steel);
       background: var(--surface);
@@ -1096,18 +1101,31 @@
       color: var(--ink);
     }
     .sentence-diff__delete {
-      color: var(--danger);
-      text-decoration-color: var(--danger);
+      color: #D9273E;
+      font-weight: 950;
+      text-decoration-line: line-through;
+      text-decoration-thickness: .14em;
+      text-decoration-color: #D9273E;
     }
     .sentence-diff__insert {
-      border-bottom-color: var(--steel);
-      background: var(--powder);
+      border-bottom-color: #337BB5;
+      background: #DCEEFF;
       color: var(--ink);
+      font-weight: 950;
     }
     .sentence-change-chip {
       border-color: var(--steel);
       background: var(--powder);
       color: var(--ink);
+    }
+    .round-over-answer {
+      display: inline-block;
+      margin-left: .25em;
+      font-size: .42em;
+      font-weight: 900;
+      letter-spacing: -.02em;
+      vertical-align: middle;
+      white-space: nowrap;
     }
     .link-button { color: var(--steel); }
 
@@ -1250,8 +1268,8 @@
   </main>
 
   <main class="screen game" id="sentence-error-screen" aria-label="문장 오류 찾기 게임">
-    <button class="choice sentence-error-choice sentence-error-choice--correct" type="button" data-sentence-error-answer="correct" aria-label="2번, 맞는 문장, Correct"></button>
-    <button class="choice sentence-error-choice sentence-error-choice--incorrect" type="button" data-sentence-error-answer="incorrect" aria-label="1번, 틀린 문장, Incorrect"></button>
+    <button class="choice sentence-error-choice sentence-error-choice--correct" type="button" data-sentence-error-answer="correct" aria-label="2번, 맞음"></button>
+    <button class="choice sentence-error-choice sentence-error-choice--incorrect" type="button" data-sentence-error-answer="incorrect" aria-label="1번, 틀림"></button>
     <div class="topbar">
       <div class="topbar__actions">
         <button class="icon-button" type="button" data-change-player><span class="button-label--wide">← 이름 바꾸기</span><span class="button-label--short">← 이름</span></button>
@@ -1408,8 +1426,8 @@
       participle: '현재분사 (Participle)'
     };
     const SENTENCE_ERROR_ANSWER_LABELS = {
-      correct: '맞는 문장',
-      incorrect: '틀린 문장'
+      correct: '맞음',
+      incorrect: '틀림'
     };
 
     const screens = [...document.querySelectorAll('.screen')];
@@ -1578,6 +1596,46 @@
       }, []);
     }
 
+    function refineSentenceReplacements(segments) {
+      const refined = [];
+      for (let index = 0; index < segments.length; index += 1) {
+        const first = segments[index];
+        const second = segments[index + 1];
+        const replacement = first?.type === 'delete' && second?.type === 'insert'
+          ? { deleted: first.text, inserted: second.text }
+          : first?.type === 'insert' && second?.type === 'delete'
+            ? { deleted: second.text, inserted: first.text }
+            : null;
+
+        if (!replacement || /\s/u.test(replacement.deleted) || /\s/u.test(replacement.inserted)) {
+          refined.push(first);
+          continue;
+        }
+
+        let prefixLength = 0;
+        const maxPrefixLength = Math.min(replacement.deleted.length, replacement.inserted.length);
+        while (
+          prefixLength < maxPrefixLength
+          && replacement.deleted[prefixLength] === replacement.inserted[prefixLength]
+        ) {
+          prefixLength += 1;
+        }
+
+        if (!prefixLength) {
+          refined.push(first);
+          continue;
+        }
+
+        refined.push({ type: 'same', text: replacement.deleted.slice(0, prefixLength) });
+        const deletedRemainder = replacement.deleted.slice(prefixLength);
+        const insertedRemainder = replacement.inserted.slice(prefixLength);
+        if (deletedRemainder) refined.push({ type: 'delete', text: deletedRemainder });
+        if (insertedRemainder) refined.push({ type: 'insert', text: insertedRemainder });
+        index += 1;
+      }
+      return mergeSentenceDiffSegments(refined);
+    }
+
     function generateSentenceDiff(incorrect, correct) {
       const before = tokenizeSentenceForDiff(incorrect);
       const after = tokenizeSentenceForDiff(correct);
@@ -1609,7 +1667,7 @@
       }
       while (left < before.length) segments.push({ type: 'delete', text: before[left++] });
       while (right < after.length) segments.push({ type: 'insert', text: after[right++] });
-      return mergeSentenceDiffSegments(segments);
+      return refineSentenceReplacements(mergeSentenceDiffSegments(segments));
     }
 
     function validateSentenceErrorItems(rawItems) {
@@ -1624,8 +1682,11 @@
         const id = typeof rawItem?.id === 'string' ? rawItem.id.trim() : '';
         const incorrect = typeof rawItem?.incorrect === 'string' ? rawItem.incorrect.trim() : '';
         const correct = typeof rawItem?.correct === 'string' ? rawItem.correct.trim() : '';
-        const rule = typeof rawItem?.rule === 'string' ? rawItem.rule.trim() : '';
-        const explanation = typeof rawItem?.explanation === 'string' ? rawItem.explanation.trim() : '';
+        const reason = typeof rawItem?.reason === 'string'
+          ? rawItem.reason.trim()
+          : typeof rawItem?.explanation === 'string'
+            ? rawItem.explanation.trim()
+            : '';
         const warningPrefix = `[문장 오류 찾기] ${id || `항목 ${index + 1}`}`;
 
         if (!id || seenIds.has(id)) {
@@ -1633,8 +1694,8 @@
           return;
         }
         seenIds.add(id);
-        if (!incorrect || !correct || incorrect === correct || !rule || !explanation) {
-          console.warn(`${warningPrefix}: 필수 문장·규칙·설명이 없거나 두 문장이 같아서 제외했습니다.`);
+        if (!incorrect || !correct || incorrect === correct || !reason) {
+          console.warn(`${warningPrefix}: 필수 문장·이유가 없거나 두 문장이 같아서 제외했습니다.`);
           return;
         }
 
@@ -1666,8 +1727,7 @@
           id,
           incorrect,
           correct,
-          rule,
-          explanation,
+          reason,
           translation: typeof rawItem.translation === 'string' ? rawItem.translation.trim() : '',
           category: typeof rawItem.category === 'string' ? rawItem.category : '',
           level: typeof rawItem.level === 'string' ? rawItem.level : '',
@@ -2350,9 +2410,7 @@
       const flush = () => {
         const before = deleted.trim();
         const after = inserted.trim();
-        if (before && after) summaries.push(`${before} → ${after}`);
-        else if (before) summaries.push(`${before} 삭제`);
-        else if (after) summaries.push(`${after} 추가`);
+        if (before || after) summaries.push({ before, after });
         deleted = '';
         inserted = '';
       };
@@ -2381,42 +2439,47 @@
       return { section, content };
     }
 
-    function createSentenceErrorExplanation(item, presentedVariant, timedOut = false) {
+    function createSentenceErrorExplanation(item) {
       const wrapper = document.createElement('div');
       wrapper.className = 'sentence-error-result';
 
-      const answer = document.createElement('div');
-      answer.className = 'sentence-error-result__answer';
-      answer.textContent = `${timedOut ? '시간 초과 · ' : ''}정답: ${SENTENCE_ERROR_ANSWER_LABELS[presentedVariant]}`;
-      wrapper.append(answer);
-
-      const incorrect = createSentenceErrorSection('틀린 문장', 'sentence-diff');
+      const incorrect = createSentenceErrorSection('틀림', 'sentence-diff');
       appendSentenceDiff(incorrect.content, item, 'incorrect');
       wrapper.append(incorrect.section);
 
-      const correct = createSentenceErrorSection('맞는 문장', 'sentence-diff');
+      const correct = createSentenceErrorSection('맞음', 'sentence-diff');
       appendSentenceDiff(correct.content, item, 'correct');
       wrapper.append(correct.section);
 
       const summaries = getSentenceChangeSummaries(item);
       if (summaries.length) {
         const changes = createSentenceErrorSection('바뀐 부분', 'sentence-change-list');
-        summaries.forEach(summary => {
+        summaries.forEach(({ before, after }) => {
           const chip = document.createElement('span');
           chip.className = 'sentence-change-chip';
-          chip.textContent = summary;
+          if (before) {
+            const deleted = document.createElement('del');
+            deleted.className = 'sentence-diff__delete';
+            deleted.textContent = before;
+            chip.append(deleted);
+          }
+          if (before && after) chip.append(document.createTextNode(' → '));
+          if (after) {
+            const inserted = document.createElement('ins');
+            inserted.className = 'sentence-diff__insert';
+            inserted.textContent = after;
+            chip.append(inserted);
+          }
+          if (before && !after) chip.append(document.createTextNode(' 삭제'));
+          if (!before && after) chip.append(document.createTextNode(' 추가'));
           changes.content.append(chip);
         });
         wrapper.append(changes.section);
       }
 
-      const rule = createSentenceErrorSection('규칙');
-      rule.content.textContent = item.rule;
-      wrapper.append(rule.section);
-
-      const explanation = createSentenceErrorSection('이유');
-      explanation.content.textContent = item.explanation;
-      wrapper.append(explanation.section);
+      const reason = createSentenceErrorSection('이유');
+      reason.content.textContent = item.reason;
+      wrapper.append(reason.section);
 
       if (item.translation) {
         const translation = createSentenceErrorSection('해석');
@@ -2482,7 +2545,11 @@
         null,
         expected
       );
-      finishRound(createSentenceErrorExplanation(currentSentenceErrorItem, currentSentenceErrorVariant, true));
+      finishRound(
+        createSentenceErrorExplanation(currentSentenceErrorItem),
+        720,
+        `정답: ${SENTENCE_ERROR_ANSWER_LABELS[expected]}`
+      );
     }
 
     function startSentenceErrorTimer() {
@@ -2754,14 +2821,21 @@
       return title;
     }
 
-    function finishRound(message, delay = 720) {
+    function finishRound(message, delay = 720, titleDetail = '') {
       acceptingInput = false;
       stopPrimeTimer();
       stopGrammarTimer();
       stopIngTimer();
       stopSentenceErrorTimer();
       const best = recordScore(activeActivity, score);
-      resultTitleEl.textContent = getRandomRoundOverTitle();
+      const roundOverTitle = getRandomRoundOverTitle();
+      resultTitleEl.replaceChildren(document.createTextNode(roundOverTitle));
+      if (titleDetail) {
+        const answer = document.createElement('span');
+        answer.className = 'round-over-answer';
+        answer.textContent = `(${titleDetail})`;
+        resultTitleEl.append(answer);
+      }
       finalScoreEl.textContent = score;
       finalBestEl.textContent = best;
       resultMessageEl.classList.toggle('has-rich-explanation', typeof message !== 'string');
@@ -2963,7 +3037,7 @@
         showAnswerFeedback(
           'sentence-error',
           'correct',
-          expected === 'correct' ? '✓ 맞는 문장입니다.' : '✓ 오류를 찾았습니다.',
+          expected === 'correct' ? '✓ 맞음!' : '✓ 틀림!',
           studyDetail,
           answer
         );
@@ -3003,10 +3077,7 @@
         answer,
         expected
       );
-      const explanation = createSentenceErrorExplanation(
-        currentSentenceErrorItem,
-        currentSentenceErrorVariant
-      );
+      const explanation = createSentenceErrorExplanation(currentSentenceErrorItem);
       if (studyMode) {
         window.setTimeout(() => {
           clearAnswerFeedback('sentence-error');
@@ -3014,7 +3085,7 @@
         }, 650);
         return;
       }
-      finishRound(explanation);
+      finishRound(explanation, 720, `정답: ${SENTENCE_ERROR_ANSWER_LABELS[expected]}`);
     }
 
     function chooseActivity(activity) {
