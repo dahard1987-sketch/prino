@@ -182,44 +182,56 @@
     .sentence-error-choice { left: 0; width: 100%; height: 50%; color: rgba(255,255,255,.94); }
     .sentence-error-choice--incorrect { top: 0; background: linear-gradient(160deg, #824657, #4d2c39); }
     .sentence-error-choice--correct { bottom: 0; background: linear-gradient(160deg, #226c5e, #17483f); }
-    .sentence-error-word {
+    .sentence-error-stage {
       position: absolute;
+      z-index: 19;
+      top: 50%;
       left: 50%;
+      display: grid;
+      justify-items: center;
+      gap: 12px;
+      width: min(88vw, 980px);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+    .sentence-error-guide {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: .04em;
-      width: max-content;
-      font-size: clamp(2.7rem, 12.6vw, 4.1rem);
-      font-weight: 950;
-      line-height: .8;
-      letter-spacing: -.08em;
-      text-shadow: 0 8px 28px rgba(0,0,0,.22);
-      transform: translateX(-50%);
+      gap: clamp(18px, 5vw, 54px);
+      min-height: 42px;
+      padding: 7px 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 999px;
+      background: rgba(17,19,24,.82);
+      box-shadow: 0 9px 24px rgba(0,0,0,.2);
+      color: rgba(255,255,255,.86);
+      font-size: clamp(.92rem, 2vmin, 1.15rem);
+      font-weight: 850;
+      letter-spacing: -.02em;
     }
-    .sentence-error-choice--incorrect .sentence-error-word { top: clamp(118px, 18dvh, 170px); }
-    .sentence-error-choice--correct .sentence-error-word { bottom: calc(env(safe-area-inset-bottom) + clamp(42px, 9dvh, 86px)); }
-    .sentence-error-key {
-      position: absolute;
-      z-index: 20;
-      top: 50%;
-      display: grid;
+    .sentence-error-guide span {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+    .sentence-error-guide kbd {
+      display: inline-grid;
       place-items: center;
-      width: 44px;
-      aspect-ratio: 1;
-      border: 2px solid rgba(255,255,255,.48);
-      border-radius: 13px;
-      background: rgba(17,19,24,.72);
-      box-shadow: 0 8px 20px rgba(0,0,0,.24);
-      color: #fff;
+      width: 27px;
+      height: 27px;
+      border: 1px solid rgba(255,255,255,.34);
+      border-radius: 8px;
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.9);
       font-family: inherit;
-      font-size: 1.3rem;
-      font-weight: 950;
+      font-size: .78rem;
+      font-weight: 900;
       line-height: 1;
-      transform: translateY(-50%);
     }
-    .sentence-error-choice--incorrect .sentence-error-key { left: 18px; }
-    .sentence-error-choice--correct .sentence-error-key { right: 18px; }
+    .sentence-error-guide__incorrect { color: #ffc1ca; }
+    .sentence-error-guide__correct { color: #a9f8d7; }
     .sentence-error-divider { position: absolute; z-index: 2; top: 50%; left: 7%; width: 86%; height: 1px; background: rgba(255,255,255,.16); pointer-events: none; }
     .ing-sentence {
       width: min(88vw, 920px);
@@ -234,8 +246,11 @@
       letter-spacing: -.025em;
       text-wrap: balance;
     }
-    .sentence-error-card {
-      width: min(88vw, 980px);
+    .sentence-error-stage .sentence-error-card {
+      position: relative;
+      top: auto;
+      left: auto;
+      width: 100%;
       min-width: 0;
       max-height: min(48dvh, 460px);
       overflow: hidden;
@@ -247,6 +262,12 @@
       letter-spacing: -.025em;
       overflow-wrap: anywhere;
       text-wrap: balance;
+      transform: none;
+    }
+    .sentence-error-stage .sentence-error-card.pop { animation: sentence-error-pop 170ms ease-out; }
+    @keyframes sentence-error-pop {
+      0% { opacity: .25; transform: scale(.9); }
+      100% { opacity: 1; transform: scale(1); }
     }
     .sentence-error-empty {
       position: absolute;
@@ -738,28 +759,6 @@
       .sentence-error-choice { top: 0; bottom: auto; width: 50%; height: 100%; }
       .sentence-error-choice--incorrect { left: 0; }
       .sentence-error-choice--correct { right: 0; left: auto; }
-      .sentence-error-word {
-        top: 27%;
-        bottom: 25%;
-        left: auto;
-        flex-direction: column;
-        justify-content: space-between;
-        font-size: clamp(3.5rem, 7.7vmin, 6rem);
-        transform: none;
-      }
-      .sentence-error-choice--incorrect .sentence-error-word {
-        top: 27%;
-        right: auto;
-        bottom: 25%;
-        left: clamp(22px, 4vw, 70px);
-      }
-      .sentence-error-choice--correct .sentence-error-word {
-        top: 27%;
-        right: clamp(22px, 4vw, 70px);
-        bottom: 25%;
-        left: auto;
-      }
-      .sentence-error-key { top: 50%; }
       .sentence-error-divider { top: 7%; bottom: 7%; left: 50%; width: 1px; height: auto; }
     }
     @media (max-width: 480px) {
@@ -804,7 +803,7 @@
       .ing-choice--gerund .choice__label { top: calc(env(safe-area-inset-top) + 88px); }
       .ing-choice--participle .choice__label { bottom: calc(env(safe-area-inset-bottom) + 24px); }
       .ing-sentence { max-height: 34dvh; padding: 16px 30px; font-size: clamp(1.3rem, 4.1vmin, 2.3rem); }
-      .sentence-error-card { max-height: 46dvh; padding: 16px 30px; font-size: clamp(1.9rem, calc(5.2vmin + .5rem), 3.3rem); }
+      .sentence-error-stage .sentence-error-card { max-height: 46dvh; padding: 16px 30px; font-size: clamp(1.9rem, calc(5.2vmin + .5rem), 3.3rem); }
       .streak-celebration__message { top: 50%; left: 18%; min-width: min(31vw, 250px); padding: 12px 18px 14px; }
       .streak-celebration.major .streak-celebration__message { min-width: min(38vw, 340px); padding: 15px 22px 18px; }
     }
@@ -949,14 +948,8 @@
   </main>
 
   <main class="screen game" id="sentence-error-screen" aria-label="문장 오류 찾기 게임">
-    <button class="choice sentence-error-choice sentence-error-choice--correct" type="button" data-sentence-error-answer="correct" aria-label="2번, 맞는 문장, Correct">
-      <span class="sentence-error-word" aria-hidden="true"><span>맞</span><span>음</span></span>
-      <kbd class="sentence-error-key" aria-hidden="true">2</kbd>
-    </button>
-    <button class="choice sentence-error-choice sentence-error-choice--incorrect" type="button" data-sentence-error-answer="incorrect" aria-label="1번, 틀린 문장, Incorrect">
-      <span class="sentence-error-word" aria-hidden="true"><span>틀</span><span>림</span></span>
-      <kbd class="sentence-error-key" aria-hidden="true">1</kbd>
-    </button>
+    <button class="choice sentence-error-choice sentence-error-choice--correct" type="button" data-sentence-error-answer="correct" aria-label="2번, 맞는 문장, Correct"></button>
+    <button class="choice sentence-error-choice sentence-error-choice--incorrect" type="button" data-sentence-error-answer="incorrect" aria-label="1번, 틀린 문장, Incorrect"></button>
     <div class="topbar">
       <div class="topbar__actions">
         <button class="icon-button" type="button" data-change-player><span class="button-label--wide">← 이름 바꾸기</span><span class="button-label--short">← 이름</span></button>
@@ -972,7 +965,13 @@
       <div class="game-timer__track"><span class="game-timer__bar" id="sentence-error-timer-bar"></span></div>
     </div>
     <div class="sentence-error-divider" aria-hidden="true"></div>
-    <div class="center-card sentence-error-card" id="sentence-error-sentence" aria-live="assertive"></div>
+    <div class="sentence-error-stage">
+      <div class="sentence-error-guide" aria-hidden="true">
+        <span class="sentence-error-guide__incorrect"><kbd>1</kbd>틀림</span>
+        <span class="sentence-error-guide__correct"><kbd>2</kbd>맞음</span>
+      </div>
+      <div class="center-card sentence-error-card" id="sentence-error-sentence" aria-live="assertive"></div>
+    </div>
     <div class="sentence-error-empty" id="sentence-error-empty" hidden>
       <p>등록된 문장 오류 문제가 없습니다.</p>
       <button class="secondary-button" id="sentence-error-empty-back" type="button">활동 선택으로</button>
@@ -1230,6 +1229,7 @@
     let recentIngIndexes = [];
     let recentSentenceErrorIds = [];
     let recentSentenceErrorVerdicts = [];
+    let lastSentenceErrorCorrect = '';
     const sentenceErrorLastVariantById = new Map();
     let currentIngIndex = 0;
     let studyMode = false;
@@ -2326,8 +2326,12 @@
           recentSentenceErrorIds
         );
       } else {
-        let candidates = SENTENCE_ERROR_ITEMS.filter(item => !recentSentenceErrorIds.includes(item.id));
-        if (!candidates.length) candidates = SENTENCE_ERROR_ITEMS;
+        const outsideCooldown = SENTENCE_ERROR_ITEMS.filter(item => !recentSentenceErrorIds.includes(item.id));
+        let candidates = outsideCooldown.filter(item => item.correct !== lastSentenceErrorCorrect);
+        if (!candidates.length) {
+          candidates = SENTENCE_ERROR_ITEMS.filter(item => item.correct !== lastSentenceErrorCorrect);
+        }
+        if (!candidates.length) candidates = outsideCooldown.length ? outsideCooldown : SENTENCE_ERROR_ITEMS;
         if (forcedVerdict) {
           const balancedCandidates = candidates.filter(item => item.variants.includes(forcedVerdict));
           if (balancedCandidates.length) candidates = balancedCandidates;
@@ -2345,6 +2349,7 @@
       if (recentSentenceErrorIds.length > SENTENCE_ERROR_COOLDOWN) recentSentenceErrorIds.shift();
       recentSentenceErrorVerdicts.push(currentSentenceErrorVariant);
       if (recentSentenceErrorVerdicts.length > 3) recentSentenceErrorVerdicts.shift();
+      if (!studyMode) lastSentenceErrorCorrect = currentSentenceErrorItem.correct;
       sentenceErrorSentenceEl.textContent = currentSentenceErrorItem[currentSentenceErrorVariant];
       animateCard(sentenceErrorSentenceEl);
       return true;
@@ -2436,6 +2441,7 @@
       recentIngIndexes = [];
       recentSentenceErrorIds = [];
       recentSentenceErrorVerdicts = [];
+      lastSentenceErrorCorrect = '';
       startActivity(activeActivity);
     }
 
