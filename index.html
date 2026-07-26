@@ -19,14 +19,16 @@
       font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #111318;
       color: #f7f8fa;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
       -webkit-tap-highlight-color: transparent;
     }
 
     * { box-sizing: border-box; }
     html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; overscroll-behavior: none; }
-    body { min-height: 100dvh; background: #111318; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+    body { min-height: 100dvh; background: #111318; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-font-smoothing: antialiased; }
     button, input, select { font: inherit; }
-    button { color: inherit; }
+    button { color: inherit; touch-action: manipulation; }
     [hidden] { display: none !important; }
 
     .screen { position: absolute; inset: 0; min-height: 100dvh; }
@@ -45,21 +47,23 @@
       pointer-events: none;
     }
 
-    .topbar > * { pointer-events: auto; }
+    .topbar > * { min-width: 0; pointer-events: auto; }
     .icon-button, .pill {
       min-height: 42px;
-      border: 1px solid rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.18);
       border-radius: 999px;
-      background: rgba(17,19,24,.62);
+      background: rgba(17,19,24,.76);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       color: #fff;
     }
-    .icon-button { padding: 0 15px; cursor: pointer; font-size: .82rem; font-weight: 800; }
+    .icon-button { padding: 0 15px; cursor: pointer; font-size: .82rem; font-weight: 850; white-space: nowrap; transition: border-color 150ms ease, background 150ms ease, transform 100ms ease; }
     .pill { display: flex; align-items: baseline; gap: 7px; padding: 9px 13px; }
-    .pill__label { color: rgba(255,255,255,.6); font-size: .66rem; font-weight: 800; letter-spacing: .08em; }
+    .pill__label { color: rgba(255,255,255,.68); font-size: .66rem; font-weight: 850; letter-spacing: .06em; }
     .pill__value { font-size: 1.02rem; font-weight: 850; font-variant-numeric: tabular-nums; }
-    .score-group { display: flex; gap: 7px; }
-    .topbar__actions { display: flex; align-items: center; gap: 7px; }
+    .score-group { display: flex; min-width: 0; gap: 7px; }
+    .topbar__actions { display: flex; min-width: 0; align-items: center; gap: 7px; }
+    .button-label--short { display: none; }
     .study-toggle[aria-pressed="true"] {
       border-color: rgba(123,240,191,.62);
       background: rgba(26,91,72,.9);
@@ -78,11 +82,11 @@
         #111318;
     }
 
-    .panel { width: min(100%, 520px); }
-    .menu .panel { width: min(100%, 820px); }
+    .panel { width: min(100%, 520px); min-width: 0; }
+    .menu .panel { width: min(100%, 820px); min-width: 0; }
     .brand { margin: 0 0 10px; color: #7bf0bf; font-size: .74rem; font-weight: 900; letter-spacing: .17em; }
     .welcome h1, .menu h1 { margin: 0; font-size: clamp(2.1rem, 9vw, 3.7rem); line-height: 1.04; letter-spacing: -.055em; }
-    .subtitle { margin: 14px 0 28px; color: rgba(255,255,255,.62); line-height: 1.6; }
+    .subtitle { margin: 14px 0 28px; color: rgba(255,255,255,.7); line-height: 1.58; }
     .field-label { display: block; margin: 0 0 9px; color: rgba(255,255,255,.72); font-size: .82rem; font-weight: 800; }
     .select, .text-input {
       width: 100%;
@@ -109,7 +113,7 @@
     }
     .study-option input { flex: 0 0 auto; width: 21px; height: 21px; margin: 2px 0 0; accent-color: #7bf0bf; }
     .study-option strong { display: block; color: #a9f8d7; font-size: .94rem; }
-    .study-option span { display: block; margin-top: 4px; color: rgba(255,255,255,.65); font-size: .78rem; line-height: 1.45; }
+    .study-option span { display: block; margin-top: 4px; color: rgba(255,255,255,.72); font-size: .8rem; line-height: 1.45; }
     .primary-button, .secondary-button, .danger-button {
       width: 100%;
       min-height: 54px;
@@ -121,47 +125,54 @@
     .primary-button { margin-top: 16px; background: #f3f5f7; color: #111318; }
     .secondary-button { border: 1px solid rgba(255,255,255,.14); background: #262a32; color: #fff; }
     .danger-button { border: 1px solid rgba(255,105,120,.27); background: rgba(255,73,91,.1); color: #ff9ba5; }
-    .primary-button:active, .secondary-button:active, .icon-button:active, .activity-card:active { transform: scale(.985); }
+    .primary-button, .secondary-button, .danger-button { transition: filter 150ms ease, border-color 150ms ease, transform 100ms ease; }
+    .primary-button:active, .secondary-button:active, .icon-button:active, .activity-card:active { transform: scale(.975); }
     button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #7bf0bf; outline-offset: 3px; }
 
     .menu__header { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
     .activity-chip { display: inline-flex; margin-bottom: 18px; padding: 9px 13px; border-radius: 999px; background: #22262e; color: #7bf0bf; font-size: clamp(.78rem, 1.45vmin, 1rem); font-weight: 850; }
-    .activity-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .activity-list { display: grid; min-width: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
     .activity-card {
+      position: relative;
+      width: 100%;
+      min-width: 0;
       min-height: 210px;
-      padding: 22px;
+      overflow: hidden;
+      padding: 22px 50px 22px 22px;
       border: 1px solid rgba(255,255,255,.12);
       border-radius: 24px;
       text-align: left;
       cursor: pointer;
+      transition: filter 160ms ease, border-color 160ms ease, transform 120ms ease, box-shadow 160ms ease;
     }
+    .activity-card::after { content: "→"; position: absolute; right: 19px; bottom: 17px; color: rgba(255,255,255,.55); font-size: 1.25rem; font-weight: 900; transition: transform 160ms ease, color 160ms ease; }
     .activity-card--prime { background: linear-gradient(155deg, #226c5e, #163d36); }
     .activity-card--grammar { background: linear-gradient(155deg, #7250a5, #3d2d58); }
     .activity-card--ing { background: linear-gradient(155deg, #a45848, #55312c); }
-    .activity-card__icon { display: block; margin-bottom: 36px; font-size: clamp(2rem, 4vmin, 3rem); }
+    .activity-card__icon { display: block; margin-bottom: 36px; color: rgba(255,255,255,.96); font-size: clamp(2rem, 4vmin, 3rem); font-weight: 500; letter-spacing: -.04em; }
     .activity-card strong { display: block; font-size: clamp(1.35rem, 2.8vmin, 2rem); letter-spacing: -.03em; }
-    .activity-card small { display: block; margin-top: 8px; color: rgba(255,255,255,.63); font-size: clamp(.8rem, 1.65vmin, 1.08rem); line-height: 1.45; }
+    .activity-card small { display: block; margin-top: 8px; color: rgba(255,255,255,.76); font-size: clamp(.86rem, 1.55vmin, 1rem); line-height: 1.48; }
 
     .game { overflow: hidden; }
-    .choice { position: absolute; border: 0; cursor: pointer; transition: filter 100ms ease; }
+    .choice { position: absolute; border: 0; cursor: pointer; transition: filter 100ms ease, box-shadow 120ms ease; }
     .choice:active { filter: brightness(1.17); }
     .choice__label { font-weight: 850; letter-spacing: -.02em; text-align: center; }
-    .choice__hint { display: block; margin-top: 7px; color: rgba(255,255,255,.56); font-size: clamp(.68rem, 1.45vmin, 1rem); font-weight: 800; letter-spacing: .08em; }
+    .choice__hint { display: block; margin-top: 7px; color: rgba(255,255,255,.7); font-size: clamp(.68rem, 1.45vmin, 1rem); font-weight: 800; letter-spacing: .08em; }
 
-    .prime-choice { left: 0; width: 100%; height: 50%; color: rgba(255,255,255,.76); }
+    .prime-choice { left: 0; width: 100%; height: 50%; color: rgba(255,255,255,.92); }
     .prime-choice--yes { top: 0; padding-top: 100px; background: linear-gradient(160deg, #226c5e, #17483f); }
     .prime-choice--no { bottom: 0; padding-bottom: 72px; background: linear-gradient(160deg, #473346, #2d222e); }
     .prime-choice--yes .choice__label { position: absolute; top: calc(env(safe-area-inset-top) + 108px); left: 0; width: 100%; }
     .prime-choice--no .choice__label { position: absolute; bottom: calc(env(safe-area-inset-bottom) + 38px); left: 0; width: 100%; }
-    .prime-choice .choice__label { font-size: clamp(1rem, calc(2vmin + .45rem), 1.85rem); }
+    .prime-choice .choice__label { font-size: clamp(1.08rem, calc(2.4vmin + .5rem), 2.25rem); }
     .prime-divider { position: absolute; z-index: 2; top: 50%; left: 7%; width: 86%; height: 1px; background: rgba(255,255,255,.14); pointer-events: none; }
 
-    .ing-choice { left: 0; width: 100%; height: 50%; color: rgba(255,255,255,.8); }
+    .ing-choice { left: 0; width: 100%; height: 50%; color: rgba(255,255,255,.92); }
     .ing-choice--gerund { top: 0; background: linear-gradient(160deg, #9b5747, #63372f); }
     .ing-choice--participle { bottom: 0; background: linear-gradient(160deg, #315e76, #263f57); }
     .ing-choice--gerund .choice__label { position: absolute; top: calc(env(safe-area-inset-top) + 108px); left: 0; width: 100%; }
     .ing-choice--participle .choice__label { position: absolute; bottom: calc(env(safe-area-inset-bottom) + 38px); left: 0; width: 100%; }
-    .ing-choice .choice__label { font-size: clamp(1rem, calc(2vmin + .45rem), 1.85rem); }
+    .ing-choice .choice__label { font-size: clamp(1.08rem, calc(2.4vmin + .5rem), 2.25rem); }
     .ing-sentence {
       width: min(88vw, 920px);
       min-width: 0;
@@ -220,7 +231,7 @@
     @keyframes pop { 0% { opacity: .25; transform: translate(-50%,-50%) scale(.83); } 100% { opacity: 1; transform: translate(-50%,-50%) scale(1); } }
 
     .grammar-grid { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
-    .grammar-choice { position: relative; width: 100%; height: 100%; padding: 140px 12px 40px; color: rgba(255,255,255,.77); }
+    .grammar-choice { position: relative; width: 100%; height: 100%; padding: 140px 12px 40px; color: rgba(255,255,255,.9); }
     .grammar-choice:nth-child(1) { background: #205f55; }
     .grammar-choice:nth-child(2) { background: #4e3d70; }
     .grammar-choice:nth-child(3) { padding-top: 70px; background: #644530; }
@@ -410,15 +421,16 @@
       padding: 22px;
       background: rgba(9,10,13,.84);
       backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       opacity: 0;
       visibility: hidden;
       transition: opacity 180ms ease, visibility 180ms ease;
     }
     .modal.show { opacity: 1; visibility: visible; }
-    .modal__card { width: min(100%, 420px); max-height: calc(100dvh - 44px); overflow-y: auto; padding: 28px 22px 22px; border: 1px solid rgba(255,255,255,.12); border-radius: 27px; background: #191c22; box-shadow: 0 24px 70px rgba(0,0,0,.4); text-align: center; }
+    .modal__card { width: min(100%, 420px); max-height: calc(100dvh - 44px); overflow-y: auto; padding: 28px 22px 22px; border: 1px solid rgba(255,255,255,.16); border-radius: 27px; background: #191c22; box-shadow: 0 24px 70px rgba(0,0,0,.48); text-align: center; }
     .modal__eyebrow { margin: 0 0 9px; color: #ff8793; font-size: .75rem; font-weight: 900; letter-spacing: .13em; }
     .modal__eyebrow.info { color: #7bf0bf; }
-    .modal h2 { margin: 0; font-size: 2rem; letter-spacing: -.04em; }
+    .modal h2 { margin: 0; overflow-wrap: anywhere; font-size: 2rem; letter-spacing: -.04em; text-wrap: balance; }
     .modal__message { margin: 12px 0 20px; color: rgba(255,255,255,.7); font-size: .94rem; line-height: 1.65; white-space: pre-line; }
     #result-modal .modal__card { overscroll-behavior: contain; }
     .result-player-toolbar {
@@ -426,13 +438,16 @@
       z-index: 2;
       top: 0;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      gap: 8px;
       margin: -8px 0 16px;
       background: #191c22;
     }
-    .result-player-toolbar .secondary-button {
+    .result-player-toolbar .secondary-button,
+    .result-player-toolbar .primary-button {
       width: auto;
       min-height: 44px;
+      margin-top: 0;
       padding: 0 17px;
       border-radius: 999px;
       font-size: .84rem;
@@ -457,7 +472,7 @@
     .primary-button .button-shortcut { border-color: rgba(17,19,24,.22); background: rgba(17,19,24,.1); color: #111318; }
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 18px; }
     .stat { padding: 14px; border-radius: 15px; background: #22262e; }
-    .stat span { display: block; color: rgba(255,255,255,.54); font-size: .7rem; }
+    .stat span { display: block; color: rgba(255,255,255,.65); font-size: .72rem; }
     .stat strong { display: block; margin-top: 4px; font-size: 1.55rem; }
     .leaderboard { margin: 0 0 16px; text-align: left; }
     .leaderboard__title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
@@ -474,9 +489,9 @@
       border-radius: 14px;
       background: #22262e;
     }
-    .leaderboard__row { display: grid; grid-template-columns: 30px 1fr auto; gap: 8px; padding: 10px 13px; border-bottom: 1px solid rgba(255,255,255,.06); font-size: .84rem; }
+    .leaderboard__row { display: grid; grid-template-columns: 30px 1fr auto; gap: 8px; padding: 11px 13px; border-bottom: 1px solid rgba(255,255,255,.06); font-size: .88rem; }
     .leaderboard__row:last-child { border-bottom: 0; }
-    .leaderboard__row.current { color: #7bf0bf; }
+    .leaderboard__row.current { background: rgba(123,240,191,.07); color: #8ff3cb; }
     .leaderboard__rank { color: rgba(255,255,255,.45); font-variant-numeric: tabular-nums; }
     .leaderboard__score { font-weight: 850; font-variant-numeric: tabular-nums; }
     .leaderboard__empty { padding: 15px; color: rgba(255,255,255,.45); text-align: center; font-size: .8rem; }
@@ -492,7 +507,7 @@
       text-align: center;
     }
     .ing-result__section { padding: 13px 16px; border-radius: 13px; background: #22262e; }
-    .ing-result__label { display: block; margin-bottom: 5px; color: rgba(255,255,255,.56); font-size: clamp(.78rem, 1.45vmin, .94rem); font-weight: 900; letter-spacing: .08em; }
+    .ing-result__label { display: block; margin-bottom: 5px; color: rgba(255,255,255,.66); font-size: clamp(.78rem, 1.45vmin, .94rem); font-weight: 900; letter-spacing: .08em; }
     .ing-result__sentence {
       color: #fff;
       font-family: "Avenir Next", "Trebuchet MS", Arial, sans-serif;
@@ -521,9 +536,7 @@
       text-decoration-color: #ffcb5c;
       text-decoration-skip-ink: none;
     }
-    .modal__actions { display: grid; gap: 9px; }
-    .modal__actions .primary-button { margin-top: 0; }
-    .link-button { margin-top: 13px; border: 0; background: transparent; color: rgba(255,255,255,.5); cursor: pointer; font-size: .78rem; text-decoration: underline; text-underline-offset: 3px; }
+    .link-button { min-height: 44px; margin-top: 8px; border: 0; background: transparent; color: rgba(255,255,255,.62); cursor: pointer; font-size: .8rem; text-decoration: underline; text-underline-offset: 3px; }
     .info-dismiss {
       display: flex;
       align-items: flex-start;
@@ -559,15 +572,23 @@
     #study-explanation-modal #study-explanation-message.has-ing-explanation { padding: 0; background: transparent; }
     #study-explanation-modal .primary-button { margin-top: 0; }
 
+    @media (hover: hover) {
+      .activity-card:hover { border-color: rgba(255,255,255,.26); filter: brightness(1.08); box-shadow: 0 16px 38px rgba(0,0,0,.2); transform: translateY(-2px); }
+      .activity-card:hover::after { color: #fff; transform: translateX(3px); }
+      .icon-button:hover, .secondary-button:hover { border-color: rgba(255,255,255,.32); filter: brightness(1.1); }
+      .primary-button:hover { filter: brightness(.93); }
+      .link-button:hover { color: rgba(255,255,255,.85); }
+    }
+
     @media (max-width: 390px) {
       .activity-card { min-height: 150px; }
       .activity-card__icon { margin-bottom: 20px; }
-      .menu { place-items: start center; }
-      .menu__header { margin-top: 28px; }
     }
     @media (max-width: 700px) {
+      .menu { place-items: start center; }
+      .menu__header { margin-top: clamp(18px, 4vh, 30px); }
       .activity-list { grid-template-columns: 1fr; }
-      .activity-card { min-height: 145px; }
+      .activity-card { min-height: 145px; padding: 20px 50px 20px 22px; }
       .activity-card__icon { margin-bottom: 18px; }
     }
     @media (max-width: 480px) {
@@ -580,6 +601,18 @@
       .pill__value { font-size: .94rem; }
       .score-group { gap: 5px; }
       .game-timer { width: min(46vw, 200px); }
+      .result-player-toolbar .secondary-button,
+      .result-player-toolbar .primary-button { min-height: 44px; padding-inline: 13px; font-size: .78rem; }
+    }
+    @media (max-width: 360px) {
+      .topbar { left: 6px; right: 6px; gap: 4px; }
+      .topbar__actions, .score-group { gap: 4px; }
+      .icon-button { min-height: 42px; padding-inline: 8px; font-size: .68rem; }
+      .pill { min-height: 42px; gap: 3px; padding: 6px 7px; }
+      .pill__label { font-size: .53rem; letter-spacing: 0; }
+      .pill__value { font-size: .88rem; }
+      .button-label--wide { display: none; }
+      .button-label--short { display: inline; }
     }
     @media (orientation: landscape) and (max-height: 600px) {
       .topbar { top: calc(env(safe-area-inset-top) + 8px); }
@@ -676,10 +709,10 @@
       <span class="choice__label">합성수 · Composite Number<span class="choice__hint">↓</span></span>
     </button>
     <div class="topbar">
-      <button class="icon-button" type="button" data-change-player>← 이름 바꾸기</button>
+      <button class="icon-button" type="button" data-change-player><span class="button-label--wide">← 이름 바꾸기</span><span class="button-label--short">← 이름</span></button>
       <div class="score-group">
         <div class="pill"><span class="pill__label">연속</span><span class="pill__value" id="prime-score">0</span></div>
-        <div class="pill"><span class="pill__label">MY BEST</span><span class="pill__value" id="prime-best">0</span></div>
+        <div class="pill"><span class="pill__label">최고</span><span class="pill__value" id="prime-best">0</span></div>
       </div>
     </div>
     <div class="game-timer" id="prime-timer" role="timer" aria-live="off">
@@ -701,12 +734,12 @@
     </div>
     <div class="topbar">
       <div class="topbar__actions">
-        <button class="icon-button" type="button" data-change-player>← 이름 바꾸기</button>
+        <button class="icon-button" type="button" data-change-player><span class="button-label--wide">← 이름 바꾸기</span><span class="button-label--short">← 이름</span></button>
         <button class="icon-button study-toggle" type="button" data-study-toggle aria-pressed="false">학습 모드</button>
       </div>
       <div class="score-group">
         <div class="pill"><span class="pill__label" id="grammar-score-label">연속</span><span class="pill__value" id="grammar-score">0</span></div>
-        <div class="pill"><span class="pill__label" id="grammar-best-label">MY BEST</span><span class="pill__value" id="grammar-best">0</span></div>
+        <div class="pill"><span class="pill__label" id="grammar-best-label">최고</span><span class="pill__value" id="grammar-best">0</span></div>
       </div>
     </div>
     <div class="game-timer" id="grammar-timer" role="timer" aria-live="off">
@@ -727,12 +760,12 @@
     </button>
     <div class="topbar">
       <div class="topbar__actions">
-        <button class="icon-button" type="button" data-change-player>← 이름 바꾸기</button>
+        <button class="icon-button" type="button" data-change-player><span class="button-label--wide">← 이름 바꾸기</span><span class="button-label--short">← 이름</span></button>
         <button class="icon-button study-toggle" type="button" data-study-toggle aria-pressed="false">학습 모드</button>
       </div>
       <div class="score-group">
         <div class="pill"><span class="pill__label" id="ing-score-label">연속</span><span class="pill__value" id="ing-score">0</span></div>
-        <div class="pill"><span class="pill__label" id="ing-best-label">MY BEST</span><span class="pill__value" id="ing-best">0</span></div>
+        <div class="pill"><span class="pill__label" id="ing-best-label">최고</span><span class="pill__value" id="ing-best">0</span></div>
       </div>
     </div>
     <div class="game-timer" id="ing-timer" role="timer" aria-live="off">
@@ -777,6 +810,7 @@
     <div class="modal__card">
       <div class="result-player-toolbar">
         <button class="secondary-button" id="change-result-player" type="button" aria-keyshortcuts="C">플레이어 바꾸기<kbd class="button-shortcut" aria-hidden="true">C</kbd></button>
+        <button class="primary-button" id="restart" type="button" aria-keyshortcuts="R">다시 시작<kbd class="button-shortcut" aria-hidden="true">R</kbd></button>
       </div>
       <p class="modal__eyebrow">ROUND OVER</p>
       <h2 id="result-title">아쉬워요!</h2>
@@ -788,9 +822,6 @@
       <div class="leaderboard">
         <div class="leaderboard__title"><h3 id="leaderboard-title">리더보드</h3></div>
         <ol class="leaderboard__list" id="leaderboard-list"></ol>
-      </div>
-      <div class="modal__actions">
-        <button class="primary-button" id="restart" type="button" aria-keyshortcuts="R">다시 시작<kbd class="button-shortcut" aria-hidden="true">R</kbd></button>
       </div>
       <button class="link-button" id="reset-leaderboard" type="button">이 활동 리더보드 초기화</button>
     </div>
@@ -1069,7 +1100,7 @@
       ingScreen.classList.toggle('study-mode', studyMode && activeActivity === 'ing');
       document.querySelectorAll('[data-study-toggle]').forEach(button => {
         button.setAttribute('aria-pressed', String(studyMode));
-        button.textContent = studyMode ? '도전 모드' : '학습 모드';
+        button.textContent = studyMode ? '학습 종료' : '학습 모드';
       });
       studyModeInput.checked = studyMode;
       if (!isEnglishActivity) return;
@@ -1078,7 +1109,7 @@
       const bestLabel = activeActivity === 'grammar' ? grammarBestLabelEl : ingBestLabelEl;
       const bestValue = activeActivity === 'grammar' ? grammarBestEl : ingBestEl;
       scoreLabel.textContent = studyMode ? '학습' : '연속';
-      bestLabel.textContent = studyMode ? '복습 대기' : 'MY BEST';
+      bestLabel.textContent = studyMode ? '복습 대기' : '최고';
       bestValue.textContent = studyMode ? getPendingStudyCount() : getPlayerBest(activeActivity);
     }
 
