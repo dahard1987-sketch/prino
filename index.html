@@ -197,18 +197,20 @@
       top: 50%;
       left: 50%;
       display: grid;
-      grid-template-areas:
-        "incorrect"
-        "sentence"
-        "correct";
       justify-items: center;
-      gap: 12px;
       width: min(88vw, 980px);
       pointer-events: none;
       transform: translate(-50%, -50%);
     }
-    .sentence-error-guides { display: contents; }
+    .sentence-error-guides {
+      position: absolute;
+      z-index: 18;
+      inset: 0;
+      pointer-events: none;
+    }
     .sentence-error-guide {
+      position: absolute;
+      left: 50%;
       display: inline-flex;
       flex-direction: column;
       align-items: center;
@@ -228,9 +230,14 @@
     }
     .sentence-error-guide__incorrect::after { content: "↑"; }
     .sentence-error-guide__correct::before { content: "↓"; }
-    .sentence-error-guide__incorrect { grid-area: incorrect; }
-    .sentence-error-guide__correct { grid-area: correct; }
-    .sentence-error-stage .sentence-error-card { grid-area: sentence; }
+    .sentence-error-guide__incorrect {
+      top: calc(env(safe-area-inset-top) + 142px);
+      transform: translateX(-50%);
+    }
+    .sentence-error-guide__correct {
+      bottom: calc(env(safe-area-inset-bottom) + 38px);
+      transform: translateX(-50%);
+    }
     .sentence-error-divider { position: absolute; z-index: 2; top: 50%; left: 7%; width: 86%; height: 1px; background: rgba(255,255,255,.16); pointer-events: none; }
     .ing-sentence {
       width: min(88vw, 920px);
@@ -762,22 +769,15 @@
       .sentence-error-choice--incorrect { left: 0; }
       .sentence-error-choice--correct { right: 0; left: auto; }
       .sentence-error-divider { top: 7%; bottom: 7%; left: 50%; width: 1px; height: auto; }
-      .sentence-error-stage {
-        grid-template-areas:
-          "guides"
-          "sentence";
-      }
-      .sentence-error-guides {
-        grid-area: guides;
-        display: flex;
-        justify-content: space-between;
-        width: min(76vw, 680px);
-      }
       .sentence-error-guide__incorrect,
       .sentence-error-guide__correct {
-        grid-area: auto;
+        top: 28%;
+        bottom: auto;
         flex-direction: row;
+        transform: translate(-50%, -50%);
       }
+      .sentence-error-guide__incorrect { left: 25%; }
+      .sentence-error-guide__correct { left: 75%; }
       .sentence-error-guide__incorrect::before { content: "←"; }
       .sentence-error-guide__incorrect::after { content: none; }
       .sentence-error-guide__correct::before { content: none; }
@@ -1301,11 +1301,11 @@
       <div class="game-timer__track"><span class="game-timer__bar" id="sentence-error-timer-bar"></span></div>
     </div>
     <div class="sentence-error-divider" aria-hidden="true"></div>
+    <div class="sentence-error-guides" aria-hidden="true">
+      <span class="sentence-error-guide sentence-error-guide__incorrect">틀림</span>
+      <span class="sentence-error-guide sentence-error-guide__correct">맞음</span>
+    </div>
     <div class="sentence-error-stage">
-      <div class="sentence-error-guides" aria-hidden="true">
-        <span class="sentence-error-guide sentence-error-guide__incorrect">틀림</span>
-        <span class="sentence-error-guide sentence-error-guide__correct">맞음</span>
-      </div>
       <div class="center-card sentence-error-card" id="sentence-error-sentence" aria-live="assertive"></div>
     </div>
     <div class="sentence-error-empty" id="sentence-error-empty" hidden>
