@@ -480,21 +480,9 @@
     .leaderboard__rank { color: rgba(255,255,255,.45); font-variant-numeric: tabular-nums; }
     .leaderboard__score { font-weight: 850; font-variant-numeric: tabular-nums; }
     .leaderboard__empty { padding: 15px; color: rgba(255,255,255,.45); text-align: center; font-size: .8rem; }
-    #result-message.has-ing-explanation, #study-explanation-message.has-ing-explanation { padding: 0; background: transparent; }
-    .study-review-note {
-      margin: 13px 0 0;
-      padding: 13px 15px;
-      border: 1px solid rgba(255,203,92,.3);
-      border-radius: 13px;
-      background: rgba(91,69,26,.34);
-      color: #fff1a8;
-      font-size: clamp(.92rem, 1.8vmin, 1.08rem);
-      font-weight: 850;
-      line-height: 1.55;
-    }
-    .ing-result { display: grid; gap: 13px; text-align: left; }
+    .ing-result { display: grid; gap: 8px; text-align: left; }
     .ing-result__answer {
-      padding: 15px 18px;
+      padding: 11px 15px;
       border: 2px solid rgba(123,240,191,.4);
       border-radius: 15px;
       background: rgba(35,83,67,.5);
@@ -503,17 +491,27 @@
       font-weight: 900;
       text-align: center;
     }
-    .ing-result__section { padding: 19px 21px; border-radius: 15px; background: #22262e; }
-    .ing-result__label { display: block; margin-bottom: 9px; color: rgba(255,255,255,.56); font-size: clamp(.82rem, 1.55vmin, 1rem); font-weight: 900; letter-spacing: .08em; }
+    .ing-result__section { padding: 13px 16px; border-radius: 13px; background: #22262e; }
+    .ing-result__label { display: block; margin-bottom: 5px; color: rgba(255,255,255,.56); font-size: clamp(.78rem, 1.45vmin, .94rem); font-weight: 900; letter-spacing: .08em; }
     .ing-result__sentence {
       color: #fff;
       font-family: "Avenir Next", "Trebuchet MS", Arial, sans-serif;
       font-size: clamp(1.2rem, 2.65vmin, 1.65rem);
       font-weight: 750;
-      line-height: 1.7;
+      line-height: 1.4;
     }
-    .ing-result__translation { color: rgba(255,255,255,.95); font-size: clamp(1.18rem, 2.5vmin, 1.55rem); font-weight: 700; line-height: 1.75; }
-    .ing-result__grammar { color: rgba(255,255,255,.94); font-size: clamp(1.15rem, 2.35vmin, 1.45rem); font-weight: 800; line-height: 1.7; }
+    .ing-result__translation { color: rgba(255,255,255,.95); font-size: clamp(1.18rem, 2.5vmin, 1.55rem); font-weight: 700; line-height: 1.42; }
+    .ing-result__grammar { color: rgba(255,255,255,.94); font-size: clamp(1.15rem, 2.35vmin, 1.45rem); font-weight: 800; line-height: 1.42; }
+    .ing-grammar-focus { color: #fff1a8; font-weight: 950; }
+    .ing-grammar-answer {
+      display: inline-block;
+      padding: .03em .35em .08em;
+      border: 1px solid rgba(123,240,191,.42);
+      border-radius: .42em;
+      background: rgba(35,83,67,.5);
+      color: #b7ffdf;
+      font-weight: 950;
+    }
     .ing-meaning-emphasis {
       color: #fff1a8;
       font-weight: 950;
@@ -543,7 +541,8 @@
     }
     .info-dismiss input { flex: 0 0 auto; width: 19px; height: 19px; margin: 1px 0 0; accent-color: #7bf0bf; }
     #info-modal .modal__card, #study-explanation-modal .modal__card, #result-modal .modal__card { width: min(100%, 560px); padding: 34px 28px 26px; }
-    #info-modal h2, #study-explanation-modal h2, #result-modal h2 { font-size: clamp(2.2rem, 6vmin, 2.8rem); }
+    #study-explanation-modal .modal__card { padding: 20px; }
+    #info-modal h2, #result-modal h2 { font-size: clamp(2.2rem, 6vmin, 2.8rem); }
     #info-modal .modal__message, #study-explanation-modal .modal__message, #result-modal .modal__message {
       margin: 18px 0 22px;
       padding: 18px 20px;
@@ -555,6 +554,10 @@
       line-height: 1.75;
       text-align: left;
     }
+    #study-explanation-modal .modal__message { margin: 0 0 12px; }
+    #result-modal #result-message.has-ing-explanation,
+    #study-explanation-modal #study-explanation-message.has-ing-explanation { padding: 0; background: transparent; }
+    #study-explanation-modal .primary-button { margin-top: 0; }
 
     @media (max-width: 390px) {
       .activity-card { min-height: 150px; }
@@ -600,9 +603,11 @@
     }
     @media (min-width: 768px) and (min-height: 600px) {
       #info-modal .modal__card, #study-explanation-modal .modal__card, #result-modal .modal__card { width: min(100%, 720px); padding: 48px 50px 40px; border-radius: 34px; }
-      #info-modal .modal__eyebrow, #study-explanation-modal .modal__eyebrow, #result-modal .modal__eyebrow { margin-bottom: 15px; font-size: 1rem; }
-      #info-modal h2, #study-explanation-modal h2, #result-modal h2 { font-size: 3.2rem; }
+      #study-explanation-modal .modal__card { padding: 28px; }
+      #info-modal .modal__eyebrow, #result-modal .modal__eyebrow { margin-bottom: 15px; font-size: 1rem; }
+      #info-modal h2, #result-modal h2 { font-size: 3.2rem; }
       #info-modal .modal__message, #study-explanation-modal .modal__message, #result-modal .modal__message { margin: 22px 0 30px; padding: 24px 26px; font-size: 1.5rem; line-height: 1.8; }
+      #study-explanation-modal .modal__message { margin: 0 0 16px; }
       #info-modal .info-dismiss { padding: 18px 20px; font-size: 1.08rem; }
       #info-modal .info-dismiss input { width: 23px; height: 23px; }
       #info-modal .primary-button, #study-explanation-modal .primary-button { min-height: 66px; font-size: 1.15rem; }
@@ -761,10 +766,8 @@
     </div>
   </section>
 
-  <section class="modal" id="study-explanation-modal" role="dialog" aria-modal="true" aria-labelledby="study-explanation-title">
+  <section class="modal" id="study-explanation-modal" role="dialog" aria-modal="true" aria-label="학습 해설">
     <div class="modal__card">
-      <p class="modal__eyebrow info">LEARNING NOTE</p>
-      <h2 id="study-explanation-title">다시 익혀 볼까요?</h2>
       <div class="modal__message" id="study-explanation-message"></div>
       <button class="primary-button" id="study-explanation-continue" type="button">다음 문제</button>
     </div>
@@ -822,6 +825,14 @@
       grammar: '동사의 목적어',
       ing: '동명사 / 현재분사'
     };
+    const ROUND_OVER_TITLES = [
+      '아쉬워요!',
+      '잘 하지~',
+      '아쉽다~',
+      '와 이걸 틀리네',
+      '엌ㅋㅋㅋ',
+      '왘ㅋㅋㅋㅋ진짴ㅋㅋㅋ'
+    ];
 
     const USAGE_NOTES = {
       stop: 'stop + 동명사: 하던 일을 멈추다\nstop + to 부정사: ... 하려고 멈추다\n\n※ to 부정사도 쓸 수 있지만 이때는 목적어가 아니라 부사(목적)입니다.',
@@ -896,6 +907,7 @@
     const studyExplanationMessageEl = document.querySelector('#study-explanation-message');
     const studyExplanationContinueButton = document.querySelector('#study-explanation-continue');
     const resultModal = document.querySelector('#result-modal');
+    const resultTitleEl = document.querySelector('#result-title');
     const resultMessageEl = document.querySelector('#result-message');
     const finalScoreEl = document.querySelector('#final-score');
     const finalBestEl = document.querySelector('#final-best');
@@ -918,6 +930,7 @@
     let studyState = { rounds: 0, reviews: {} };
     let currentStudyItemId = '';
     let currentStudyItemIsReview = false;
+    let lastRoundOverTitle = '';
     let acceptingInput = false;
     let audioContext = null;
     let primeTimeoutId = null;
@@ -1145,14 +1158,7 @@
       return { nextInterval, mastered, correctStreak };
     }
 
-    function appendStudyReviewNote(container, interval) {
-      const note = document.createElement('p');
-      note.className = 'study-review-note';
-      note.textContent = `${interval}라운드 후에 다시 출제됩니다.`;
-      container.append(note);
-    }
-
-    function showStudyExplanation(content, interval) {
+    function showStudyExplanation(content) {
       studyExplanationMessageEl.classList.toggle('has-ing-explanation', typeof content !== 'string');
       studyExplanationMessageEl.replaceChildren();
       if (typeof content === 'string') {
@@ -1162,7 +1168,6 @@
       } else {
         studyExplanationMessageEl.append(content);
       }
-      appendStudyReviewNote(studyExplanationMessageEl, interval);
       studyExplanationModal.classList.add('show');
       studyExplanationContinueButton.focus();
     }
@@ -1438,29 +1443,65 @@
       const objectParticle = noun => {
         const lastCode = noun.charCodeAt(noun.length - 1) - 0xac00;
         const hasFinalConsonant = lastCode >= 0 && lastCode <= 11171 && lastCode % 28 !== 0;
-        return `${noun}${hasFinalConsonant ? '을' : '를'}`;
+        return hasFinalConsonant ? '을' : '를';
       };
-      const modifiedNoun = nounLabels[item.role === 'noun-modifier-before' || item.role === 'noun-purpose' ? nextWord : previousWord];
+      const usesFollowingNoun = item.role === 'noun-modifier-before' || item.role === 'noun-purpose';
+      const modifiedNounKey = usesFollowingNoun ? nextWord : previousWord;
+      const modifiedNoun = nounLabels[modifiedNounKey];
+      const determiner = usesFollowingNoun ? previousWord : words.at(-2);
+      const modifiedNounEnglish = `${['a', 'an', 'the'].includes(determiner) ? `${determiner} ` : ''}${modifiedNounKey}`.trim();
+      const modifiedNounDisplay = modifiedNoun ? `${modifiedNoun}(${modifiedNounEnglish})` : '';
       const plainSentence = item.marked.replace(/[\[\]]/g, '');
       const subjectMatch = plainSentence.match(/^(.+?)\s+(?:is|takes|keeps|makes|can)\b/i);
       const complementSubject = before.trim().replace(/\s+(?:is|was)$/i, '');
+      const answer = item.answer === 'gerund' ? '동명사' : '현재분사';
       const explanations = {
-        subject: subjectMatch ? `“${subjectMatch[1]}”가 문장의 주어` : '동명사구가 문장의 주어',
-        'verb-object': `동사 ${previousPhrase}의 목적어`,
-        'preposition-object': `전치사 ${previousWord}의 목적어`,
-        complement: `“${complementSubject}”의 내용을 설명하는 보어`,
-        'fixed-expression': 'There is no use -ing 관용 표현',
-        'omitted-preposition': '생략된 전치사 in의 목적어',
-        'worth-complement': '형용사 worth 뒤의 동명사',
-        'noun-purpose': modifiedNoun ? `${modifiedNoun}의 용도를 나타내는 동명사` : '뒤 명사의 용도를 나타내는 동명사',
-        progressive: `be동사 ${previousWord} + 현재분사로 만든 진행형`,
-        'noun-modifier-before': modifiedNoun ? `${objectParticle(modifiedNoun)} 꾸며주는 현재분사` : '뒤 명사를 꾸며주는 현재분사',
-        'noun-modifier-after': modifiedNoun ? `${objectParticle(modifiedNoun)} 꾸며주는 현재분사` : '앞 명사를 꾸며주는 현재분사',
-        'object-complement': modifiedNoun ? `${modifiedNoun}의 동작을 설명하는 목적격 보어` : '목적어의 동작을 설명하는 목적격 보어',
+        subject: subjectMatch ? `“${subjectMatch[1]}”가 문장의 주어로 쓰인 동명사` : '문장의 주어로 쓰인 동명사',
+        'verb-object': `동사 ${previousPhrase}의 목적어로 쓰인 동명사`,
+        'preposition-object': `전치사 ${previousWord}의 목적어로 쓰인 동명사`,
+        complement: `“${complementSubject}”의 내용을 설명하는 보어로 쓰인 동명사`,
+        'fixed-expression': 'There is no use -ing 관용 표현에 쓰인 동명사',
+        'omitted-preposition': '생략된 전치사 in의 목적어로 쓰인 동명사',
+        'worth-complement': '형용사 worth 뒤에 쓰인 동명사',
+        'noun-purpose': modifiedNounDisplay ? `“${modifiedNounDisplay}”의 용도를 나타내는 동명사` : '뒤 명사의 용도를 나타내는 동명사',
+        progressive: `be동사 ${previousWord}와 함께 진행형을 만드는 현재분사`,
+        'noun-modifier-before': modifiedNounDisplay ? `“${modifiedNounDisplay}”${objectParticle(modifiedNoun)} 꾸며주는 현재분사` : '뒤 명사를 꾸며주는 현재분사',
+        'noun-modifier-after': modifiedNounDisplay ? `“${modifiedNounDisplay}”${objectParticle(modifiedNoun)} 꾸며주는 현재분사` : '앞 명사를 꾸며주는 현재분사',
+        'object-complement': modifiedNounDisplay ? `“${modifiedNounDisplay}”의 동작을 설명하는 목적격 보어인 현재분사` : '목적어의 동작을 설명하는 목적격 보어인 현재분사',
         'simultaneous-action': `${words[0] === 'She' ? '그녀' : '그'}의 동시 동작을 나타내는 현재분사`,
-        'adjective-complement': `“${complementSubject}”의 상태를 설명하는 보어`
+        'adjective-complement': `“${complementSubject}”의 상태를 설명하는 보어로 쓰인 현재분사`
       };
-      return explanations[item.role] || '문장 속 -ing의 문법 역할';
+      return {
+        text: explanations[item.role] || `문장 속에서 쓰인 ${answer}`,
+        focus: modifiedNounDisplay,
+        answer
+      };
+    }
+
+    function appendIngGrammarExplanation(container, item) {
+      const explanation = getIngGrammarExplanation(item);
+      const highlights = [
+        { text: explanation.focus, className: 'ing-grammar-focus' },
+        { text: explanation.answer, className: 'ing-grammar-answer' }
+      ].filter(highlight => highlight.text && explanation.text.includes(highlight.text));
+      let position = 0;
+
+      while (position < explanation.text.length) {
+        const next = highlights
+          .map(highlight => ({ ...highlight, index: explanation.text.indexOf(highlight.text, position) }))
+          .filter(highlight => highlight.index >= 0)
+          .sort((a, b) => a.index - b.index)[0];
+        if (!next) {
+          container.append(document.createTextNode(explanation.text.slice(position)));
+          break;
+        }
+        container.append(document.createTextNode(explanation.text.slice(position, next.index)));
+        const emphasis = document.createElement('strong');
+        emphasis.className = next.className;
+        emphasis.textContent = next.text;
+        container.append(emphasis);
+        position = next.index + next.text.length;
+      }
     }
 
     function appendMarkedSentence(container, marked) {
@@ -1523,7 +1564,7 @@
       grammarLabel.textContent = '설명';
       const grammar = document.createElement('div');
       grammar.className = 'ing-result__grammar';
-      grammar.textContent = getIngGrammarExplanation(item);
+      appendIngGrammarExplanation(grammar, item);
       grammarSection.append(grammarLabel, grammar);
       wrapper.append(grammarSection);
 
@@ -1713,12 +1754,20 @@
       startActivity(activeActivity);
     }
 
+    function getRandomRoundOverTitle() {
+      const candidates = ROUND_OVER_TITLES.filter(title => title !== lastRoundOverTitle);
+      const title = candidates[Math.floor(Math.random() * candidates.length)];
+      lastRoundOverTitle = title;
+      return title;
+    }
+
     function finishRound(message, delay = 720) {
       acceptingInput = false;
       stopPrimeTimer();
       stopGrammarTimer();
       stopIngTimer();
       const best = recordScore(activeActivity, score);
+      resultTitleEl.textContent = getRandomRoundOverTitle();
       finalScoreEl.textContent = score;
       finalBestEl.textContent = best;
       resultMessageEl.classList.toggle('has-ing-explanation', typeof message !== 'string');
@@ -1785,8 +1834,8 @@
         showFlash(grammarFlashEl, 'correct');
         const studyDetail = studyResult?.mastered
           ? '2회 연속 정답! 오답 목록에서 제외했어요.'
-          : studyResult?.nextInterval
-            ? `${studyResult.correctStreak}회 연속 정답 · ${studyResult.nextInterval}라운드 후 다시 복습해요.`
+          : studyResult?.correctStreak
+            ? `${studyResult.correctStreak}회 연속 정답`
             : CATEGORY_LABELS[currentVerb.category];
         showAnswerFeedback('grammar', 'correct', '✓ 정답!', studyDetail, answer);
         if (!studyMode) celebrateStreak(score);
@@ -1819,7 +1868,7 @@
         'grammar',
         'wrong',
         '✕ 다시 익혀요!',
-        `정답: ${CATEGORY_LABELS[currentVerb.category]}${studyMode ? ' · 1라운드 후 복습' : ''}`,
+        `정답: ${CATEGORY_LABELS[currentVerb.category]}`,
         answer
       );
       const usageNote = getCurrentUsageNote();
@@ -1827,7 +1876,7 @@
       if (studyMode) {
         window.setTimeout(() => {
           clearAnswerFeedback('grammar');
-          showStudyExplanation(`${currentVerb.verb}의 정답은 ‘${CATEGORY_LABELS[currentVerb.category]}’입니다.${note}`, studyResult.nextInterval);
+          showStudyExplanation(`${currentVerb.verb}의 정답은 ‘${CATEGORY_LABELS[currentVerb.category]}’입니다.${note}`);
         }, 650);
         return;
       }
@@ -1847,8 +1896,8 @@
         showFlash(ingFlashEl, 'correct');
         const studyDetail = studyResult?.mastered
           ? '2회 연속 정답! 오답 목록에서 제외했어요.'
-          : studyResult?.nextInterval
-            ? `${studyResult.correctStreak}회 연속 정답 · ${studyResult.nextInterval}라운드 후 다시 복습해요.`
+          : studyResult?.correctStreak
+            ? `${studyResult.correctStreak}회 연속 정답`
             : ING_ANSWER_LABELS[currentIngItem.answer];
         showAnswerFeedback('ing', 'correct', '✓ 정답!', studyDetail, answer);
         if (!studyMode) celebrateStreak(score);
@@ -1874,13 +1923,13 @@
         'ing',
         'wrong',
         '✕ 다시 익혀요!',
-        `정답: ${ING_ANSWER_LABELS[currentIngItem.answer]}${studyMode ? ' · 1라운드 후 복습' : ''}`,
+        `정답: ${ING_ANSWER_LABELS[currentIngItem.answer]}`,
         answer
       );
       if (studyMode) {
         window.setTimeout(() => {
           clearAnswerFeedback('ing');
-          showStudyExplanation(createIngResultExplanation(currentIngItem), studyResult.nextInterval);
+          showStudyExplanation(createIngResultExplanation(currentIngItem));
         }, 650);
         return;
       }
