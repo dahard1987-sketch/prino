@@ -158,7 +158,7 @@
       id: 'article-011',
       incorrect: 'I am not superhero.',
       correct: 'I am not a superhero.',
-      reason: '가 셀 수 있는 단수 명사니까 a',
+      reason: 'superhero가 셀 수 있는 단수 명사니까 a',
       category: 'article',
       level: 'middle-1',
       tags: ['관사', '셀 수 있는 명사']
