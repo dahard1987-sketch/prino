@@ -234,6 +234,159 @@
       category: 'fixed-expression',
       level: 'middle-1',
       tags: ['표현', '중복']
+    },
+        {
+      id: 'subject-verb-agreement-001',
+      incorrect: 'The play finish at 10.',
+      correct: 'The play finishes at 10.',
+      reason: '주어 단수니까 -es',
+      category: 'subject-verb-agreement',
+      level: 'middle-1',
+      tags: ['현재시제', '3인칭 단수', '주어-동사 수일치']
+    },
+    {
+      id: 'subject-verb-agreement-002',
+      incorrect: 'The play start at 10.',
+      correct: 'The play starts at 10.',
+      reason: '주어 단수니까 -s',
+      category: 'subject-verb-agreement',
+      level: 'middle-1',
+      tags: ['현재시제', '3인칭 단수', '주어-동사 수일치']
+    },
+    {
+      id: 'multiple-errors-001',
+      incorrect: 'The life change slowly.',
+      correct: 'Life changes slowly.',
+      reason: '인생(life)에는 the 거의 사용하지 않음. 셀 수 없는 주어니까 동사에 -s',
+      category: 'multiple-errors',
+      level: 'middle-1',
+      tags: ['관사', '현재시제', '3인칭 단수', '주어-동사 수일치']
+    },
+    {
+      id: 'subject-verb-agreement-003',
+      incorrect: 'Life change you slowly.',
+      correct: 'Life changes you slowly.',
+      reason: '셀 수 없는 주어니까 동사에 -s',
+      category: 'subject-verb-agreement',
+      level: 'middle-1',
+      tags: ['현재시제', '3인칭 단수', '주어-동사 수일치']
+    },
+    {
+      id: 'multiple-errors-002',
+      incorrect: 'Superman return the earth.',
+      correct: 'Superman returns to the earth.',
+      reason: '3인칭 단수니까 동사에 -s / \'지구로\' 니까 "to" 사용',
+      category: 'multiple-errors',
+      level: 'middle-1',
+      tags: ['현재시제', '3인칭 단수', '전치사', 'to']
+    },
+    {
+      id: 'subject-verb-agreement-004',
+      incorrect: 'We leaves home at 12.',
+      correct: 'We leave home at 12.',
+      reason: '주어 3인칭 단수 아니니까 leaves에서 -s 제거',
+      category: 'subject-verb-agreement',
+      level: 'middle-1',
+      tags: ['현재시제', '주어-동사 수일치', '복수 주어']
+    },
+    {
+      id: 'multiple-errors-003',
+      incorrect: 'The sun raise east.',
+      correct: 'The sun rises in the east.',
+      reason: '자기가 떠오르니까 자동사 rise 사용 / \'동쪽에서\'는 전치사 in 사용',
+      category: 'multiple-errors',
+      level: 'middle-1',
+      tags: ['자동사', 'rise', 'raise', '전치사', '방향']
+    },
+    {
+      id: 'multiple-errors-004',
+      incorrect: 'The sun raise from east.',
+      correct: 'The sun rises in the east.',
+      reason: '자기가 떠오르니까 자동사 rise 사용 / \'동쪽에서\'는 전치사 in 사용',
+      category: 'multiple-errors',
+      level: 'middle-1',
+      tags: ['자동사', 'rise', 'raise', '전치사', '방향']
+    },
+    {
+      id: 'multiple-errors-005',
+      incorrect: 'Sun rise at east.',
+      correct: 'The sun rises in the east.',
+      reason: '3인칭 단수라 동사에 -s / \'동쪽에서\'는 전치사 in 사용',
+      category: 'multiple-errors',
+      level: 'middle-1',
+      tags: ['정관사', '현재시제', '3인칭 단수', '전치사', '방향']
+    },
+    {
+      id: 'multiple-errors-006',
+      incorrect: 'The sun rise at east.',
+      correct: 'The sun rises in the east.',
+      reason: '3인칭 단수라 동사에 -s / \'동쪽에서\'는 전치사 in 사용',
+      category: 'multiple-errors',
+      level: 'middle-1',
+      tags: ['현재시제', '3인칭 단수', '전치사', '방향']
+    },
+    {
+      id: 'fixed-expression-002',
+      incorrect: 'He doesn’t talk lie.',
+      correct: 'He doesn\'t tell a lie.',
+      reason: '...를 말하다\'로는 talk가 아니라 tell 사용',
+      category: 'fixed-expression',
+      level: 'middle-1',
+      tags: ['동사 선택', 'talk', 'tell', '표현']
+    },
+    {
+      id: 'subject-verb-agreement-005',
+      incorrect: 'Birds looks beautiful.',
+      correct: 'Birds look beautiful.',
+      reason: '주어가 복수니까 동사에서 -s 제거',
+      category: 'subject-verb-agreement',
+      level: 'middle-1',
+      tags: ['현재시제', '복수 주어', '주어-동사 수일치']
+    },
+    {
+      id: 'article-012',
+      incorrect: 'It sounds like good idea.',
+      correct: 'It sounds like a good idea.',
+      reason: 'idea는 셀 수 있는 명사. 관사 a 사용',
+      category: 'article',
+      level: 'middle-1',
+      tags: ['관사', '셀 수 있는 명사', '감각동사']
+    },
+    {
+      id: 'verb-complement-001',
+      incorrect: 'It sounds a good idea.',
+      correct: 'It sounds like a good idea.',
+      reason: 'idea가 명사니까 감각동사 sound 뒤에 like 필요',
+      category: 'verb-complement',
+      level: 'middle-1',
+      tags: ['감각동사', 'sound like', '전치사', '명사']
+    },
+    {
+      id: 'subject-verb-agreement-006',
+      incorrect: 'She sometimes call me.',
+      correct: 'She sometimes calls me.',
+      reason: '3인칭 단수 주어라 동사에 -s 필요',
+      category: 'subject-verb-agreement',
+      level: 'middle-1',
+      tags: ['현재시제', '3인칭 단수', '주어-동사 수일치']
+    },
+    {
+      id: 'article-013',
+      incorrect: 'He drives taxi.',
+      correct: 'He drives a taxi.',
+      reason: '택시(a taxi) 셀 수 있어서 관사 필요.',
+      category: 'article',
+      level: 'middle-1',
+      tags: ['관사', '셀 수 있는 명사', '단수 명사']
+    },
+    {
+      id: 'subject-verb-agreement-007',
+      incorrect: 'She find the answer easy.',
+      correct: 'She finds the answer easy.',
+      reason: '3인칭 단수 주어라 동사에 -s 필요',
+      category: 'subject-verb-agreement',
+      level: 'middle-1',
+      tags: ['현재시제', '3인칭 단수', '주어-동사 수일치']
     }
   ];
 })();
