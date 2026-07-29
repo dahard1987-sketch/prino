@@ -387,6 +387,114 @@
       category: 'subject-verb-agreement',
       level: 'middle-1',
       tags: ['현재시제', '3인칭 단수', '주어-동사 수일치']
+    },
+        {
+      id: 'tense-002',
+      incorrect: 'Romeo did write a letter to Juliet.',
+      correct: 'Romeo didn\'t write a letter to Juliet.',
+      reason: 'wrote거나 didn\'t write거나',
+      category: 'tense',
+      level: 'middle-1',
+      tags: ['과거시제', '일반동사', 'did', '부정문']
+    },
+    {
+      id: 'article-014',
+      incorrect: 'She calls him a "Jim."',
+      correct: 'She calls him "Jim."',
+      reason: '고유명사에는 관사 쓰지 않음',
+      category: 'article',
+      level: 'middle-1',
+      tags: ['관사', '고유명사', '목적격 보어']
+    },
+    {
+      id: 'article-015',
+      incorrect: 'I find him a handsome.',
+      correct: 'I find him handsome.',
+      reason: '형용사에 관사 쓰지 않음.',
+      category: 'article',
+      level: 'middle-1',
+      tags: ['관사', '형용사', '목적격 보어']
+    },
+    {
+      id: 'multiple-errors-007',
+      incorrect: 'The shef finds his cook is bad.',
+      correct: 'The chef finds his food bad.',
+      reason: 'chef 스펠링, 동사 억지로 하나 더 쓰기, cook = 요리사, food = 음식',
+      category: 'multiple-errors',
+      level: 'middle-1',
+      tags: ['철자', '목적격 보어', '동사', '단어 선택', 'chef', 'cook', 'food']
+    },
+    {
+      id: 'noun-spelling-002',
+      incorrect: 'The shef finds his food bad.',
+      correct: 'The chef finds his food bad.',
+      reason: 'chef 스펠링',
+      category: 'noun-spelling',
+      level: 'middle-1',
+      tags: ['철자', 'chef']
+    },
+    {
+      id: 'multiple-errors-008',
+      incorrect: 'The chef finds his cook is bad.',
+      correct: 'The chef finds his food bad.',
+      reason: '동사 억지로 하나 더 쓰기, cook = 요리사, food = 음식',
+      category: 'multiple-errors',
+      level: 'middle-1',
+      tags: ['목적격 보어', '동사', '단어 선택', 'cook', 'food']
+    },
+    {
+      id: 'word-choice-001',
+      incorrect: 'The chef finds his cook bad.',
+      correct: 'The chef finds his food bad.',
+      reason: 'cook = 요리사, food = 음식',
+      category: 'word-choice',
+      level: 'middle-1',
+      tags: ['단어 선택', 'cook', 'food']
+    },
+    {
+      id: 'multiple-errors-009',
+      incorrect: 'Mina was second grade last year.',
+      correct: 'Mina was in the second grade last year.',
+      reason: '서수에는 the, ...학년인 = in .. grade',
+      category: 'multiple-errors',
+      level: 'middle-1',
+      tags: ['정관사', '서수', '전치사', '학년']
+    },
+    {
+      id: 'article-016',
+      incorrect: 'You were in the London last week.',
+      correct: 'You were in London last week.',
+      reason: '도시 이름에 the (거의) 쓰지 않음.',
+      category: 'article',
+      level: 'middle-1',
+      tags: ['정관사', '고유명사', '도시 이름']
+    },
+    {
+      id: 'noun-number-006',
+      incorrect: 'They were classmate.',
+      correct: 'They were classmates.',
+      reason: '여러 명 지칭하니까 -s',
+      category: 'noun-number',
+      level: 'middle-1',
+      tags: ['복수형', '보어', '복수 주어']
+    },
+    {
+      id: 'capitalization-001',
+      incorrect: 'You were in london last week.',
+      correct: 'You were in London last week.',
+      reason: '도시 이름 대문자로.',
+      category: 'capitalization',
+      level: 'middle-1',
+      tags: ['대문자', '고유명사', '도시 이름']
+    },
+    {
+      id: 'article-017',
+      incorrect: 'Was Jinho student last year?',
+      correct: 'Was Jinho a student last year?',
+      reason: 'student 셀 수 있으니까 a student',
+      category: 'article',
+      level: 'middle-1',
+      tags: ['관사', '셀 수 있는 명사', '단수 명사', '의문문']
     }
   ];
 })();
