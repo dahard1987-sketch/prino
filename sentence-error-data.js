@@ -495,6 +495,96 @@
       category: 'article',
       level: 'middle-1',
       tags: ['관사', '셀 수 있는 명사', '단수 명사', '의문문']
+    },
+        {
+      id: 'subject-verb-agreement-008',
+      incorrect: 'The baby have small feet.',
+      correct: 'The baby has small feet.',
+      reason: '주어 3인칭 단수니까 has',
+      category: 'subject-verb-agreement',
+      level: 'middle-1',
+      tags: ['현재시제', '3인칭 단수', 'have', 'has']
+    },
+    {
+      id: 'noun-number-007',
+      incorrect: 'The baby has a small foot.',
+      correct: 'The baby has small feet.',
+      reason: '발 하나만 이야기할 리는 (거의) 없으니 foot 말고 feet',
+      category: 'noun-number',
+      level: 'middle-1',
+      tags: ['복수형', '불규칙 복수형', 'foot', 'feet']
+    },
+    {
+      id: 'article-018',
+      incorrect: 'The baby has a small feet.',
+      correct: 'The baby has small feet.',
+      reason: 'feet 복수니까 a 필요 없음',
+      category: 'article',
+      level: 'middle-1',
+      tags: ['관사', '복수 명사', 'feet']
+    },
+    {
+      id: 'article-019',
+      incorrect: 'Stone is hard.',
+      correct: 'A stone is hard.',
+      reason: 'stone 셀 수 있으니까 a stone',
+      category: 'article',
+      level: 'middle-1',
+      tags: ['관사', '셀 수 있는 명사', '단수 명사']
+    },
+    {
+      id: 'noun-number-008',
+      incorrect: 'I bought two bottle of wine.',
+      correct: 'I bought two bottles of wine.',
+      reason: 'bottle은 셀 수 있고, 2병이니까 two bottles',
+      category: 'noun-number',
+      level: 'middle-1',
+      tags: ['복수형', '셀 수 있는 명사', '수사', 'bottle']
+    },
+    {
+      id: 'verb-form-001',
+      incorrect: 'He talking about music.',
+      correct: 'He is talking about music.',
+      reason: '-ing 혼자서는 동사로 쓸 수 없어요',
+      category: 'verb-form',
+      level: 'middle-1',
+      tags: ['현재진행형', 'be동사', '현재분사']
+    },
+    {
+      id: 'voice-001',
+      incorrect: 'Bill was left school a few days ago.',
+      correct: 'Bill left school a few days ago.',
+      reason: 'was left는 남겨졌다는 수동태 의미.',
+      category: 'voice',
+      level: 'middle-1',
+      tags: ['과거시제', '수동태', '능동태', 'leave']
+    },
+    {
+      id: 'article-020',
+      incorrect: 'Bill left a school a few days ago.',
+      correct: 'Bill left school a few days ago.',
+      reason: '자기 학교니까 관사 쓰지 않음',
+      category: 'article',
+      level: 'middle-1',
+      tags: ['관사', '무관사', 'school']
+    },
+    {
+      id: 'determiner-003',
+      incorrect: 'He answered theirs questions.',
+      correct: 'He answered their questions.',
+      reason: 'theirs: 그들의 것 / their: 그들의',
+      category: 'determiner',
+      level: 'middle-1',
+      tags: ['소유격', '소유대명사', 'their', 'theirs']
+    },
+    {
+      id: 'preposition-001',
+      incorrect: 'He answered to their questions.',
+      correct: 'He answered their questions.',
+      reason: '동사 answer에는 to 쓰지 않습니다.',
+      category: 'preposition',
+      level: 'middle-1',
+      tags: ['전치사', '타동사', 'answer', 'to']
     }
   ];
 })();
