@@ -1216,6 +1216,7 @@
       pointer-events: none;
       text-align: center;
       text-wrap: balance;
+      transform: translate(-50%, -50%);
     }
     .radial-choice__label kbd {
       display: grid;
@@ -1233,15 +1234,6 @@
     }
     .radial-choice__label strong { font-size: clamp(1.12rem, 2.7vmin, 2rem); line-height: 1.08; }
     .radial-choice__label small { font-size: clamp(.7rem, 1.55vmin, 1rem); font-weight: 800; line-height: 1.18; opacity: .82; }
-    .radial-choice--i-noun .radial-choice__label,
-    .radial-choice--ii-purpose .radial-choice__label { top: 21%; left: 50%; transform: translate(-50%, -50%); }
-    .radial-choice--i-adjective .radial-choice__label { right: 9%; bottom: 14%; }
-    .radial-choice--i-adverb .radial-choice__label { bottom: 14%; left: 9%; }
-    .radial-choice--ii-emotion .radial-choice__label { top: 29%; right: 6%; transform: translateY(-50%); }
-    .radial-choice--ii-judgment .radial-choice__label { right: 7%; bottom: 11%; }
-    .radial-choice--ii-result .radial-choice__label { bottom: 11%; left: 7%; }
-    .radial-choice--ii-adjective .radial-choice__label { top: 29%; left: 6%; transform: translateY(-50%); }
-
     .radial-seams {
       position: absolute;
       z-index: 3;
@@ -1310,23 +1302,17 @@
     @media (max-width: 700px) {
       .to-infinitive-sentence { width: min(88vw, 680px); max-height: 34dvh; font-size: clamp(1.55rem, 7vw, 2.35rem); }
       .radial-choice__label { max-width: 34vw; }
-      .radial-choice--ii-emotion .radial-choice__label { right: 3%; }
-      .radial-choice--ii-adjective .radial-choice__label { left: 3%; }
-      .radial-choice--ii-judgment .radial-choice__label { right: 4%; }
-      .radial-choice--ii-result .radial-choice__label { left: 4%; }
     }
 
     @media (orientation: landscape) and (max-height: 600px) {
-      .radial-choice--i-noun .radial-choice__label,
-      .radial-choice--ii-purpose .radial-choice__label { top: 24%; }
-      .radial-choice--ii-emotion .radial-choice__label,
-      .radial-choice--ii-adjective .radial-choice__label { top: 34%; }
-      .radial-choice--i-adjective .radial-choice__label,
-      .radial-choice--i-adverb .radial-choice__label { bottom: 8%; }
-      .radial-choice--ii-judgment .radial-choice__label,
-      .radial-choice--ii-result .radial-choice__label { bottom: 6%; }
       .to-infinitive-sentence { width: min(70vw, 820px); max-height: 38dvh; padding-block: 18px; font-size: clamp(1.45rem, 4.5vmin, 2.65rem); }
       .radial-game .answer-feedback { top: 50%; left: calc(50% + min(38vw, 430px)); }
+    }
+    @media (orientation: landscape) and (max-height: 420px) {
+      .radial-choice__label { gap: 0; }
+      .radial-choice__label kbd { width: 26px; margin-bottom: 2px; border-radius: 7px; font-size: .78rem; }
+      .radial-choice__label strong { font-size: 1rem; }
+      .radial-choice__label small { display: none; }
     }
   </style>
 </head>
@@ -1911,6 +1897,233 @@
     function showScreen(screen) {
       screens.forEach(item => item.classList.toggle('active', item === screen));
     }
+
+    function getPolygonArea(points) {
+      let sum = 0;
+      points.forEach((point, index) => {
+        const next = points[(index + 1) % points.length];
+        sum += point.x * next.y - next.x * point.y;
+      });
+      return Math.abs(sum) / 2;
+    }
+
+    function getPolygonCentroid(points) {
+      let crossSum = 0;
+      let xSum = 0;
+      let ySum = 0;
+      points.forEach((point, index) => {
+        const next = points[(index + 1) % points.length];
+        const cross = point.x * next.y - next.x * point.y;
+        crossSum += cross;
+        xSum += (point.x + next.x) * cross;
+        ySum += (point.y + next.y) * cross;
+      });
+      if (Math.abs(crossSum) < .001) {
+        return points.reduce((sum, point) => ({ x: sum.x + point.x / points.length, y: sum.y + point.y / points.length }), { x: 0, y: 0 });
+      }
+      return { x: xSum / (3 * crossSum), y: ySum / (3 * crossSum) };
+    }
+
+    function isPointInsidePolygon(point, polygon) {
+      let inside = false;
+      for (let index = 0, previous = polygon.length - 1; index < polygon.length; previous = index, index += 1) {
+        const currentPoint = polygon[index];
+        const previousPoint = polygon[previous];
+        const crosses = (currentPoint.y > point.y) !== (previousPoint.y > point.y)
+          && point.x < (previousPoint.x - currentPoint.x) * (point.y - currentPoint.y)
+            / (previousPoint.y - currentPoint.y) + currentPoint.x;
+        if (crosses) inside = !inside;
+      }
+      return inside;
+    }
+
+    function createEqualAreaRadialGeometry(width, height, count) {
+      const center = { x: width * .5, y: height * .52 };
+      const perimeter = [
+        { x: width * .5, y: 0 },
+        { x: width, y: 0 },
+        { x: width, y: height },
+        { x: 0, y: height },
+        { x: 0, y: 0 },
+        { x: width * .5, y: 0 }
+      ];
+      const segmentAreas = perimeter.slice(0, -1).map((point, index) => {
+        const next = perimeter[index + 1];
+        return Math.abs(
+          (point.x - center.x) * (next.y - center.y)
+          - (point.y - center.y) * (next.x - center.x)
+        ) / 2;
+      });
+      const cumulativeAreas = [0];
+      segmentAreas.forEach(area => cumulativeAreas.push(cumulativeAreas.at(-1) + area));
+      const totalArea = cumulativeAreas.at(-1);
+      const sectorArea = totalArea / count;
+      const startArea = totalArea - sectorArea / 2;
+      const normalizeArea = area => ((area % totalArea) + totalArea) % totalArea;
+
+      const pointAtArea = rawArea => {
+        const area = normalizeArea(rawArea);
+        let segmentIndex = segmentAreas.findIndex((segmentArea, index) => area <= cumulativeAreas[index + 1] + .0001);
+        if (segmentIndex < 0) segmentIndex = segmentAreas.length - 1;
+        const segmentArea = segmentAreas[segmentIndex];
+        const progress = segmentArea ? (area - cumulativeAreas[segmentIndex]) / segmentArea : 0;
+        const start = perimeter[segmentIndex];
+        const end = perimeter[segmentIndex + 1];
+        return {
+          x: start.x + (end.x - start.x) * Math.max(0, Math.min(1, progress)),
+          y: start.y + (end.y - start.y) * Math.max(0, Math.min(1, progress))
+        };
+      };
+
+      const getPerimeterPoints = (fromArea, toArea) => {
+        const points = [pointAtArea(fromArea)];
+        const firstLap = Math.floor(fromArea / totalArea) - 1;
+        const lastLap = Math.floor(toArea / totalArea) + 1;
+        for (let lap = firstLap; lap <= lastLap; lap += 1) {
+          cumulativeAreas.slice(1).forEach((area, index) => {
+            const unwrappedArea = lap * totalArea + area;
+            if (unwrappedArea > fromArea + .0001 && unwrappedArea < toArea - .0001) {
+              points.push(perimeter[index + 1]);
+            }
+          });
+        }
+        points.push(pointAtArea(toArea));
+        return points;
+      };
+
+      const polygons = Array.from({ length: count }, (_, index) => {
+        const fromArea = startArea + index * sectorArea;
+        return [center, ...getPerimeterPoints(fromArea, fromArea + sectorArea)];
+      });
+      return { center, polygons, sectorArea };
+    }
+
+    function positionRadialLabels(screen, polygons, center) {
+      const screenRect = screen.getBoundingClientRect();
+      const baseObstacles = [
+        ...screen.querySelectorAll('.topbar > *'),
+        screen.querySelector('.radial-timer'),
+        screen.querySelector('.to-infinitive-sentence')
+      ].filter(Boolean).map(element => {
+        const rect = element.getBoundingClientRect();
+        return {
+          left: rect.left - screenRect.left,
+          right: rect.right - screenRect.left,
+          top: rect.top - screenRect.top,
+          bottom: rect.bottom - screenRect.top
+        };
+      });
+      const placedLabelRects = [];
+
+      screen.querySelectorAll('.radial-choice__label').forEach((label, index) => {
+        const centroid = getPolygonCentroid(polygons[index]);
+        let x = centroid.x;
+        let y = centroid.y;
+        label.style.left = `${x}px`;
+        label.style.top = `${y}px`;
+        const labelRect = label.getBoundingClientRect();
+        const halfWidth = labelRect.width / 2;
+        const halfHeight = labelRect.height / 2;
+        const margin = 12;
+        const clampPoint = point => ({
+          x: Math.max(margin + halfWidth, Math.min(screenRect.width - margin - halfWidth, point.x)),
+          y: Math.max(margin + halfHeight, Math.min(screenRect.height - margin - halfHeight, point.y))
+        });
+        ({ x, y } = clampPoint({ x, y }));
+        const getLabelBounds = point => ({
+          left: point.x - halfWidth,
+          right: point.x + halfWidth,
+          top: point.y - halfHeight,
+          bottom: point.y + halfHeight
+        });
+        const intersects = (first, second, gap = 3) => (
+          first.right > second.left - gap
+          && first.left < second.right + gap
+          && first.bottom > second.top - gap
+          && first.top < second.bottom + gap
+        );
+
+        for (let attempt = 0; attempt < 12; attempt += 1) {
+          const current = getLabelBounds({ x, y });
+          const obstacles = [...baseObstacles, ...placedLabelRects];
+          const obstacle = obstacles.find(rect => intersects(current, rect));
+          if (!obstacle) break;
+          const candidates = [
+            { x: obstacle.left - 12 - halfWidth, y },
+            { x: obstacle.right + 12 + halfWidth, y },
+            { x, y: obstacle.top - 12 - halfHeight },
+            { x, y: obstacle.bottom + 12 + halfHeight }
+          ].map(clampPoint).filter((candidate, candidateIndex, allCandidates) => (
+            Math.hypot(candidate.x - x, candidate.y - y) > .5
+            && isPointInsidePolygon(candidate, polygons[index])
+            && !obstacles.some(other => intersects(getLabelBounds(candidate), other))
+            && allCandidates.findIndex(other => Math.abs(other.x - candidate.x) < .1 && Math.abs(other.y - candidate.y) < .1) === candidateIndex
+          )).sort((first, second) => (
+            Math.hypot(first.x - x, first.y - y) - Math.hypot(second.x - x, second.y - y)
+          ));
+          if (!candidates.length) break;
+          ({ x, y } = candidates[0]);
+        }
+        const finalObstacles = [...baseObstacles, ...placedLabelRects];
+        if (finalObstacles.some(obstacle => intersects(getLabelBounds({ x, y }), obstacle))) {
+          const step = Math.max(10, Math.min(screenRect.width, screenRect.height) / 30);
+          const openPositions = [];
+          for (let candidateY = margin + halfHeight; candidateY <= screenRect.height - margin - halfHeight; candidateY += step) {
+            for (let candidateX = margin + halfWidth; candidateX <= screenRect.width - margin - halfWidth; candidateX += step) {
+              const candidate = { x: candidateX, y: candidateY };
+              if (!isPointInsidePolygon(candidate, polygons[index])) continue;
+              if (finalObstacles.some(obstacle => intersects(getLabelBounds(candidate), obstacle))) continue;
+              openPositions.push(candidate);
+            }
+          }
+          if (openPositions.length) {
+            openPositions.sort((first, second) => (
+              Math.hypot(first.x - centroid.x, first.y - centroid.y)
+              - Math.hypot(second.x - centroid.x, second.y - centroid.y)
+            ));
+            ({ x, y } = openPositions[0]);
+          }
+        }
+        label.style.left = `${x}px`;
+        label.style.top = `${y}px`;
+        placedLabelRects.push(getLabelBounds({ x, y }));
+      });
+    }
+
+    function layoutRadialActivity(screen, count) {
+      if (!screen?.classList.contains('active')) return;
+      const width = screen.clientWidth;
+      const height = screen.clientHeight;
+      if (!width || !height) return;
+      const { center, polygons, sectorArea } = createEqualAreaRadialGeometry(width, height, count);
+      const choices = [...screen.querySelectorAll('.radial-choice')];
+      choices.forEach((choice, index) => {
+        const polygon = polygons[index];
+        choice.style.clipPath = `polygon(${polygon.map(point => `${point.x.toFixed(3)}px ${point.y.toFixed(3)}px`).join(', ')})`;
+        choice.dataset.areaRatio = (getPolygonArea(polygon) / sectorArea).toFixed(6);
+      });
+      const seams = screen.querySelector('.radial-seams');
+      seams.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      seams.querySelectorAll('line').forEach((line, index) => {
+        const boundary = polygons[index][1];
+        line.setAttribute('x1', center.x);
+        line.setAttribute('y1', center.y);
+        line.setAttribute('x2', boundary.x);
+        line.setAttribute('y2', boundary.y);
+      });
+      positionRadialLabels(screen, polygons, center);
+    }
+
+    let radialLayoutAnimationId = null;
+    function scheduleRadialLayout() {
+      window.cancelAnimationFrame(radialLayoutAnimationId);
+      radialLayoutAnimationId = window.requestAnimationFrame(() => {
+        if (activeActivity === 'to-infinitive-i') layoutRadialActivity(toInfinitiveIScreen, 3);
+        if (activeActivity === 'to-infinitive-ii') layoutRadialActivity(toInfinitiveIIScreen, 5);
+      });
+    }
+    window.addEventListener('resize', scheduleRadialLayout);
+    window.visualViewport?.addEventListener('resize', scheduleRadialLayout);
 
     function tokenizeSentenceForDiff(sentence) {
       return sentence.match(/\s+|[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*|[^\s\p{L}\p{N}]/gu) || [];
@@ -3223,6 +3436,8 @@
       config.sentence.replaceChildren();
       appendMarkedSentence(config.sentence, selection.item.marked);
       animateCard(config.sentence);
+      layoutRadialActivity(ACTIVITY_SCREENS[activity], activity === 'to-infinitive-i' ? 3 : 5);
+      window.setTimeout(scheduleRadialLayout, 190);
       return true;
     }
 
