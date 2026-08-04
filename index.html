@@ -1176,6 +1176,162 @@
       .primary-button:hover { filter: brightness(1.08); }
       .link-button:hover { color: var(--ink); }
     }
+
+    /* to-infinitive radial activities */
+    .activity-card--to-i { background: #557B98; color: #fff; }
+    .activity-card--to-ii { background: #A9CFF0; color: var(--ink); }
+    .activity-card--to-i .activity-card__icon,
+    .activity-card--to-ii .activity-card__icon {
+      font-size: clamp(1.55rem, 3.2vmin, 2.45rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+    }
+
+    .radial-game { background: var(--powder); isolation: isolate; }
+    .radial-choice {
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      color: var(--ink);
+    }
+    .radial-choice--i-noun { clip-path: polygon(50% 52%, 0 0, 100% 0); background: var(--steel); color: #fff; }
+    .radial-choice--i-adjective { clip-path: polygon(50% 52%, 100% 0, 100% 100%, 50% 100%); background: var(--sky); }
+    .radial-choice--i-adverb { clip-path: polygon(50% 52%, 50% 100%, 0 100%, 0 0); background: var(--powder); }
+
+    .radial-choice--ii-purpose { clip-path: polygon(50% 52%, 20% 0, 80% 0); background: var(--steel); color: #fff; }
+    .radial-choice--ii-emotion { clip-path: polygon(50% 52%, 80% 0, 100% 0, 100% 60%); background: var(--sky); }
+    .radial-choice--ii-judgment { clip-path: polygon(50% 52%, 100% 60%, 100% 100%, 50% 100%); background: var(--ink); color: #fff; }
+    .radial-choice--ii-result { clip-path: polygon(50% 52%, 50% 100%, 0 100%, 0 60%); background: var(--powder); }
+    .radial-choice--ii-adjective { clip-path: polygon(50% 52%, 0 60%, 0 0, 20% 0); background: #9EBFD9; }
+
+    .radial-choice__label {
+      position: absolute;
+      z-index: 2;
+      display: grid;
+      justify-items: center;
+      gap: 2px;
+      width: max-content;
+      max-width: 29vw;
+      pointer-events: none;
+      text-align: center;
+      text-wrap: balance;
+    }
+    .radial-choice__label kbd {
+      display: grid;
+      place-items: center;
+      width: clamp(29px, 4.2vmin, 42px);
+      aspect-ratio: 1;
+      margin-bottom: 4px;
+      border: 2px solid currentColor;
+      border-radius: 9px;
+      background: rgba(248,251,254,.84);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: clamp(.88rem, 2vmin, 1.2rem);
+      font-weight: 950;
+    }
+    .radial-choice__label strong { font-size: clamp(1.12rem, 2.7vmin, 2rem); line-height: 1.08; }
+    .radial-choice__label small { font-size: clamp(.7rem, 1.55vmin, 1rem); font-weight: 800; line-height: 1.18; opacity: .82; }
+    .radial-choice--i-noun .radial-choice__label,
+    .radial-choice--ii-purpose .radial-choice__label { top: 21%; left: 50%; transform: translate(-50%, -50%); }
+    .radial-choice--i-adjective .radial-choice__label { right: 9%; bottom: 14%; }
+    .radial-choice--i-adverb .radial-choice__label { bottom: 14%; left: 9%; }
+    .radial-choice--ii-emotion .radial-choice__label { top: 29%; right: 6%; transform: translateY(-50%); }
+    .radial-choice--ii-judgment .radial-choice__label { right: 7%; bottom: 11%; }
+    .radial-choice--ii-result .radial-choice__label { bottom: 11%; left: 7%; }
+    .radial-choice--ii-adjective .radial-choice__label { top: 29%; left: 6%; transform: translateY(-50%); }
+
+    .radial-seams { position: absolute; z-index: 3; inset: 0; overflow: hidden; pointer-events: none; }
+    .radial-seams i {
+      position: absolute;
+      top: 52%;
+      left: 50%;
+      width: 90vmax;
+      height: 2px;
+      background: rgba(56,73,89,.44);
+      transform-origin: left center;
+    }
+    .radial-game--three .radial-seams i:nth-child(1) { transform: rotate(-140deg); }
+    .radial-game--three .radial-seams i:nth-child(2) { transform: rotate(-40deg); }
+    .radial-game--three .radial-seams i:nth-child(3) { transform: rotate(90deg); }
+    .radial-game--five .radial-seams i:nth-child(1) { transform: rotate(-119deg); }
+    .radial-game--five .radial-seams i:nth-child(2) { transform: rotate(-61deg); }
+    .radial-game--five .radial-seams i:nth-child(3) { transform: rotate(7deg); }
+    .radial-game--five .radial-seams i:nth-child(4) { transform: rotate(90deg); }
+    .radial-game--five .radial-seams i:nth-child(5) { transform: rotate(173deg); }
+
+    .radial-timer { z-index: 31; }
+    .to-infinitive-sentence {
+      top: 52%;
+      width: min(76vw, 920px);
+      max-height: 36dvh;
+      min-width: 0;
+      overflow: hidden;
+      padding: clamp(22px, 4vmin, 42px) clamp(24px, 5vw, 58px);
+      font-size: clamp(1.65rem, 4.3vmin, 3.65rem);
+      font-weight: 850;
+      line-height: 1.28;
+      letter-spacing: -.035em;
+      text-wrap: balance;
+    }
+    .to-infinitive-sentence .marked-ing { background: var(--powder); color: var(--ink); }
+    .radial-game .answer-feedback { top: 34%; z-index: 32; }
+    .radial-game.study-mode .answer-feedback { top: 31%; }
+
+    .to-result { display: grid; gap: 14px; }
+    .to-result__answer {
+      padding: 18px 20px;
+      border: 2px solid var(--steel);
+      border-radius: 14px;
+      background: var(--powder);
+      color: var(--ink);
+      font-size: clamp(1.18rem, 2.6vmin, 1.65rem);
+      font-weight: 950;
+      text-align: center;
+    }
+    .to-result__section {
+      padding: 18px 20px;
+      border-radius: 14px;
+      background: var(--surface);
+    }
+    .to-result__label { display: block; margin-bottom: 8px; color: var(--steel); font-size: .82rem; font-weight: 900; }
+    .to-result__sentence,
+    .to-result__translation,
+    .to-result__explanation { color: var(--ink); font-size: clamp(1.05rem, 2.35vmin, 1.42rem); font-weight: 750; line-height: 1.55; }
+    .to-result__sentence { font-size: clamp(1.25rem, 3vmin, 1.85rem); font-weight: 900; }
+    .to-result__meaning { color: #236A9F; font-weight: 950; text-decoration: underline; text-decoration-thickness: .11em; text-underline-offset: .16em; }
+    .to-result__type {
+      display: inline-block;
+      margin-left: .22em;
+      padding: .08em .4em .12em;
+      border: 2px solid var(--steel);
+      border-radius: 8px;
+      background: var(--powder);
+      font-weight: 950;
+    }
+
+    @media (max-width: 700px) {
+      .to-infinitive-sentence { width: min(88vw, 680px); max-height: 34dvh; font-size: clamp(1.55rem, 7vw, 2.35rem); }
+      .radial-choice__label { max-width: 34vw; }
+      .radial-choice--ii-emotion .radial-choice__label { right: 3%; }
+      .radial-choice--ii-adjective .radial-choice__label { left: 3%; }
+      .radial-choice--ii-judgment .radial-choice__label { right: 4%; }
+      .radial-choice--ii-result .radial-choice__label { left: 4%; }
+    }
+
+    @media (orientation: landscape) and (max-height: 600px) {
+      .radial-choice--i-noun .radial-choice__label,
+      .radial-choice--ii-purpose .radial-choice__label { top: 24%; }
+      .radial-choice--ii-emotion .radial-choice__label,
+      .radial-choice--ii-adjective .radial-choice__label { top: 34%; }
+      .radial-choice--i-adjective .radial-choice__label,
+      .radial-choice--i-adverb .radial-choice__label { bottom: 8%; }
+      .radial-choice--ii-judgment .radial-choice__label,
+      .radial-choice--ii-result .radial-choice__label { bottom: 6%; }
+      .to-infinitive-sentence { width: min(70vw, 820px); max-height: 38dvh; padding-block: 18px; font-size: clamp(1.45rem, 4.5vmin, 2.65rem); }
+      .radial-game .answer-feedback { top: 50%; left: calc(50% + min(38vw, 430px)); }
+    }
   </style>
 </head>
 <body>
@@ -1203,7 +1359,7 @@
   <section class="screen menu active" id="menu-screen" aria-label="활동 선택">
     <div class="panel">
       <div class="activity-list">
-        <button class="activity-card activity-card--prime" type="button" data-start="prime">
+        <button class="activity-card activity-card--prime" type="button" data-start="prime" hidden>
           <span class="activity-card__icon">2, 3, 5</span>
           <strong>소수 판별</strong>
         </button>
@@ -1218,6 +1374,14 @@
         <button class="activity-card activity-card--sentence-error" id="sentence-error-start" type="button" data-start="sentence-error">
           <span class="activity-card__icon">✓ / ✕</span>
           <strong>문장 오류 찾기</strong>
+        </button>
+        <button class="activity-card activity-card--to-i" type="button" data-start="to-infinitive-i">
+          <span class="activity-card__icon">N / Adj / Adv</span>
+          <strong>to v. 용법 구분 I</strong>
+        </button>
+        <button class="activity-card activity-card--to-ii" type="button" data-start="to-infinitive-ii">
+          <span class="activity-card__icon">ADV × 5</span>
+          <strong>to v. 용법 구분 II</strong>
         </button>
       </div>
     </div>
@@ -1333,6 +1497,72 @@
     <div class="answer-feedback" id="sentence-error-feedback" role="status" aria-live="assertive"><strong></strong><span></span></div>
   </main>
 
+  <main class="screen game radial-game radial-game--three" id="to-infinitive-i-screen" aria-label="to 부정사 용법 구분 1 게임">
+    <button class="choice radial-choice radial-choice--i-noun" type="button" data-to-i-answer="noun" aria-label="1번, 명사적 용법">
+      <span class="radial-choice__label"><kbd>1</kbd><strong>명사적</strong><small>Noun</small></span>
+    </button>
+    <button class="choice radial-choice radial-choice--i-adjective" type="button" data-to-i-answer="adjective" aria-label="2번, 형용사적 용법">
+      <span class="radial-choice__label"><kbd>2</kbd><strong>형용사적</strong><small>Adjective</small></span>
+    </button>
+    <button class="choice radial-choice radial-choice--i-adverb" type="button" data-to-i-answer="adverb" aria-label="3번, 부사적 용법">
+      <span class="radial-choice__label"><kbd>3</kbd><strong>부사적</strong><small>Adverb</small></span>
+    </button>
+    <div class="radial-seams" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="topbar">
+      <div class="topbar__actions">
+        <button class="icon-button" type="button" data-change-player><span class="button-label--wide">← 이름 바꾸기</span><span class="button-label--short">← 이름</span></button>
+        <button class="icon-button study-toggle" type="button" data-study-toggle aria-pressed="false">학습 모드</button>
+      </div>
+      <div class="score-group">
+        <div class="pill"><span class="pill__label" id="to-i-score-label">연속</span><span class="pill__value" id="to-i-score">0</span></div>
+        <div class="pill"><span class="pill__label" id="to-i-best-label">최고</span><span class="pill__value" id="to-i-best">0</span></div>
+      </div>
+    </div>
+    <div class="game-timer radial-timer" id="to-i-timer" role="timer" aria-live="off">
+      <div class="game-timer__meta"><span>남은 시간</span><strong id="to-i-timer-label">10.0초</strong></div>
+      <div class="game-timer__track"><span class="game-timer__bar" id="to-i-timer-bar"></span></div>
+    </div>
+    <div class="center-card to-infinitive-sentence" id="to-i-sentence" aria-live="assertive"></div>
+    <div class="flash" id="to-i-flash" aria-hidden="true"></div>
+    <div class="answer-feedback" id="to-i-feedback" role="status" aria-live="assertive"><strong></strong><span></span></div>
+  </main>
+
+  <main class="screen game radial-game radial-game--five" id="to-infinitive-ii-screen" aria-label="to 부정사 용법 구분 2 게임">
+    <button class="choice radial-choice radial-choice--ii-purpose" type="button" data-to-ii-answer="purpose" aria-label="1번, 목적">
+      <span class="radial-choice__label"><kbd>1</kbd><strong>목적</strong><small>~하기 위해서</small></span>
+    </button>
+    <button class="choice radial-choice radial-choice--ii-emotion" type="button" data-to-ii-answer="emotion" aria-label="2번, 감정의 원인">
+      <span class="radial-choice__label"><kbd>2</kbd><strong>감정의 원인</strong><small>~해서</small></span>
+    </button>
+    <button class="choice radial-choice radial-choice--ii-judgment" type="button" data-to-ii-answer="judgment" aria-label="3번, 판단의 근거">
+      <span class="radial-choice__label"><kbd>3</kbd><strong>판단의 근거</strong><small>~하다니</small></span>
+    </button>
+    <button class="choice radial-choice radial-choice--ii-result" type="button" data-to-ii-answer="result" aria-label="4번, 결과">
+      <span class="radial-choice__label"><kbd>4</kbd><strong>결과</strong><small>결국 ~하게 되다</small></span>
+    </button>
+    <button class="choice radial-choice radial-choice--ii-adjective" type="button" data-to-ii-answer="adjective-modifier" aria-label="5번, 형용사 수식">
+      <span class="radial-choice__label"><kbd>5</kbd><strong>형용사 수식</strong><small>~하기에</small></span>
+    </button>
+    <div class="radial-seams" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="topbar">
+      <div class="topbar__actions">
+        <button class="icon-button" type="button" data-change-player><span class="button-label--wide">← 이름 바꾸기</span><span class="button-label--short">← 이름</span></button>
+        <button class="icon-button study-toggle" type="button" data-study-toggle aria-pressed="false">학습 모드</button>
+      </div>
+      <div class="score-group">
+        <div class="pill"><span class="pill__label" id="to-ii-score-label">연속</span><span class="pill__value" id="to-ii-score">0</span></div>
+        <div class="pill"><span class="pill__label" id="to-ii-best-label">최고</span><span class="pill__value" id="to-ii-best">0</span></div>
+      </div>
+    </div>
+    <div class="game-timer radial-timer" id="to-ii-timer" role="timer" aria-live="off">
+      <div class="game-timer__meta"><span>남은 시간</span><strong id="to-ii-timer-label">15.0초</strong></div>
+      <div class="game-timer__track"><span class="game-timer__bar" id="to-ii-timer-bar"></span></div>
+    </div>
+    <div class="center-card to-infinitive-sentence" id="to-ii-sentence" aria-live="assertive"></div>
+    <div class="flash" id="to-ii-flash" aria-hidden="true"></div>
+    <div class="answer-feedback" id="to-ii-feedback" role="status" aria-live="assertive"><strong></strong><span></span></div>
+  </main>
+
   <div class="streak-celebration" id="streak-celebration" role="status" aria-live="polite" aria-atomic="true">
     <div class="streak-celebration__message">
       <strong id="streak-celebration-score"></strong>
@@ -1396,6 +1626,7 @@
 
   <script src="ing-data.js"></script>
   <script src="sentence-error-data.js"></script>
+  <script src="to-infinitive-data.js"></script>
   <script>
     const PLAYER_NAMES = [
       '박범준', '배승우', '윤해든', '이룩', '이수민', '이우진', '이은수', '이지우',
@@ -1423,9 +1654,11 @@
       prime: '소수 판별',
       grammar: '동사의 목적어',
       ing: '동명사 / 현재분사',
-      'sentence-error': '문장 오류 찾기'
+      'sentence-error': '문장 오류 찾기',
+      'to-infinitive-i': 'to v. 용법 구분 I',
+      'to-infinitive-ii': 'to v. 용법 구분 II'
     };
-    const STUDY_ACTIVITY_KEYS = new Set(['grammar', 'ing', 'sentence-error']);
+    const STUDY_ACTIVITY_KEYS = new Set(['grammar', 'ing', 'sentence-error', 'to-infinitive-i', 'to-infinitive-ii']);
     const ROUND_OVER_TITLES = [
       '아쉬워요!',
       '잘 하지~',
@@ -1454,6 +1687,11 @@
     const SENTENCE_ERROR_VARIANTS = new Set(['incorrect', 'correct']);
     const SENTENCE_ERROR_DIFF_TYPES = new Set(['same', 'delete', 'insert']);
     const SENTENCE_ERROR_ITEMS = validateSentenceErrorItems(window.SENTENCE_ERROR_ITEMS);
+    const TO_INFINITIVE_I_ITEMS = Array.isArray(window.TO_INFINITIVE_I_ITEMS) ? window.TO_INFINITIVE_I_ITEMS : [];
+    const TO_INFINITIVE_II_ITEMS = Array.isArray(window.TO_INFINITIVE_II_ITEMS) ? window.TO_INFINITIVE_II_ITEMS : [];
+    const TO_INFINITIVE_COOLDOWN = 3;
+    const TO_INFINITIVE_I_TIME_LIMIT = 10000;
+    const TO_INFINITIVE_II_TIME_LIMIT = 15000;
     // 복습 차례가 충돌해 건너뛸 때도 마지막 55라운드 간격까지만 사용한다.
     const STUDY_REVIEW_INTERVALS = [1, 2, 3, 5, 8, 13, 21, 34, 55];
     const ING_ANSWER_LABELS = {
@@ -1464,6 +1702,18 @@
       correct: '맞음',
       incorrect: '틀림'
     };
+    const TO_INFINITIVE_I_ANSWER_LABELS = {
+      noun: '명사적 용법',
+      adjective: '형용사적 용법',
+      adverb: '부사적 용법'
+    };
+    const TO_INFINITIVE_II_ANSWER_LABELS = {
+      purpose: '목적',
+      emotion: '감정의 원인',
+      judgment: '판단의 근거',
+      result: '결과',
+      'adjective-modifier': '형용사 수식'
+    };
 
     const screens = [...document.querySelectorAll('.screen')];
     const welcomeScreen = document.querySelector('#welcome-screen');
@@ -1473,6 +1723,8 @@
     const grammarScreen = document.querySelector('#grammar-screen');
     const ingScreen = document.querySelector('#ing-screen');
     const sentenceErrorScreen = document.querySelector('#sentence-error-screen');
+    const toInfinitiveIScreen = document.querySelector('#to-infinitive-i-screen');
+    const toInfinitiveIIScreen = document.querySelector('#to-infinitive-ii-screen');
     const sentenceErrorStartButton = document.querySelector('#sentence-error-start');
     const nameForm = document.querySelector('#name-form');
     const nameSelect = document.querySelector('#name-select');
@@ -1485,26 +1737,38 @@
     const verbEl = document.querySelector('#verb');
     const ingSentenceEl = document.querySelector('#ing-sentence');
     const sentenceErrorSentenceEl = document.querySelector('#sentence-error-sentence');
+    const toInfinitiveISentenceEl = document.querySelector('#to-i-sentence');
+    const toInfinitiveIISentenceEl = document.querySelector('#to-ii-sentence');
     const sentenceErrorEmptyEl = document.querySelector('#sentence-error-empty');
     const sentenceErrorEmptyBackButton = document.querySelector('#sentence-error-empty-back');
     const primeScoreEl = document.querySelector('#prime-score');
     const grammarScoreEl = document.querySelector('#grammar-score');
     const ingScoreEl = document.querySelector('#ing-score');
     const sentenceErrorScoreEl = document.querySelector('#sentence-error-score');
+    const toInfinitiveIScoreEl = document.querySelector('#to-i-score');
+    const toInfinitiveIIScoreEl = document.querySelector('#to-ii-score');
     const grammarScoreLabelEl = document.querySelector('#grammar-score-label');
     const ingScoreLabelEl = document.querySelector('#ing-score-label');
     const sentenceErrorScoreLabelEl = document.querySelector('#sentence-error-score-label');
+    const toInfinitiveIScoreLabelEl = document.querySelector('#to-i-score-label');
+    const toInfinitiveIIScoreLabelEl = document.querySelector('#to-ii-score-label');
     const primeBestEl = document.querySelector('#prime-best');
     const grammarBestEl = document.querySelector('#grammar-best');
     const ingBestEl = document.querySelector('#ing-best');
     const sentenceErrorBestEl = document.querySelector('#sentence-error-best');
+    const toInfinitiveIBestEl = document.querySelector('#to-i-best');
+    const toInfinitiveIIBestEl = document.querySelector('#to-ii-best');
     const grammarBestLabelEl = document.querySelector('#grammar-best-label');
     const ingBestLabelEl = document.querySelector('#ing-best-label');
     const sentenceErrorBestLabelEl = document.querySelector('#sentence-error-best-label');
+    const toInfinitiveIBestLabelEl = document.querySelector('#to-i-best-label');
+    const toInfinitiveIIBestLabelEl = document.querySelector('#to-ii-best-label');
     const primeFlashEl = document.querySelector('#prime-flash');
     const grammarFlashEl = document.querySelector('#grammar-flash');
     const ingFlashEl = document.querySelector('#ing-flash');
     const sentenceErrorFlashEl = document.querySelector('#sentence-error-flash');
+    const toInfinitiveIFlashEl = document.querySelector('#to-i-flash');
+    const toInfinitiveIIFlashEl = document.querySelector('#to-ii-flash');
     const primeTimerEl = document.querySelector('#prime-timer');
     const primeTimerLabelEl = document.querySelector('#prime-timer-label');
     const primeTimerBarEl = document.querySelector('#prime-timer-bar');
@@ -1517,10 +1781,18 @@
     const sentenceErrorTimerEl = document.querySelector('#sentence-error-timer');
     const sentenceErrorTimerLabelEl = document.querySelector('#sentence-error-timer-label');
     const sentenceErrorTimerBarEl = document.querySelector('#sentence-error-timer-bar');
+    const toInfinitiveITimerEl = document.querySelector('#to-i-timer');
+    const toInfinitiveITimerLabelEl = document.querySelector('#to-i-timer-label');
+    const toInfinitiveITimerBarEl = document.querySelector('#to-i-timer-bar');
+    const toInfinitiveIITimerEl = document.querySelector('#to-ii-timer');
+    const toInfinitiveIITimerLabelEl = document.querySelector('#to-ii-timer-label');
+    const toInfinitiveIITimerBarEl = document.querySelector('#to-ii-timer-bar');
     const primeFeedbackEl = document.querySelector('#prime-feedback');
     const grammarFeedbackEl = document.querySelector('#grammar-feedback');
     const ingFeedbackEl = document.querySelector('#ing-feedback');
     const sentenceErrorFeedbackEl = document.querySelector('#sentence-error-feedback');
+    const toInfinitiveIFeedbackEl = document.querySelector('#to-i-feedback');
+    const toInfinitiveIIFeedbackEl = document.querySelector('#to-ii-feedback');
     const streakCelebrationEl = document.querySelector('#streak-celebration');
     const streakCelebrationScoreEl = document.querySelector('#streak-celebration-score');
     const streakCelebrationParticlesEl = document.querySelector('#streak-celebration-particles');
@@ -1547,19 +1819,25 @@
       prime: primeScreen,
       grammar: grammarScreen,
       ing: ingScreen,
-      'sentence-error': sentenceErrorScreen
+      'sentence-error': sentenceErrorScreen,
+      'to-infinitive-i': toInfinitiveIScreen,
+      'to-infinitive-ii': toInfinitiveIIScreen
     };
     const ACTIVITY_FEEDBACK = {
       prime: primeFeedbackEl,
       grammar: grammarFeedbackEl,
       ing: ingFeedbackEl,
-      'sentence-error': sentenceErrorFeedbackEl
+      'sentence-error': sentenceErrorFeedbackEl,
+      'to-infinitive-i': toInfinitiveIFeedbackEl,
+      'to-infinitive-ii': toInfinitiveIIFeedbackEl
     };
     const ACTIVITY_ANSWER_ATTRIBUTES = {
       prime: 'data-prime-answer',
       grammar: 'data-grammar-answer',
       ing: 'data-ing-answer',
-      'sentence-error': 'data-sentence-error-answer'
+      'sentence-error': 'data-sentence-error-answer',
+      'to-infinitive-i': 'data-to-i-answer',
+      'to-infinitive-ii': 'data-to-ii-answer'
     };
     const ACTIVITY_SCORE_UI = {
       grammar: { score: grammarScoreEl, scoreLabel: grammarScoreLabelEl, best: grammarBestEl, bestLabel: grammarBestLabelEl },
@@ -1569,7 +1847,9 @@
         scoreLabel: sentenceErrorScoreLabelEl,
         best: sentenceErrorBestEl,
         bestLabel: sentenceErrorBestLabelEl
-      }
+      },
+      'to-infinitive-i': { score: toInfinitiveIScoreEl, scoreLabel: toInfinitiveIScoreLabelEl, best: toInfinitiveIBestEl, bestLabel: toInfinitiveIBestLabelEl },
+      'to-infinitive-ii': { score: toInfinitiveIIScoreEl, scoreLabel: toInfinitiveIIScoreLabelEl, best: toInfinitiveIIBestEl, bestLabel: toInfinitiveIIBestLabelEl }
     };
 
     let playerName = '';
@@ -1580,11 +1860,15 @@
     let currentIngItem = ING_QUESTIONS[0];
     let currentSentenceErrorItem = SENTENCE_ERROR_ITEMS[0];
     let currentSentenceErrorVariant = 'incorrect';
+    let currentToInfinitiveIItem = TO_INFINITIVE_I_ITEMS[0];
+    let currentToInfinitiveIIItem = TO_INFINITIVE_II_ITEMS[0];
     let recentVerbs = [];
     let recentIngIndexes = [];
     let recentSentenceErrorIds = [];
     let recentSentenceErrorVerdicts = [];
     let lastSentenceErrorCorrect = '';
+    let recentToInfinitiveIIds = [];
+    let recentToInfinitiveIIIds = [];
     const sentenceErrorLastVariantById = new Map();
     let currentIngIndex = 0;
     let studyMode = false;
@@ -1611,6 +1895,10 @@
     let sentenceErrorTickIntervalId = null;
     let sentenceErrorTimerAnimationId = null;
     let sentenceErrorDeadline = 0;
+    let toInfinitiveTimeoutId = null;
+    let toInfinitiveTickIntervalId = null;
+    let toInfinitiveTimerAnimationId = null;
+    let toInfinitiveDeadline = 0;
     let streakCelebrationTimeoutId = null;
     const suppressedUsageNotes = new Set();
 
@@ -1852,6 +2140,8 @@
       if (activity === 'grammar') return new Set(VERBS.map(item => item.verb));
       if (activity === 'ing') return new Set(ING_QUESTIONS.map((item, index) => String(index)));
       if (activity === 'sentence-error') return new Set(SENTENCE_ERROR_ITEMS.map(item => item.id));
+      if (activity === 'to-infinitive-i') return new Set(TO_INFINITIVE_I_ITEMS.map(item => item.id));
+      if (activity === 'to-infinitive-ii') return new Set(TO_INFINITIVE_II_ITEMS.map(item => item.id));
       return new Set();
     }
 
@@ -1897,6 +2187,8 @@
       grammarScreen.classList.toggle('study-mode', studyMode && activeActivity === 'grammar');
       ingScreen.classList.toggle('study-mode', studyMode && activeActivity === 'ing');
       sentenceErrorScreen.classList.toggle('study-mode', studyMode && activeActivity === 'sentence-error');
+      toInfinitiveIScreen.classList.toggle('study-mode', studyMode && activeActivity === 'to-infinitive-i');
+      toInfinitiveIIScreen.classList.toggle('study-mode', studyMode && activeActivity === 'to-infinitive-ii');
       document.querySelectorAll('[data-study-toggle]').forEach(button => {
         button.setAttribute('aria-pressed', String(studyMode));
         button.textContent = studyMode ? '학습 종료' : '학습 모드';
@@ -2146,6 +2438,8 @@
       grammarFlashEl.className = 'flash';
       ingFlashEl.className = 'flash';
       sentenceErrorFlashEl.className = 'flash';
+      toInfinitiveIFlashEl.className = 'flash';
+      toInfinitiveIIFlashEl.className = 'flash';
     }
 
     function stopPrimeTimer() {
@@ -2415,6 +2709,47 @@
       return wrapper;
     }
 
+    function createToInfinitiveExplanation(item, activity, timedOut = false) {
+      const labels = activity === 'to-infinitive-i'
+        ? TO_INFINITIVE_I_ANSWER_LABELS
+        : TO_INFINITIVE_II_ANSWER_LABELS;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'to-result';
+
+      const answer = document.createElement('div');
+      answer.className = 'to-result__answer';
+      answer.textContent = `${timedOut ? '시간 초과 · ' : ''}정답: ${labels[item.answer]}`;
+      wrapper.append(answer);
+
+      const addSection = (labelText, className) => {
+        const section = document.createElement('div');
+        section.className = 'to-result__section';
+        const label = document.createElement('span');
+        label.className = 'to-result__label';
+        label.textContent = labelText;
+        const content = document.createElement('div');
+        content.className = className;
+        section.append(label, content);
+        wrapper.append(section);
+        return content;
+      };
+
+      const sentence = addSection('예문', 'to-result__sentence');
+      appendMarkedSentence(sentence, item.marked);
+
+      const translation = addSection('해석', 'to-result__translation');
+      appendEmphasizedMeaning(translation, item.translation, item.meaning);
+      translation.querySelector('strong')?.classList.add('to-result__meaning');
+
+      const explanation = addSection('설명', 'to-result__explanation');
+      explanation.append(document.createTextNode(item.explanation));
+      const type = document.createElement('strong');
+      type.className = 'to-result__type';
+      type.textContent = labels[item.answer];
+      explanation.append(type);
+      return wrapper;
+    }
+
     function appendSentenceDiff(container, item, version) {
       item.diff.forEach(segment => {
         if (version === 'incorrect' && segment.type === 'insert') return;
@@ -2618,6 +2953,88 @@
       sentenceErrorTimerAnimationId = window.requestAnimationFrame(updateSentenceErrorTimer);
     }
 
+    function getToInfinitiveActivityConfig(activity = activeActivity) {
+      if (activity === 'to-infinitive-i') {
+        return {
+          items: TO_INFINITIVE_I_ITEMS,
+          current: currentToInfinitiveIItem,
+          recentIds: recentToInfinitiveIIds,
+          sentence: toInfinitiveISentenceEl,
+          score: toInfinitiveIScoreEl,
+          best: toInfinitiveIBestEl,
+          flash: toInfinitiveIFlashEl,
+          timer: toInfinitiveITimerEl,
+          timerLabel: toInfinitiveITimerLabelEl,
+          timerBar: toInfinitiveITimerBarEl,
+          timeLimit: TO_INFINITIVE_I_TIME_LIMIT,
+          labels: TO_INFINITIVE_I_ANSWER_LABELS
+        };
+      }
+      if (activity === 'to-infinitive-ii') {
+        return {
+          items: TO_INFINITIVE_II_ITEMS,
+          current: currentToInfinitiveIIItem,
+          recentIds: recentToInfinitiveIIIds,
+          sentence: toInfinitiveIISentenceEl,
+          score: toInfinitiveIIScoreEl,
+          best: toInfinitiveIIBestEl,
+          flash: toInfinitiveIIFlashEl,
+          timer: toInfinitiveIITimerEl,
+          timerLabel: toInfinitiveIITimerLabelEl,
+          timerBar: toInfinitiveIITimerBarEl,
+          timeLimit: TO_INFINITIVE_II_TIME_LIMIT,
+          labels: TO_INFINITIVE_II_ANSWER_LABELS
+        };
+      }
+      return null;
+    }
+
+    function stopToInfinitiveTimer() {
+      window.clearTimeout(toInfinitiveTimeoutId);
+      window.clearInterval(toInfinitiveTickIntervalId);
+      window.cancelAnimationFrame(toInfinitiveTimerAnimationId);
+      toInfinitiveTimeoutId = null;
+      toInfinitiveTickIntervalId = null;
+      toInfinitiveTimerAnimationId = null;
+    }
+
+    function updateToInfinitiveTimer() {
+      const config = getToInfinitiveActivityConfig();
+      if (!config) return;
+      const remaining = Math.max(0, toInfinitiveDeadline - performance.now());
+      const ratio = remaining / config.timeLimit;
+      config.timerBar.style.transform = `scaleX(${ratio})`;
+      config.timerLabel.textContent = `${(remaining / 1000).toFixed(1)}초`;
+      config.timer.classList.toggle('urgent', ratio <= .34);
+      if (remaining > 0) toInfinitiveTimerAnimationId = window.requestAnimationFrame(updateToInfinitiveTimer);
+    }
+
+    function handleToInfinitiveTimeout() {
+      const config = getToInfinitiveActivityConfig();
+      if (!acceptingInput || !config) return;
+      acceptingInput = false;
+      stopToInfinitiveTimer();
+      playFeedbackSound('wrong');
+      showFlash(config.flash, 'wrong');
+      showAnswerFeedback(activeActivity, 'wrong', '✕ 시간 초과!', `정답: ${config.labels[config.current.answer]}`, null, config.current.answer);
+      finishRound(createToInfinitiveExplanation(config.current, activeActivity, true), 720, `정답: ${config.labels[config.current.answer]}`);
+    }
+
+    function startToInfinitiveTimer() {
+      stopToInfinitiveTimer();
+      const config = getToInfinitiveActivityConfig();
+      if (!config) return;
+      toInfinitiveDeadline = performance.now() + config.timeLimit;
+      config.timer.classList.remove('urgent');
+      config.timerBar.style.transform = 'scaleX(1)';
+      config.timerLabel.textContent = `${(config.timeLimit / 1000).toFixed(1)}초`;
+      toInfinitiveTimeoutId = window.setTimeout(handleToInfinitiveTimeout, config.timeLimit);
+      toInfinitiveTickIntervalId = window.setInterval(() => {
+        if (performance.now() < toInfinitiveDeadline - 100) playFeedbackSound('tick');
+      }, 1000);
+      toInfinitiveTimerAnimationId = window.requestAnimationFrame(updateToInfinitiveTimer);
+    }
+
     function clearAnswerFeedback(activity) {
       const screen = ACTIVITY_SCREENS[activity];
       const feedback = ACTIVITY_FEEDBACK[activity];
@@ -2777,6 +3194,32 @@
       return true;
     }
 
+    function nextToInfinitiveItem(activity) {
+      const config = getToInfinitiveActivityConfig(activity);
+      if (!config?.items.length) return false;
+      let selection;
+      if (studyMode) {
+        selection = getStudySelection(config.items, item => item.id, config.recentIds);
+        currentStudyItemId = selection.id;
+        currentStudyItemIsReview = selection.isReview;
+      } else {
+        const candidates = config.items.filter(item => !config.recentIds.includes(item.id));
+        const item = pickWeightedItem(candidates.length ? candidates : config.items);
+        selection = { item, id: item.id, isReview: false };
+        currentStudyItemId = '';
+        currentStudyItemIsReview = false;
+      }
+
+      if (activity === 'to-infinitive-i') currentToInfinitiveIItem = selection.item;
+      else currentToInfinitiveIIItem = selection.item;
+      config.recentIds.push(selection.item.id);
+      if (config.recentIds.length > TO_INFINITIVE_COOLDOWN) config.recentIds.shift();
+      config.sentence.replaceChildren();
+      appendMarkedSentence(config.sentence, selection.item.marked);
+      animateCard(config.sentence);
+      return true;
+    }
+
     function startActivity(activity) {
       const screen = ACTIVITY_SCREENS[activity];
       if (!screen) {
@@ -2796,6 +3239,7 @@
       stopGrammarTimer();
       stopIngTimer();
       stopSentenceErrorTimer();
+      stopToInfinitiveTimer();
       clearAnswerFeedback(activity);
       sentenceErrorEmptyEl.hidden = true;
       currentStudyItemId = '';
@@ -2828,6 +3272,12 @@
           sentenceErrorStartButton.disabled = true;
           return;
         }
+      } else if (activity === 'to-infinitive-i' || activity === 'to-infinitive-ii') {
+        const config = getToInfinitiveActivityConfig(activity);
+        config.score.textContent = '0';
+        config.best.textContent = studyMode ? getPendingStudyCount() : getPlayerBest(activity);
+        showScreen(ACTIVITY_SCREENS[activity]);
+        if (!nextToInfinitiveItem(activity)) return;
       }
       window.setTimeout(() => {
         acceptingInput = true;
@@ -2835,6 +3285,7 @@
         if (activity === 'grammar' && !studyMode) startGrammarTimer();
         if (activity === 'ing' && !studyMode) startIngTimer();
         if (activity === 'sentence-error' && !studyMode) startSentenceErrorTimer();
+        if ((activity === 'to-infinitive-i' || activity === 'to-infinitive-ii') && !studyMode) startToInfinitiveTimer();
         if (document.activeElement?.closest('.modal')) {
           screen.querySelector('.choice')?.focus({ preventScroll: true });
         }
@@ -2847,9 +3298,11 @@
       if (activeActivity === 'grammar') nextVerb();
       if (activeActivity === 'ing') nextIngItem();
       if (activeActivity === 'sentence-error') nextSentenceErrorItem();
+      if (activeActivity === 'to-infinitive-i' || activeActivity === 'to-infinitive-ii') nextToInfinitiveItem(activeActivity);
       window.setTimeout(() => {
         acceptingInput = true;
         if (activeActivity === 'sentence-error' && !studyMode) startSentenceErrorTimer();
+        if ((activeActivity === 'to-infinitive-i' || activeActivity === 'to-infinitive-ii') && !studyMode) startToInfinitiveTimer();
         ACTIVITY_SCREENS[activeActivity]?.querySelector('.choice')?.focus({ preventScroll: true });
       }, 120);
     }
@@ -2864,6 +3317,8 @@
       recentSentenceErrorIds = [];
       recentSentenceErrorVerdicts = [];
       lastSentenceErrorCorrect = '';
+      recentToInfinitiveIIds = [];
+      recentToInfinitiveIIIds = [];
       startActivity(activeActivity);
     }
 
@@ -2880,6 +3335,7 @@
       stopGrammarTimer();
       stopIngTimer();
       stopSentenceErrorTimer();
+      stopToInfinitiveTimer();
       const best = recordScore(activeActivity, score);
       const roundOverTitle = getRandomRoundOverTitle();
       resultTitleEl.replaceChildren(document.createTextNode(roundOverTitle));
@@ -3144,6 +3600,57 @@
       finishRound(explanation, 720, `정답: ${SENTENCE_ERROR_ANSWER_LABELS[expected]}`);
     }
 
+    function chooseToInfinitive(answer, activity) {
+      if (!acceptingInput || activeActivity !== activity) return;
+      const config = getToInfinitiveActivityConfig(activity);
+      if (!config?.current) return;
+      acceptingInput = false;
+      stopToInfinitiveTimer();
+      const isCorrect = answer === config.current.answer;
+
+      if (isCorrect) {
+        const studyResult = studyMode ? recordStudyAnswer(currentStudyItemId, true) : null;
+        playFeedbackSound('correct');
+        score += 1;
+        config.score.textContent = score;
+        config.best.textContent = studyMode ? getPendingStudyCount() : Math.max(score, getPlayerBest(activity));
+        showFlash(config.flash, 'correct');
+        const detail = studyResult?.mastered
+          ? '2회 연속 정답! 오답 목록에서 제외했어요.'
+          : studyResult?.correctStreak
+            ? `${studyResult.correctStreak}회 연속 정답`
+            : config.labels[config.current.answer];
+        showAnswerFeedback(activity, 'correct', '✓ 정답!', detail, answer);
+        if (!studyMode) celebrateStreak(score);
+        window.setTimeout(() => {
+          clearAnswerFeedback(activity);
+          nextToInfinitiveItem(activity);
+          acceptingInput = true;
+          if (!studyMode) startToInfinitiveTimer();
+        }, studyMode ? 650 : getNextRoundDelay(score));
+        return;
+      }
+
+      if (studyMode) {
+        recordStudyAnswer(currentStudyItemId, false);
+        score += 1;
+        config.score.textContent = score;
+        config.best.textContent = getPendingStudyCount();
+      }
+      playFeedbackSound('wrong');
+      showFlash(config.flash, 'wrong');
+      showAnswerFeedback(activity, 'wrong', studyMode ? '✕ 다시 확인해요!' : '✕ 오답!', `정답: ${config.labels[config.current.answer]}`, answer, config.current.answer);
+      const explanation = createToInfinitiveExplanation(config.current, activity);
+      if (studyMode) {
+        window.setTimeout(() => {
+          clearAnswerFeedback(activity);
+          showStudyExplanation(explanation, 'to 부정사 해설');
+        }, 650);
+        return;
+      }
+      finishRound(explanation, 720, `정답: ${config.labels[config.current.answer]}`);
+    }
+
     function chooseActivity(activity) {
       if (!ACTIVITY_SCREENS[activity]) return;
       if (activity === 'sentence-error' && !SENTENCE_ERROR_ITEMS.length) {
@@ -3173,6 +3680,7 @@
       stopGrammarTimer();
       stopIngTimer();
       stopSentenceErrorTimer();
+      stopToInfinitiveTimer();
       resultModal.classList.remove('show');
       infoModal.classList.remove('show');
       studyExplanationModal.classList.remove('show');
@@ -3247,6 +3755,18 @@
         chooseSentenceError(button.dataset.sentenceErrorAnswer);
       });
     });
+    document.querySelectorAll('[data-to-i-answer]').forEach(button => {
+      button.addEventListener('pointerdown', event => {
+        event.preventDefault();
+        chooseToInfinitive(button.dataset.toIAnswer, 'to-infinitive-i');
+      });
+    });
+    document.querySelectorAll('[data-to-ii-answer]').forEach(button => {
+      button.addEventListener('pointerdown', event => {
+        event.preventDefault();
+        chooseToInfinitive(button.dataset.toIiAnswer, 'to-infinitive-ii');
+      });
+    });
 
     infoContinueButton.addEventListener('click', () => {
       if (hideWordNoteInput.checked) suppressedUsageNotes.add(currentVerb.verb);
@@ -3272,6 +3792,8 @@
       if (activeActivity === 'grammar') grammarBestEl.textContent = '0';
       if (activeActivity === 'ing') ingBestEl.textContent = '0';
       if (activeActivity === 'sentence-error') sentenceErrorBestEl.textContent = '0';
+      if (activeActivity === 'to-infinitive-i') toInfinitiveIBestEl.textContent = '0';
+      if (activeActivity === 'to-infinitive-ii') toInfinitiveIIBestEl.textContent = '0';
       startActivity(activeActivity);
     });
 
@@ -3352,6 +3874,28 @@
         if (incorrectKeys.has(event.key)) {
           event.preventDefault();
           chooseSentenceError('incorrect');
+        }
+      }
+
+      if (activeActivity === 'to-infinitive-i') {
+        const answer = { '1': 'noun', '2': 'adjective', '3': 'adverb' }[event.key];
+        if (answer) {
+          event.preventDefault();
+          chooseToInfinitive(answer, 'to-infinitive-i');
+        }
+      }
+
+      if (activeActivity === 'to-infinitive-ii') {
+        const answer = {
+          '1': 'purpose',
+          '2': 'emotion',
+          '3': 'judgment',
+          '4': 'result',
+          '5': 'adjective-modifier'
+        }[event.key];
+        if (answer) {
+          event.preventDefault();
+          chooseToInfinitive(answer, 'to-infinitive-ii');
         }
       }
     });
