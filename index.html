@@ -1199,11 +1199,12 @@
     .radial-choice--i-adjective { clip-path: polygon(50% 52%, 100% 0, 100% 100%, 50% 100%); background: var(--sky); }
     .radial-choice--i-adverb { clip-path: polygon(50% 52%, 50% 100%, 0 100%, 0 0); background: var(--powder); }
 
-    .radial-choice--ii-purpose { clip-path: polygon(50% 52%, 20% 0, 80% 0); background: var(--steel); color: #fff; }
-    .radial-choice--ii-emotion { clip-path: polygon(50% 52%, 80% 0, 100% 0, 100% 60%); background: var(--sky); }
-    .radial-choice--ii-judgment { clip-path: polygon(50% 52%, 100% 60%, 100% 100%, 50% 100%); background: var(--ink); color: #fff; }
-    .radial-choice--ii-result { clip-path: polygon(50% 52%, 50% 100%, 0 100%, 0 60%); background: var(--powder); }
-    .radial-choice--ii-adjective { clip-path: polygon(50% 52%, 0 60%, 0 0, 20% 0); background: #9EBFD9; }
+    .radial-choice--ii-purpose { clip-path: polygon(50% 52%, 0 0, 50% 0); background: var(--steel); color: #fff; }
+    .radial-choice--ii-emotion { clip-path: polygon(50% 52%, 50% 0, 100% 0); background: var(--sky); }
+    .radial-choice--ii-judgment { clip-path: polygon(50% 52%, 100% 0, 100% 100%); background: var(--ink); color: #fff; }
+    .radial-choice--ii-result { clip-path: polygon(50% 52%, 100% 100%, 50% 100%); background: var(--powder); }
+    .radial-choice--ii-adjective { clip-path: polygon(50% 52%, 50% 100%, 0 100%); background: #9EBFD9; }
+    .radial-choice--ii-condition { clip-path: polygon(50% 52%, 0 100%, 0 0); background: #BBDDFC; }
 
     .radial-choice__label {
       position: absolute;
@@ -1301,7 +1302,79 @@
 
     @media (max-width: 700px) {
       .to-infinitive-sentence { width: min(88vw, 680px); max-height: 34dvh; font-size: clamp(1.55rem, 7vw, 2.35rem); }
-      .radial-choice__label { max-width: 34vw; }
+      .radial-choice__label { max-width: 31vw; }
+      .radial-choice__label strong { font-size: clamp(.98rem, 4.3vw, 1.25rem); }
+      .radial-choice__label small { font-size: clamp(.66rem, 2.8vw, .82rem); }
+      .radial-choice__label kbd { width: clamp(27px, 8vw, 34px); margin-bottom: 2px; }
+    }
+
+    .radial-game.hide-radial-hints .radial-choice__label small { display: none; }
+
+    @media (min-width: 901px) {
+      .menu { padding-inline: clamp(32px, 5vw, 72px); }
+      .menu .panel { width: min(100%, 1440px); }
+      .menu .activity-list {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: clamp(14px, 1.35vw, 22px);
+      }
+      .menu .activity-card {
+        min-height: clamp(210px, 27vh, 286px);
+        padding: clamp(22px, 2.1vw, 32px);
+        border: 1px solid rgba(56,73,89,.26);
+        border-radius: 16px;
+        background: var(--paper);
+        color: var(--ink);
+        box-shadow: 0 12px 30px rgba(56,73,89,.08);
+      }
+      .menu .activity-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 7px;
+        background: var(--card-accent);
+      }
+      .menu .activity-card::after { color: var(--card-accent); }
+      .menu .activity-card--grammar { --card-accent: #6A89A7; }
+      .menu .activity-card--ing { --card-accent: #4B96D1; }
+      .menu .activity-card--sentence-error { --card-accent: #384959; }
+      .menu .activity-card--to-i { --card-accent: #557B98; }
+      .menu .activity-card--to-ii { --card-accent: #88BDF2; }
+      .menu .activity-card__icon {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        margin-bottom: clamp(34px, 5vh, 58px);
+        padding: 8px 11px;
+        border-radius: 9px;
+        background: var(--surface);
+        color: var(--card-accent);
+        font-size: clamp(1.05rem, 1.45vw, 1.45rem);
+        font-weight: 900;
+        letter-spacing: -.025em;
+      }
+      .menu .activity-card strong {
+        font-size: clamp(1.12rem, 1.45vw, 1.55rem);
+        line-height: 1.28;
+      }
+      .menu .activity-card:hover {
+        border-color: var(--card-accent);
+        background: #fff;
+        box-shadow: 0 16px 36px rgba(56,73,89,.13);
+        transform: translateY(-3px);
+      }
+    }
+
+    @media (min-width: 901px) and (max-width: 1199px) {
+      .menu .activity-list { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+      .menu .activity-card--grammar,
+      .menu .activity-card--ing,
+      .menu .activity-card--sentence-error { grid-column: span 2; }
+      .menu .activity-card--to-i,
+      .menu .activity-card--to-ii { grid-column: span 3; }
+      .menu .activity-card { min-height: 180px; }
+      .menu .activity-card__icon { margin-bottom: 30px; }
     }
 
     @media (orientation: landscape) and (max-height: 600px) {
@@ -1358,11 +1431,11 @@
           <strong>문장 오류 찾기</strong>
         </button>
         <button class="activity-card activity-card--to-i" type="button" data-start="to-infinitive-i">
-          <span class="activity-card__icon">N / Adj / Adv</span>
+          <span class="activity-card__icon">n.? adj.? ad.?</span>
           <strong>to v. 용법 구분 I</strong>
         </button>
         <button class="activity-card activity-card--to-ii" type="button" data-start="to-infinitive-ii">
-          <span class="activity-card__icon">ADV × 5</span>
+          <span class="activity-card__icon">to v. → ?</span>
           <strong>to v. 용법 구분 II</strong>
         </button>
       </div>
@@ -1481,13 +1554,13 @@
 
   <main class="screen game radial-game radial-game--three" id="to-infinitive-i-screen" aria-label="to 부정사 용법 구분 1 게임">
     <button class="choice radial-choice radial-choice--i-noun" type="button" data-to-i-answer="noun" aria-label="1번, 명사적 용법">
-      <span class="radial-choice__label"><kbd>1</kbd><strong>명사적</strong><small>Noun</small></span>
+      <span class="radial-choice__label"><kbd>1</kbd><strong>명사적</strong><small>n.</small></span>
     </button>
     <button class="choice radial-choice radial-choice--i-adjective" type="button" data-to-i-answer="adjective" aria-label="2번, 형용사적 용법">
-      <span class="radial-choice__label"><kbd>2</kbd><strong>형용사적</strong><small>Adjective</small></span>
+      <span class="radial-choice__label"><kbd>2</kbd><strong>형용사적</strong><small>adj.</small></span>
     </button>
     <button class="choice radial-choice radial-choice--i-adverb" type="button" data-to-i-answer="adverb" aria-label="3번, 부사적 용법">
-      <span class="radial-choice__label"><kbd>3</kbd><strong>부사적</strong><small>Adverb</small></span>
+      <span class="radial-choice__label"><kbd>3</kbd><strong>부사적</strong><small>ad.</small></span>
     </button>
     <svg class="radial-seams" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
       <line x1="50" y1="52" x2="0" y2="0"></line>
@@ -1513,7 +1586,7 @@
     <div class="answer-feedback" id="to-i-feedback" role="status" aria-live="assertive"><strong></strong><span></span></div>
   </main>
 
-  <main class="screen game radial-game radial-game--five" id="to-infinitive-ii-screen" aria-label="to 부정사 용법 구분 2 게임">
+  <main class="screen game radial-game radial-game--six" id="to-infinitive-ii-screen" aria-label="to 부정사 용법 구분 2 게임">
     <button class="choice radial-choice radial-choice--ii-purpose" type="button" data-to-ii-answer="purpose" aria-label="1번, 목적">
       <span class="radial-choice__label"><kbd>1</kbd><strong>목적</strong><small>~하기 위해서</small></span>
     </button>
@@ -1529,12 +1602,16 @@
     <button class="choice radial-choice radial-choice--ii-adjective" type="button" data-to-ii-answer="adjective-modifier" aria-label="5번, 형용사 수식">
       <span class="radial-choice__label"><kbd>5</kbd><strong>형용사 수식</strong><small>~하기에</small></span>
     </button>
+    <button class="choice radial-choice radial-choice--ii-condition" type="button" data-to-ii-answer="condition" aria-label="6번, 조건">
+      <span class="radial-choice__label"><kbd>6</kbd><strong>조건</strong><small>~한다면</small></span>
+    </button>
     <svg class="radial-seams" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
       <line x1="50" y1="52" x2="20" y2="0"></line>
       <line x1="50" y1="52" x2="80" y2="0"></line>
       <line x1="50" y1="52" x2="100" y2="60"></line>
       <line x1="50" y1="52" x2="50" y2="100"></line>
       <line x1="50" y1="52" x2="0" y2="60"></line>
+      <line x1="50" y1="52" x2="0" y2="0"></line>
     </svg>
     <div class="topbar">
       <div class="topbar__actions">
@@ -1704,7 +1781,8 @@
       emotion: '감정의 원인',
       judgment: '판단의 근거',
       result: '결과',
-      'adjective-modifier': '형용사 수식'
+      'adjective-modifier': '형용사 수식',
+      condition: '조건'
     };
 
     const screens = [...document.querySelectorAll('.screen')];
@@ -2119,7 +2197,7 @@
       window.cancelAnimationFrame(radialLayoutAnimationId);
       radialLayoutAnimationId = window.requestAnimationFrame(() => {
         if (activeActivity === 'to-infinitive-i') layoutRadialActivity(toInfinitiveIScreen, 3);
-        if (activeActivity === 'to-infinitive-ii') layoutRadialActivity(toInfinitiveIIScreen, 5);
+        if (activeActivity === 'to-infinitive-ii') layoutRadialActivity(toInfinitiveIIScreen, 6);
       });
     }
     window.addEventListener('resize', scheduleRadialLayout);
@@ -3185,7 +3263,7 @@
           timer: toInfinitiveITimerEl,
           timerLabel: toInfinitiveITimerLabelEl,
           timerBar: toInfinitiveITimerBarEl,
-          timeLimit: TO_INFINITIVE_I_TIME_LIMIT,
+          timeLimit: getToInfinitiveTimeLimit('to-infinitive-i'),
           labels: TO_INFINITIVE_I_ANSWER_LABELS
         };
       }
@@ -3201,11 +3279,22 @@
           timer: toInfinitiveIITimerEl,
           timerLabel: toInfinitiveIITimerLabelEl,
           timerBar: toInfinitiveIITimerBarEl,
-          timeLimit: TO_INFINITIVE_II_TIME_LIMIT,
+          timeLimit: getToInfinitiveTimeLimit('to-infinitive-ii'),
           labels: TO_INFINITIVE_II_ANSWER_LABELS
         };
       }
       return null;
+    }
+
+    function getToInfinitiveTimeLimit(activity) {
+      const baseLimit = activity === 'to-infinitive-i'
+        ? TO_INFINITIVE_I_TIME_LIMIT
+        : TO_INFINITIVE_II_TIME_LIMIT;
+      return !studyMode && score >= 10 ? baseLimit - 2000 : baseLimit;
+    }
+
+    function updateToInfinitiveDifficultyUI() {
+      toInfinitiveIIScreen.classList.toggle('hide-radial-hints', !studyMode && score >= 10);
     }
 
     function stopToInfinitiveTimer() {
@@ -3436,7 +3525,8 @@
       config.sentence.replaceChildren();
       appendMarkedSentence(config.sentence, selection.item.marked);
       animateCard(config.sentence);
-      layoutRadialActivity(ACTIVITY_SCREENS[activity], activity === 'to-infinitive-i' ? 3 : 5);
+      updateToInfinitiveDifficultyUI();
+      layoutRadialActivity(ACTIVITY_SCREENS[activity], activity === 'to-infinitive-i' ? 3 : 6);
       window.setTimeout(scheduleRadialLayout, 190);
       return true;
     }
@@ -3835,6 +3925,7 @@
         score += 1;
         config.score.textContent = score;
         config.best.textContent = studyMode ? getPendingStudyCount() : Math.max(score, getPlayerBest(activity));
+        updateToInfinitiveDifficultyUI();
         showFlash(config.flash, 'correct');
         const detail = studyResult?.mastered
           ? '2회 연속 정답! 오답 목록에서 제외했어요.'
@@ -4112,7 +4203,8 @@
           '2': 'emotion',
           '3': 'judgment',
           '4': 'result',
-          '5': 'adjective-modifier'
+          '5': 'adjective-modifier',
+          '6': 'condition'
         }[event.key];
         if (answer) {
           event.preventDefault();
