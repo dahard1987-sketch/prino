@@ -1423,6 +1423,20 @@
     }
     .sentence-builder .topbar { position: fixed; }
     .sentence-builder .pill__label { color: #6C63FF; }
+    .sentence-builder .builder-timer {
+      top: calc(env(safe-area-inset-top) + 78px);
+      width: min(48vw, 430px);
+      border-color: #24324A;
+      background: #fff;
+      box-shadow: 0 4px 0 #24324A;
+    }
+    .sentence-builder .builder-timer .game-timer__track {
+      border-color: #24324A;
+      background: #E8EEF7;
+    }
+    .sentence-builder .builder-timer .game-timer__bar { background: #6C63FF; }
+    .sentence-builder .builder-timer.urgent .game-timer__bar { background: #EF476F; }
+    .sentence-builder .answer-feedback span:empty { display: none; }
     .builder-stage {
       position: relative;
       z-index: 1;
@@ -1494,29 +1508,76 @@
     }
     .builder-action:disabled { opacity: .38; cursor: default; }
     .builder-action--reset { background: #FFE17D; }
+    .builder-board[data-size="medium"] .builder-chip {
+      min-height: clamp(62px, 7vmin, 78px);
+      padding: 12px clamp(18px, 2.8vmin, 30px);
+      border-radius: 18px;
+      font-size: clamp(1.2rem, 3.25vmin, 2rem);
+    }
+    .builder-board[data-size="large"] .builder-answer { min-height: clamp(122px, 19vh, 190px); }
+    .builder-board[data-size="large"] .builder-bank { min-height: clamp(112px, 16vh, 160px); }
+    .builder-board[data-size="large"] .builder-chip {
+      min-height: clamp(72px, 9vmin, 96px);
+      padding: 14px clamp(22px, 3.5vmin, 38px);
+      border-radius: 20px;
+      font-size: clamp(1.45rem, 4vmin, 2.7rem);
+    }
     .builder-result { display: grid; gap: 14px; }
-    .builder-result__sentence {
+    .builder-result__attempt,
+    .builder-result__correct {
       padding: 20px;
-      border: 3px solid #6C63FF;
       border-radius: 16px;
-      background: #F3F1FF;
-      color: #24324A;
       font-size: clamp(1.25rem, 3vmin, 1.8rem);
       font-weight: 950;
       line-height: 1.45;
       text-align: center;
+    }
+    .builder-result__attempt {
+      border: 3px solid #E54058;
+      background: #FFF0F2;
+      color: #D9273E;
+      text-decoration-line: line-through;
+      text-decoration-thickness: .12em;
+      text-decoration-color: currentColor;
+    }
+    .builder-result__correct {
+      border: 3px solid #6C63FF;
+      background: #F3F1FF;
+      color: #24324A;
+    }
+    .builder-result__correct mark {
+      display: inline-block;
+      padding: .12em .32em;
+      border-radius: .35em;
+      background: #FFE17D;
+      color: #24324A;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
     }
 
     @media (max-width: 700px) {
       .builder-stage {
         align-content: start;
         width: min(100% - 20px, 680px);
-        padding-top: calc(env(safe-area-inset-top) + 86px);
+        padding-top: calc(env(safe-area-inset-top) + 148px);
       }
+      .sentence-builder .builder-timer { top: calc(env(safe-area-inset-top) + 78px); width: min(58vw, 300px); }
       .builder-board { padding: 13px; border-radius: 20px; box-shadow: 0 6px 0 #24324A; }
       .builder-answer { min-height: 110px; }
       .builder-bank { min-height: 120px; }
       .builder-chip { min-height: 50px; padding: 9px 13px; font-size: clamp(1rem, 4.4vw, 1.22rem); }
+      .builder-board[data-size="medium"] .builder-chip {
+        min-height: 58px;
+        padding: 11px 16px;
+        font-size: clamp(1.12rem, 5.4vw, 1.52rem);
+      }
+      .builder-board[data-size="large"] .builder-answer { min-height: 130px; }
+      .builder-board[data-size="large"] .builder-bank { min-height: 140px; }
+      .builder-board[data-size="large"] .builder-chip {
+        min-height: 68px;
+        padding: 13px 19px;
+        font-size: clamp(1.3rem, 6.3vw, 1.85rem);
+      }
     }
   </style>
 </head>
@@ -1778,8 +1839,12 @@
         <div class="pill"><span class="pill__label" id="builder-best-label">최고</span><span class="pill__value" id="builder-best">0</span></div>
       </div>
     </div>
+    <div class="game-timer builder-timer" id="builder-timer" role="timer" aria-live="off">
+      <div class="game-timer__meta"><span>남은 시간</span><strong id="builder-timer-label">15.0초</strong></div>
+      <div class="game-timer__track"><span class="game-timer__bar" id="builder-timer-bar"></span></div>
+    </div>
     <div class="builder-stage">
-      <section class="builder-board" aria-label="문장 만들기 판">
+      <section class="builder-board" data-size="standard" aria-label="문장 만들기 판">
         <div class="builder-answer" id="builder-answer" aria-live="polite"></div>
         <div class="builder-bank" id="builder-bank"></div>
       </section>
@@ -1910,6 +1975,30 @@
       '와 이걸 진짜.. 와 ㅋㅋㅋ',
       '수준~'
     ];
+    const BUILDER_CORRECT_MESSAGES = [
+      '정말 잘했어!',
+      '멋지게 해냈어!',
+      '차근차근 잘했어!',
+      '와, 문장을 딱 맞췄네!',
+      '집중력이 정말 멋져!',
+      '오늘도 한 뼘 자랐네!',
+      '최고야, 계속 가 보자!',
+      '문장 박사님이네!',
+      '아주 훌륭해!',
+      '네가 해낼 줄 알았어!',
+      '정말 반짝이는 답이야!',
+      '끝까지 잘 생각했구나!',
+      '멋진 선택이었어!',
+      '대단해, 또 해냈어!',
+      '정답을 쏙 찾았네!',
+      '아주 야무지게 잘했어!',
+      '한 번에 척척이네!',
+      '좋아, 정말 잘하고 있어!',
+      '실력이 쑥쑥 자라고 있어!',
+      '마음껏 자랑해도 돼!',
+      '너의 생각이 정말 멋져!',
+      '포기하지 않고 잘 해냈어!'
+    ];
 
     const USAGE_NOTES = {
       stop: 'stop + 동명사: 하던 일을 멈추다\nstop + to 부정사: ... 하려고 멈추다\n\n※ to 부정사도 쓸 수 있지만 이때는 목적어가 아니라 부사(목적)입니다.',
@@ -1986,6 +2075,7 @@
     const toInfinitiveIISentenceEl = document.querySelector('#to-ii-sentence');
     const builderAnswerEl = document.querySelector('#builder-answer');
     const builderBankEl = document.querySelector('#builder-bank');
+    const builderBoardEl = document.querySelector('.builder-board');
     const builderUndoButton = document.querySelector('#builder-undo');
     const builderResetButton = document.querySelector('#builder-reset');
     const builderBgmEl = document.querySelector('#builder-bgm');
@@ -2042,6 +2132,9 @@
     const toInfinitiveIITimerEl = document.querySelector('#to-ii-timer');
     const toInfinitiveIITimerLabelEl = document.querySelector('#to-ii-timer-label');
     const toInfinitiveIITimerBarEl = document.querySelector('#to-ii-timer-bar');
+    const builderTimerEl = document.querySelector('#builder-timer');
+    const builderTimerLabelEl = document.querySelector('#builder-timer-label');
+    const builderTimerBarEl = document.querySelector('#builder-timer-bar');
     const primeFeedbackEl = document.querySelector('#prime-feedback');
     const grammarFeedbackEl = document.querySelector('#grammar-feedback');
     const ingFeedbackEl = document.querySelector('#ing-feedback');
@@ -2161,6 +2254,12 @@
     let toInfinitiveTickIntervalId = null;
     let toInfinitiveTimerAnimationId = null;
     let toInfinitiveDeadline = 0;
+    let sentenceBuildingTimeoutId = null;
+    let sentenceBuildingTickIntervalId = null;
+    let sentenceBuildingTimerAnimationId = null;
+    let sentenceBuildingDeadline = 0;
+    let sentenceBuildingTimeLimit = 15000;
+    let lastBuilderCorrectMessage = '';
     let streakCelebrationTimeoutId = null;
     const suppressedUsageNotes = new Set();
 
@@ -3479,6 +3578,61 @@
       sentenceErrorTimerAnimationId = window.requestAnimationFrame(updateSentenceErrorTimer);
     }
 
+    function getSentenceBuildingTimeLimit() {
+      if (score >= 30) return 7000;
+      if (score >= 20) return 10000;
+      if (score >= 10) return 13000;
+      return 15000;
+    }
+
+    function stopSentenceBuildingTimer() {
+      window.clearTimeout(sentenceBuildingTimeoutId);
+      window.clearInterval(sentenceBuildingTickIntervalId);
+      window.cancelAnimationFrame(sentenceBuildingTimerAnimationId);
+      sentenceBuildingTimeoutId = null;
+      sentenceBuildingTickIntervalId = null;
+      sentenceBuildingTimerAnimationId = null;
+    }
+
+    function updateSentenceBuildingTimer() {
+      const remaining = Math.max(0, sentenceBuildingDeadline - performance.now());
+      const ratio = remaining / sentenceBuildingTimeLimit;
+      builderTimerBarEl.style.transform = `scaleX(${ratio})`;
+      builderTimerLabelEl.textContent = `${(remaining / 1000).toFixed(1)}초`;
+      builderTimerEl.classList.toggle('urgent', ratio <= .34);
+      if (remaining > 0) {
+        sentenceBuildingTimerAnimationId = window.requestAnimationFrame(updateSentenceBuildingTimer);
+      }
+    }
+
+    function handleSentenceBuildingTimeout() {
+      if (!acceptingInput || activeActivity !== 'sentence-building' || studyMode) return;
+      acceptingInput = false;
+      stopSentenceBuildingTimer();
+      builderUndoButton.disabled = true;
+      builderResetButton.disabled = true;
+      playFeedbackSound('wrong');
+      showFlash(builderFlashEl, 'wrong');
+      showAnswerFeedback('sentence-building', 'wrong', '아쉬워요!', '시간이 다 됐어요.');
+      const attemptedChunks = currentBuilderSelection.map(index => currentSentenceBuildingItem.chunks[index]);
+      finishRound(createSentenceBuildingExplanation(currentSentenceBuildingItem, attemptedChunks), 760);
+    }
+
+    function startSentenceBuildingTimer() {
+      stopSentenceBuildingTimer();
+      if (studyMode || activeActivity !== 'sentence-building') return;
+      sentenceBuildingTimeLimit = getSentenceBuildingTimeLimit();
+      sentenceBuildingDeadline = performance.now() + sentenceBuildingTimeLimit;
+      builderTimerEl.classList.remove('urgent');
+      builderTimerBarEl.style.transform = 'scaleX(1)';
+      builderTimerLabelEl.textContent = `${(sentenceBuildingTimeLimit / 1000).toFixed(1)}초`;
+      sentenceBuildingTimeoutId = window.setTimeout(handleSentenceBuildingTimeout, sentenceBuildingTimeLimit);
+      sentenceBuildingTickIntervalId = window.setInterval(() => {
+        if (performance.now() < sentenceBuildingDeadline - 100) playFeedbackSound('tick');
+      }, 1000);
+      sentenceBuildingTimerAnimationId = window.requestAnimationFrame(updateSentenceBuildingTimer);
+    }
+
     function getToInfinitiveActivityConfig(activity = activeActivity) {
       if (activity === 'to-infinitive-i') {
         return {
@@ -3766,6 +3920,14 @@
       builderBankEl.replaceChildren();
       if (!item) return;
 
+      const totalCharacters = item.chunks.reduce((total, chunk) => total + chunk.length, 0);
+      const longestChunk = Math.max(...item.chunks.map(chunk => chunk.length));
+      builderBoardEl.dataset.size = item.chunks.length <= 3 && totalCharacters <= 34 && longestChunk <= 22
+        ? 'large'
+        : item.chunks.length <= 4 && totalCharacters <= 54
+          ? 'medium'
+          : 'standard';
+
       currentBuilderSelection.forEach((chunkIndex, selectedIndex) => {
         const chip = document.createElement('button');
         chip.type = 'button';
@@ -3815,21 +3977,24 @@
       wrapper.className = 'builder-result';
       if (attemptedChunks.length) {
         const attempted = document.createElement('div');
-        attempted.className = 'to-result__section';
-        const label = document.createElement('span');
-        label.className = 'to-result__label';
-        label.textContent = '내가 만든 문장';
-        const sentence = document.createElement('div');
-        sentence.className = 'to-result__sentence';
-        sentence.textContent = attemptedChunks.join(' ');
-        attempted.append(label, sentence);
+        attempted.className = 'builder-result__attempt';
+        attempted.textContent = attemptedChunks.join(' ');
         wrapper.append(attempted);
       }
       const correct = document.createElement('div');
-      correct.className = 'builder-result__sentence';
-      correct.textContent = item.sentence;
+      correct.className = 'builder-result__correct';
+      const mark = document.createElement('mark');
+      mark.textContent = item.sentence;
+      correct.append(mark);
       wrapper.append(correct);
       return wrapper;
+    }
+
+    function getBuilderCorrectMessage() {
+      const candidates = BUILDER_CORRECT_MESSAGES.filter(message => message !== lastBuilderCorrectMessage);
+      const message = candidates[Math.floor(Math.random() * candidates.length)];
+      lastBuilderCorrectMessage = message;
+      return message;
     }
 
     function nextSentenceBuildingItem() {
@@ -3863,6 +4028,7 @@
       renderSentenceBuildingBoard();
       if (currentBuilderSelection.length < currentSentenceBuildingItem.chunks.length) return;
       acceptingInput = false;
+      stopSentenceBuildingTimer();
       builderUndoButton.disabled = true;
       builderResetButton.disabled = true;
       window.setTimeout(checkSentenceBuildingAnswer, 220);
@@ -3883,8 +4049,8 @@
         showAnswerFeedback(
           'sentence-building',
           'correct',
-          '★ 멋져요!',
-          studyResult?.mastered ? '완전히 익혔어요!' : item.sentence
+          getBuilderCorrectMessage(),
+          studyResult?.mastered ? '완전히 익혔어요!' : ''
         );
         if (!studyMode) celebrateStreak(score);
         window.setTimeout(() => {
@@ -3892,6 +4058,7 @@
           nextSentenceBuildingItem();
           acceptingInput = true;
           renderSentenceBuildingBoard();
+          if (!studyMode) startSentenceBuildingTimer();
         }, studyMode ? 800 : getNextRoundDelay(score));
         return;
       }
@@ -3904,7 +4071,7 @@
       }
       playFeedbackSound('wrong');
       showFlash(builderFlashEl, 'wrong');
-      showAnswerFeedback('sentence-building', 'wrong', '한 번 더 살펴봐요!', item.sentence);
+      showAnswerFeedback('sentence-building', 'wrong', '아쉬워요!', '정답을 같이 확인해 봐요.');
       const explanation = createSentenceBuildingExplanation(item, attemptedChunks);
       if (studyMode) {
         window.setTimeout(() => {
@@ -3913,7 +4080,7 @@
         }, 720);
         return;
       }
-      finishRound(explanation, 760, '정답 확인');
+      finishRound(explanation, 760);
     }
 
     function startActivity(activity) {
@@ -3938,6 +4105,7 @@
       stopIngTimer();
       stopSentenceErrorTimer();
       stopToInfinitiveTimer();
+      stopSentenceBuildingTimer();
       clearAnswerFeedback(activity);
       sentenceErrorEmptyEl.hidden = true;
       currentStudyItemId = '';
@@ -3989,6 +4157,7 @@
         if (activity === 'ing' && !studyMode) startIngTimer();
         if (activity === 'sentence-error' && !studyMode) startSentenceErrorTimer();
         if ((activity === 'to-infinitive-i' || activity === 'to-infinitive-ii') && !studyMode) startToInfinitiveTimer();
+        if (activity === 'sentence-building' && !studyMode) startSentenceBuildingTimer();
         if (document.activeElement?.closest('.modal')) {
           screen.querySelector('.choice')?.focus({ preventScroll: true });
         }
@@ -4041,8 +4210,9 @@
       stopIngTimer();
       stopSentenceErrorTimer();
       stopToInfinitiveTimer();
+      stopSentenceBuildingTimer();
       const best = recordScore(activeActivity, score);
-      const roundOverTitle = getRandomRoundOverTitle();
+      const roundOverTitle = activeActivity === 'sentence-building' ? '아쉬워요!' : getRandomRoundOverTitle();
       resultTitleEl.replaceChildren(document.createTextNode(roundOverTitle));
       if (titleDetail) {
         const answer = document.createElement('span');
@@ -4391,6 +4561,7 @@
       stopIngTimer();
       stopSentenceErrorTimer();
       stopToInfinitiveTimer();
+      stopSentenceBuildingTimer();
       resultModal.classList.remove('show');
       infoModal.classList.remove('show');
       studyExplanationModal.classList.remove('show');
