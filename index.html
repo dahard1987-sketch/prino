@@ -1180,8 +1180,10 @@
     /* to-infinitive radial activities */
     .activity-card--to-i { background: #557B98; color: #fff; }
     .activity-card--to-ii { background: #A9CFF0; color: var(--ink); }
+    .activity-card--hepta { background: #F5C84C; color: var(--ink); }
     .activity-card--to-i .activity-card__icon,
-    .activity-card--to-ii .activity-card__icon {
+    .activity-card--to-ii .activity-card__icon,
+    .activity-card--hepta .activity-card__icon {
       font-size: clamp(1.55rem, 3.2vmin, 2.45rem);
       font-weight: 800;
       letter-spacing: -.025em;
@@ -1264,6 +1266,7 @@
       letter-spacing: -.035em;
       text-wrap: balance;
     }
+    .radial-game--six .to-infinitive-sentence { top: 50%; }
     .to-infinitive-sentence .marked-ing { background: var(--powder); color: var(--ink); }
     .radial-game .answer-feedback { top: 34%; z-index: 32; }
     .radial-game.study-mode .answer-feedback { top: 31%; }
@@ -1314,7 +1317,7 @@
       .menu { padding-inline: clamp(32px, 5vw, 72px); }
       .menu .panel { width: min(100%, 1440px); }
       .menu .activity-list {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(6, minmax(0, 1fr));
         gap: clamp(14px, 1.35vw, 22px);
       }
       .menu .activity-card {
@@ -1341,6 +1344,7 @@
       .menu .activity-card--sentence-error { --card-accent: #384959; }
       .menu .activity-card--to-i { --card-accent: #557B98; }
       .menu .activity-card--to-ii { --card-accent: #88BDF2; }
+      .menu .activity-card--hepta { --card-accent: #E9A826; }
       .menu .activity-card__icon {
         display: inline-flex;
         align-items: center;
@@ -1358,6 +1362,7 @@
         font-size: clamp(1.12rem, 1.45vw, 1.55rem);
         line-height: 1.28;
       }
+      .menu .activity-card--hepta strong { font-size: clamp(1.02rem, 1.22vw, 1.3rem); }
       .menu .activity-card:hover {
         border-color: var(--card-accent);
         background: #fff;
@@ -1370,9 +1375,10 @@
       .menu .activity-list { grid-template-columns: repeat(6, minmax(0, 1fr)); }
       .menu .activity-card--grammar,
       .menu .activity-card--ing,
-      .menu .activity-card--sentence-error { grid-column: span 2; }
+      .menu .activity-card--sentence-error,
       .menu .activity-card--to-i,
-      .menu .activity-card--to-ii { grid-column: span 3; }
+      .menu .activity-card--to-ii,
+      .menu .activity-card--hepta { grid-column: span 2; }
       .menu .activity-card { min-height: 180px; }
       .menu .activity-card__icon { margin-bottom: 30px; }
     }
@@ -1386,6 +1392,131 @@
       .radial-choice__label kbd { width: 26px; margin-bottom: 2px; border-radius: 7px; font-size: .78rem; }
       .radial-choice__label strong { font-size: 1rem; }
       .radial-choice__label small { display: none; }
+    }
+
+    /* Hepta Sentence Building: 초등 저학년용 독립 게임 화면 */
+    .sentence-builder {
+      overflow: auto;
+      background: #FFF8DA;
+      color: #24324A;
+      isolation: isolate;
+    }
+    .sentence-builder::before,
+    .sentence-builder::after {
+      content: "";
+      position: fixed;
+      z-index: -1;
+      width: min(36vw, 430px);
+      aspect-ratio: 1;
+      border-radius: 44% 56% 65% 35%;
+      pointer-events: none;
+      transform: rotate(18deg);
+    }
+    .sentence-builder::before { top: -16%; left: -9%; background: #A9E5FF; }
+    .sentence-builder::after { right: -10%; bottom: -22%; background: #FFD6E5; transform: rotate(-22deg); }
+    .sentence-builder .icon-button,
+    .sentence-builder .pill {
+      border: 2px solid #24324A;
+      background: #fff;
+      color: #24324A;
+      box-shadow: 0 4px 0 #24324A;
+    }
+    .sentence-builder .topbar { position: fixed; }
+    .sentence-builder .pill__label { color: #6C63FF; }
+    .builder-stage {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      align-content: center;
+      gap: clamp(16px, 2.5vh, 26px);
+      width: min(1080px, calc(100% - 32px));
+      min-height: 100dvh;
+      margin: 0 auto;
+      padding: calc(env(safe-area-inset-top) + 94px) 0 calc(env(safe-area-inset-bottom) + 28px);
+    }
+    .builder-board {
+      display: grid;
+      gap: clamp(22px, 4vh, 42px);
+      padding: clamp(16px, 3vmin, 28px);
+      border: 3px solid #24324A;
+      border-radius: 28px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 9px 0 #24324A;
+    }
+    .builder-answer,
+    .builder-bank {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: center;
+      justify-content: center;
+      gap: clamp(8px, 1.3vmin, 13px);
+    }
+    .builder-answer {
+      min-height: clamp(92px, 15vh, 150px);
+      padding: clamp(12px, 2.2vmin, 20px);
+      border: 3px dashed #8D86FF;
+      border-radius: 20px;
+      background: #F3F1FF;
+    }
+    .builder-bank { min-height: 86px; padding: 12px 4px 2px; }
+    .builder-chip {
+      min-height: 54px;
+      padding: 10px clamp(14px, 2vmin, 22px);
+      border: 2px solid #24324A;
+      border-radius: 15px;
+      background: #fff;
+      color: #24324A;
+      box-shadow: 0 4px 0 #24324A;
+      cursor: pointer;
+      font-size: clamp(1.03rem, 2.5vmin, 1.52rem);
+      font-weight: 900;
+      line-height: 1.2;
+      transition: transform 100ms ease, box-shadow 100ms ease, opacity 120ms ease;
+    }
+    .builder-bank .builder-chip:nth-child(4n+1) { background: #FFE17D; }
+    .builder-bank .builder-chip:nth-child(4n+2) { background: #9FE7C2; }
+    .builder-bank .builder-chip:nth-child(4n+3) { background: #A9D8FF; }
+    .builder-bank .builder-chip:nth-child(4n) { background: #FFB8CB; }
+    .builder-answer .builder-chip { background: #6C63FF; color: #fff; }
+    .builder-chip:active { box-shadow: 0 1px 0 #24324A; transform: translateY(3px); }
+    .builder-chip[disabled] { opacity: .18; cursor: default; box-shadow: none; transform: translateY(3px); }
+    .builder-actions { display: flex; justify-content: center; gap: 10px; }
+    .builder-action {
+      min-height: 48px;
+      padding: 0 20px;
+      border: 2px solid #24324A;
+      border-radius: 13px;
+      background: #fff;
+      color: #24324A;
+      box-shadow: 0 4px 0 #24324A;
+      cursor: pointer;
+      font-weight: 900;
+    }
+    .builder-action:disabled { opacity: .38; cursor: default; }
+    .builder-action--reset { background: #FFE17D; }
+    .builder-result { display: grid; gap: 14px; }
+    .builder-result__sentence {
+      padding: 20px;
+      border: 3px solid #6C63FF;
+      border-radius: 16px;
+      background: #F3F1FF;
+      color: #24324A;
+      font-size: clamp(1.25rem, 3vmin, 1.8rem);
+      font-weight: 950;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      .builder-stage {
+        align-content: start;
+        width: min(100% - 20px, 680px);
+        padding-top: calc(env(safe-area-inset-top) + 86px);
+      }
+      .builder-board { padding: 13px; border-radius: 20px; box-shadow: 0 6px 0 #24324A; }
+      .builder-answer { min-height: 110px; }
+      .builder-bank { min-height: 120px; }
+      .builder-chip { min-height: 50px; padding: 9px 13px; font-size: clamp(1rem, 4.4vw, 1.22rem); }
     }
   </style>
 </head>
@@ -1437,6 +1568,10 @@
         <button class="activity-card activity-card--to-ii" type="button" data-start="to-infinitive-ii">
           <span class="activity-card__icon">to v. → ?</span>
           <strong>to v. 용법 구분 II</strong>
+        </button>
+        <button class="activity-card activity-card--hepta" type="button" data-start="sentence-building">
+          <span class="activity-card__icon">A · B · C</span>
+          <strong>(Hepta) Sentence Building</strong>
         </button>
       </div>
     </div>
@@ -1632,6 +1767,32 @@
     <div class="answer-feedback" id="to-ii-feedback" role="status" aria-live="assertive"><strong></strong><span></span></div>
   </main>
 
+  <main class="screen game sentence-builder" id="sentence-building-screen" aria-label="Hepta 문장 만들기 게임">
+    <div class="topbar">
+      <div class="topbar__actions">
+        <button class="icon-button" type="button" data-change-player><span class="button-label--wide">← 이름 바꾸기</span><span class="button-label--short">← 이름</span></button>
+        <button class="icon-button study-toggle" type="button" data-study-toggle aria-pressed="false">학습 모드</button>
+      </div>
+      <div class="score-group">
+        <div class="pill"><span class="pill__label" id="builder-score-label">연속</span><span class="pill__value" id="builder-score">0</span></div>
+        <div class="pill"><span class="pill__label" id="builder-best-label">최고</span><span class="pill__value" id="builder-best">0</span></div>
+      </div>
+    </div>
+    <div class="builder-stage">
+      <section class="builder-board" aria-label="문장 만들기 판">
+        <div class="builder-answer" id="builder-answer" aria-live="polite"></div>
+        <div class="builder-bank" id="builder-bank"></div>
+      </section>
+      <div class="builder-actions">
+        <button class="builder-action" id="builder-undo" type="button" aria-label="하나 되돌리기" title="하나 되돌리기" disabled>↶</button>
+        <button class="builder-action builder-action--reset" id="builder-reset" type="button" aria-label="처음부터" title="처음부터" disabled>↺</button>
+      </div>
+    </div>
+    <div class="flash" id="builder-flash" aria-hidden="true"></div>
+    <div class="answer-feedback" id="builder-feedback" role="status" aria-live="assertive"><strong></strong><span></span></div>
+    <audio id="builder-bgm" src="assets/audio/hepta-bg.mp3" preload="none" loop></audio>
+  </main>
+
   <div class="streak-celebration" id="streak-celebration" role="status" aria-live="polite" aria-atomic="true">
     <div class="streak-celebration__message">
       <strong id="streak-celebration-score"></strong>
@@ -1696,6 +1857,7 @@
   <script src="ing-data.js"></script>
   <script src="sentence-error-data.js"></script>
   <script src="to-infinitive-data.js"></script>
+  <script src="sentence-building-data.js"></script>
   <script>
     const PLAYER_NAMES = [
       '박범준', '배승우', '윤해든', '이룩', '이수민', '이우진', '이은수', '이지우',
@@ -1703,6 +1865,15 @@
       '강용제', '김예승', '김재윤', '김하준', '박시현', '박이환', '백시율', '이해원',
       '조현우', '지수연', '황은찬'
     ].sort((a, b) => a.localeCompare(b, 'ko'));
+
+    const HEPTA_PLAYER_NAMES = [
+      ['강해솔', 'Aurora'], ['고윤서', 'Andy'], ['김세윤', 'Irene'], ['김연재', 'Ella'],
+      ['김윤슬', 'Suri'], ['김하윤', 'Julia'], ['유예빛', 'Bella'], ['이지유', 'Jenny'],
+      ['한대윤', 'Danny'], ['김도윤', 'Yoon'], ['노연호', 'Steve'], ['박선율', 'Sunny'],
+      ['박율', 'Amy'], ['손종현', 'Jonghyun'], ['윤지한', 'Jihan'], ['장세아', 'Se A'],
+      ['정연서', 'Mia'], ['정이안', 'Ian']
+    ].sort((a, b) => a[0].localeCompare(b[0], 'ko'))
+      .map(([koreanName, englishName]) => `${koreanName}(${englishName})`);
 
     const VERBS = [
       ...['enjoy', 'finish', 'keep', 'stop', 'avoid', 'give up', 'mind', 'consider', 'put off'].map(verb => ({ verb, category: 'gerund' })),
@@ -1725,9 +1896,10 @@
       ing: '동명사 / 현재분사',
       'sentence-error': '문장 오류 찾기',
       'to-infinitive-i': 'to v. 용법 구분 I',
-      'to-infinitive-ii': 'to v. 용법 구분 II'
+      'to-infinitive-ii': 'to v. 용법 구분 II',
+      'sentence-building': '(Hepta) Sentence Building'
     };
-    const STUDY_ACTIVITY_KEYS = new Set(['grammar', 'ing', 'sentence-error', 'to-infinitive-i', 'to-infinitive-ii']);
+    const STUDY_ACTIVITY_KEYS = new Set(['grammar', 'ing', 'sentence-error', 'to-infinitive-i', 'to-infinitive-ii', 'sentence-building']);
     const ROUND_OVER_TITLES = [
       '아쉬워요!',
       '잘 하지~',
@@ -1758,6 +1930,8 @@
     const SENTENCE_ERROR_ITEMS = validateSentenceErrorItems(window.SENTENCE_ERROR_ITEMS);
     const TO_INFINITIVE_I_ITEMS = Array.isArray(window.TO_INFINITIVE_I_ITEMS) ? window.TO_INFINITIVE_I_ITEMS : [];
     const TO_INFINITIVE_II_ITEMS = Array.isArray(window.TO_INFINITIVE_II_ITEMS) ? window.TO_INFINITIVE_II_ITEMS : [];
+    const SENTENCE_BUILDING_ITEMS = Array.isArray(window.SENTENCE_BUILDING_ITEMS) ? window.SENTENCE_BUILDING_ITEMS : [];
+    const SENTENCE_BUILDING_COOLDOWN = 3;
     const TO_INFINITIVE_COOLDOWN = 3;
     const TO_INFINITIVE_I_TIME_LIMIT = 10000;
     const TO_INFINITIVE_II_TIME_LIMIT = 15000;
@@ -1795,6 +1969,7 @@
     const sentenceErrorScreen = document.querySelector('#sentence-error-screen');
     const toInfinitiveIScreen = document.querySelector('#to-infinitive-i-screen');
     const toInfinitiveIIScreen = document.querySelector('#to-infinitive-ii-screen');
+    const sentenceBuildingScreen = document.querySelector('#sentence-building-screen');
     const sentenceErrorStartButton = document.querySelector('#sentence-error-start');
     const nameForm = document.querySelector('#name-form');
     const nameSelect = document.querySelector('#name-select');
@@ -1809,6 +1984,11 @@
     const sentenceErrorSentenceEl = document.querySelector('#sentence-error-sentence');
     const toInfinitiveISentenceEl = document.querySelector('#to-i-sentence');
     const toInfinitiveIISentenceEl = document.querySelector('#to-ii-sentence');
+    const builderAnswerEl = document.querySelector('#builder-answer');
+    const builderBankEl = document.querySelector('#builder-bank');
+    const builderUndoButton = document.querySelector('#builder-undo');
+    const builderResetButton = document.querySelector('#builder-reset');
+    const builderBgmEl = document.querySelector('#builder-bgm');
     const sentenceErrorEmptyEl = document.querySelector('#sentence-error-empty');
     const sentenceErrorEmptyBackButton = document.querySelector('#sentence-error-empty-back');
     const primeScoreEl = document.querySelector('#prime-score');
@@ -1817,28 +1997,33 @@
     const sentenceErrorScoreEl = document.querySelector('#sentence-error-score');
     const toInfinitiveIScoreEl = document.querySelector('#to-i-score');
     const toInfinitiveIIScoreEl = document.querySelector('#to-ii-score');
+    const builderScoreEl = document.querySelector('#builder-score');
     const grammarScoreLabelEl = document.querySelector('#grammar-score-label');
     const ingScoreLabelEl = document.querySelector('#ing-score-label');
     const sentenceErrorScoreLabelEl = document.querySelector('#sentence-error-score-label');
     const toInfinitiveIScoreLabelEl = document.querySelector('#to-i-score-label');
     const toInfinitiveIIScoreLabelEl = document.querySelector('#to-ii-score-label');
+    const builderScoreLabelEl = document.querySelector('#builder-score-label');
     const primeBestEl = document.querySelector('#prime-best');
     const grammarBestEl = document.querySelector('#grammar-best');
     const ingBestEl = document.querySelector('#ing-best');
     const sentenceErrorBestEl = document.querySelector('#sentence-error-best');
     const toInfinitiveIBestEl = document.querySelector('#to-i-best');
     const toInfinitiveIIBestEl = document.querySelector('#to-ii-best');
+    const builderBestEl = document.querySelector('#builder-best');
     const grammarBestLabelEl = document.querySelector('#grammar-best-label');
     const ingBestLabelEl = document.querySelector('#ing-best-label');
     const sentenceErrorBestLabelEl = document.querySelector('#sentence-error-best-label');
     const toInfinitiveIBestLabelEl = document.querySelector('#to-i-best-label');
     const toInfinitiveIIBestLabelEl = document.querySelector('#to-ii-best-label');
+    const builderBestLabelEl = document.querySelector('#builder-best-label');
     const primeFlashEl = document.querySelector('#prime-flash');
     const grammarFlashEl = document.querySelector('#grammar-flash');
     const ingFlashEl = document.querySelector('#ing-flash');
     const sentenceErrorFlashEl = document.querySelector('#sentence-error-flash');
     const toInfinitiveIFlashEl = document.querySelector('#to-i-flash');
     const toInfinitiveIIFlashEl = document.querySelector('#to-ii-flash');
+    const builderFlashEl = document.querySelector('#builder-flash');
     const primeTimerEl = document.querySelector('#prime-timer');
     const primeTimerLabelEl = document.querySelector('#prime-timer-label');
     const primeTimerBarEl = document.querySelector('#prime-timer-bar');
@@ -1863,6 +2048,7 @@
     const sentenceErrorFeedbackEl = document.querySelector('#sentence-error-feedback');
     const toInfinitiveIFeedbackEl = document.querySelector('#to-i-feedback');
     const toInfinitiveIIFeedbackEl = document.querySelector('#to-ii-feedback');
+    const builderFeedbackEl = document.querySelector('#builder-feedback');
     const streakCelebrationEl = document.querySelector('#streak-celebration');
     const streakCelebrationScoreEl = document.querySelector('#streak-celebration-score');
     const streakCelebrationParticlesEl = document.querySelector('#streak-celebration-particles');
@@ -1891,7 +2077,8 @@
       ing: ingScreen,
       'sentence-error': sentenceErrorScreen,
       'to-infinitive-i': toInfinitiveIScreen,
-      'to-infinitive-ii': toInfinitiveIIScreen
+      'to-infinitive-ii': toInfinitiveIIScreen,
+      'sentence-building': sentenceBuildingScreen
     };
     const ACTIVITY_FEEDBACK = {
       prime: primeFeedbackEl,
@@ -1899,7 +2086,8 @@
       ing: ingFeedbackEl,
       'sentence-error': sentenceErrorFeedbackEl,
       'to-infinitive-i': toInfinitiveIFeedbackEl,
-      'to-infinitive-ii': toInfinitiveIIFeedbackEl
+      'to-infinitive-ii': toInfinitiveIIFeedbackEl,
+      'sentence-building': builderFeedbackEl
     };
     const ACTIVITY_ANSWER_ATTRIBUTES = {
       prime: 'data-prime-answer',
@@ -1919,7 +2107,8 @@
         bestLabel: sentenceErrorBestLabelEl
       },
       'to-infinitive-i': { score: toInfinitiveIScoreEl, scoreLabel: toInfinitiveIScoreLabelEl, best: toInfinitiveIBestEl, bestLabel: toInfinitiveIBestLabelEl },
-      'to-infinitive-ii': { score: toInfinitiveIIScoreEl, scoreLabel: toInfinitiveIIScoreLabelEl, best: toInfinitiveIIBestEl, bestLabel: toInfinitiveIIBestLabelEl }
+      'to-infinitive-ii': { score: toInfinitiveIIScoreEl, scoreLabel: toInfinitiveIIScoreLabelEl, best: toInfinitiveIIBestEl, bestLabel: toInfinitiveIIBestLabelEl },
+      'sentence-building': { score: builderScoreEl, scoreLabel: builderScoreLabelEl, best: builderBestEl, bestLabel: builderBestLabelEl }
     };
 
     let playerName = '';
@@ -1932,6 +2121,8 @@
     let currentSentenceErrorVariant = 'incorrect';
     let currentToInfinitiveIItem = TO_INFINITIVE_I_ITEMS[0];
     let currentToInfinitiveIIItem = TO_INFINITIVE_II_ITEMS[0];
+    let currentSentenceBuildingItem = SENTENCE_BUILDING_ITEMS[0];
+    let currentBuilderSelection = [];
     let recentVerbs = [];
     let recentIngIndexes = [];
     let recentSentenceErrorIds = [];
@@ -1939,6 +2130,7 @@
     let lastSentenceErrorCorrect = '';
     let recentToInfinitiveIIds = [];
     let recentToInfinitiveIIIds = [];
+    let recentSentenceBuildingIds = [];
     const sentenceErrorLastVariantById = new Map();
     let currentIngIndex = 0;
     let studyMode = false;
@@ -2016,7 +2208,8 @@
     }
 
     function createEqualAreaRadialGeometry(width, height, count) {
-      const center = { x: width * .5, y: height * .52 };
+      // 6분할은 정확한 중앙을 사용해 좌우 경계가 언제나 하나의 수평선이 되게 한다.
+      const center = { x: width * .5, y: height * (count === 6 ? .5 : .52) };
       const perimeter = [
         { x: width * .5, y: 0 },
         { x: width, y: 0 },
@@ -2366,13 +2559,33 @@
       return validItems;
     }
 
-    function populateNames() {
+    function getLastPlayerStorageKey(activity = activeActivity) {
+      return activity === 'sentence-building'
+        ? 'quick-tap-last-player-hepta'
+        : 'quick-tap-last-player';
+    }
+
+    function populateNames(activity = activeActivity) {
+      const names = activity === 'sentence-building' ? HEPTA_PLAYER_NAMES : PLAYER_NAMES;
       nameSelect.innerHTML = '';
       const placeholder = new Option('이름을 선택하세요', '', true, true);
       placeholder.disabled = true;
       nameSelect.add(placeholder);
-      PLAYER_NAMES.forEach(name => nameSelect.add(new Option(name, name)));
-      nameSelect.add(new Option('직접 입력', '__custom__'));
+      names.forEach(name => nameSelect.add(new Option(name, name)));
+      if (activity !== 'sentence-building') nameSelect.add(new Option('직접 입력', '__custom__'));
+      customNameInput.hidden = true;
+      customNameInput.required = false;
+      customNameInput.value = '';
+      const previousPlayer = localStorage.getItem(getLastPlayerStorageKey(activity));
+      if (!previousPlayer) return;
+      if (names.includes(previousPlayer)) {
+        nameSelect.value = previousPlayer;
+      } else if (activity !== 'sentence-building') {
+        nameSelect.value = '__custom__';
+        customNameInput.hidden = false;
+        customNameInput.required = true;
+        customNameInput.value = previousPlayer;
+      }
     }
 
     function getLeaderboard(activity) {
@@ -2439,6 +2652,7 @@
       if (activity === 'sentence-error') return new Set(SENTENCE_ERROR_ITEMS.map(item => item.id));
       if (activity === 'to-infinitive-i') return new Set(TO_INFINITIVE_I_ITEMS.map(item => item.id));
       if (activity === 'to-infinitive-ii') return new Set(TO_INFINITIVE_II_ITEMS.map(item => item.id));
+      if (activity === 'sentence-building') return new Set(SENTENCE_BUILDING_ITEMS.map(item => item.id));
       return new Set();
     }
 
@@ -2486,6 +2700,7 @@
       sentenceErrorScreen.classList.toggle('study-mode', studyMode && activeActivity === 'sentence-error');
       toInfinitiveIScreen.classList.toggle('study-mode', studyMode && activeActivity === 'to-infinitive-i');
       toInfinitiveIIScreen.classList.toggle('study-mode', studyMode && activeActivity === 'to-infinitive-ii');
+      sentenceBuildingScreen.classList.toggle('study-mode', studyMode && activeActivity === 'sentence-building');
       document.querySelectorAll('[data-study-toggle]').forEach(button => {
         button.setAttribute('aria-pressed', String(studyMode));
         button.textContent = studyMode ? '학습 종료' : '학습 모드';
@@ -2692,6 +2907,19 @@
       return audioContext;
     }
 
+    function startSentenceBuildingBgm() {
+      builderBgmEl.volume = .2;
+      if (!builderBgmEl.paused) return;
+      builderBgmEl.play().catch(() => {
+        // 자동 재생이 막히면 다음 사용자 입력 때 다시 시도한다.
+      });
+    }
+
+    function stopSentenceBuildingBgm() {
+      builderBgmEl.pause();
+      builderBgmEl.currentTime = 0;
+    }
+
     function playFeedbackSound(type) {
       if (!prepareAudio()) return;
       const startTime = audioContext.currentTime;
@@ -2737,6 +2965,7 @@
       sentenceErrorFlashEl.className = 'flash';
       toInfinitiveIFlashEl.className = 'flash';
       toInfinitiveIIFlashEl.className = 'flash';
+      builderFlashEl.className = 'flash';
     }
 
     function stopPrimeTimer() {
@@ -3356,10 +3585,10 @@
       const screen = ACTIVITY_SCREENS[activity];
       const feedback = ACTIVITY_FEEDBACK[activity];
       const attribute = ACTIVITY_ANSWER_ATTRIBUTES[activity];
-      if (!screen || !feedback || !attribute) return;
-      const selectedButton = answer ? screen.querySelector(`[${attribute}="${answer}"]`) : null;
+      if (!screen || !feedback) return;
+      const selectedButton = answer && attribute ? screen.querySelector(`[${attribute}="${answer}"]`) : null;
       if (selectedButton) selectedButton.classList.add(type === 'correct' ? 'answer-correct' : 'answer-wrong');
-      const correctButton = correctAnswer ? screen.querySelector(`[${attribute}="${correctAnswer}"]`) : null;
+      const correctButton = correctAnswer && attribute ? screen.querySelector(`[${attribute}="${correctAnswer}"]`) : null;
       if (type === 'wrong' && correctButton && correctButton !== selectedButton) correctButton.classList.add('answer-correct');
       feedback.querySelector('strong').textContent = title;
       feedback.querySelector('span').textContent = detail;
@@ -3531,6 +3760,162 @@
       return true;
     }
 
+    function renderSentenceBuildingBoard() {
+      const item = currentSentenceBuildingItem;
+      builderAnswerEl.replaceChildren();
+      builderBankEl.replaceChildren();
+      if (!item) return;
+
+      currentBuilderSelection.forEach((chunkIndex, selectedIndex) => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'builder-chip';
+        chip.textContent = item.chunks[chunkIndex];
+        chip.setAttribute('aria-label', `${chip.textContent}, 선택 취소`);
+        chip.addEventListener('pointerdown', event => {
+          event.preventDefault();
+          if (!acceptingInput) return;
+          currentBuilderSelection.splice(selectedIndex, 1);
+          renderSentenceBuildingBoard();
+        });
+        builderAnswerEl.append(chip);
+      });
+
+      item.chunks.forEach((chunk, chunkIndex) => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'builder-chip';
+        chip.textContent = chunk;
+        chip.disabled = currentBuilderSelection.includes(chunkIndex);
+        chip.addEventListener('pointerdown', event => {
+          event.preventDefault();
+          selectSentenceBuildingChunk(chunkIndex);
+        });
+        builderBankEl.append(chip);
+      });
+
+      builderUndoButton.disabled = !currentBuilderSelection.length || !acceptingInput;
+      builderResetButton.disabled = !currentBuilderSelection.length || !acceptingInput;
+    }
+
+    function resetSentenceBuildingBoard() {
+      if (!acceptingInput) return;
+      currentBuilderSelection = [];
+      renderSentenceBuildingBoard();
+    }
+
+    function undoSentenceBuildingChunk() {
+      if (!acceptingInput || !currentBuilderSelection.length) return;
+      currentBuilderSelection.pop();
+      renderSentenceBuildingBoard();
+    }
+
+    function createSentenceBuildingExplanation(item, attemptedChunks = []) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'builder-result';
+      if (attemptedChunks.length) {
+        const attempted = document.createElement('div');
+        attempted.className = 'to-result__section';
+        const label = document.createElement('span');
+        label.className = 'to-result__label';
+        label.textContent = '내가 만든 문장';
+        const sentence = document.createElement('div');
+        sentence.className = 'to-result__sentence';
+        sentence.textContent = attemptedChunks.join(' ');
+        attempted.append(label, sentence);
+        wrapper.append(attempted);
+      }
+      const correct = document.createElement('div');
+      correct.className = 'builder-result__sentence';
+      correct.textContent = item.sentence;
+      wrapper.append(correct);
+      return wrapper;
+    }
+
+    function nextSentenceBuildingItem() {
+      if (!SENTENCE_BUILDING_ITEMS.length) return false;
+      let selection;
+      if (studyMode) {
+        selection = getStudySelection(SENTENCE_BUILDING_ITEMS, item => item.id, recentSentenceBuildingIds);
+        currentStudyItemId = selection.id;
+        currentStudyItemIsReview = selection.isReview;
+      } else {
+        const candidates = SENTENCE_BUILDING_ITEMS.filter(item => !recentSentenceBuildingIds.includes(item.id));
+        const item = pickWeightedItem(candidates.length ? candidates : SENTENCE_BUILDING_ITEMS);
+        selection = { item, id: item.id, isReview: false };
+        currentStudyItemId = '';
+        currentStudyItemIsReview = false;
+      }
+      currentSentenceBuildingItem = selection.item;
+      currentBuilderSelection = [];
+      recentSentenceBuildingIds.push(selection.id);
+      if (recentSentenceBuildingIds.length > SENTENCE_BUILDING_COOLDOWN) recentSentenceBuildingIds.shift();
+      renderSentenceBuildingBoard();
+      animateCard(document.querySelector('.builder-board'));
+      return true;
+    }
+
+    function selectSentenceBuildingChunk(chunkIndex) {
+      if (!acceptingInput || activeActivity !== 'sentence-building') return;
+      startSentenceBuildingBgm();
+      if (currentBuilderSelection.includes(chunkIndex)) return;
+      currentBuilderSelection.push(chunkIndex);
+      renderSentenceBuildingBoard();
+      if (currentBuilderSelection.length < currentSentenceBuildingItem.chunks.length) return;
+      acceptingInput = false;
+      builderUndoButton.disabled = true;
+      builderResetButton.disabled = true;
+      window.setTimeout(checkSentenceBuildingAnswer, 220);
+    }
+
+    function checkSentenceBuildingAnswer() {
+      const item = currentSentenceBuildingItem;
+      if (!item) return;
+      const attemptedChunks = currentBuilderSelection.map(index => item.chunks[index]);
+      const isCorrect = attemptedChunks.every((chunk, index) => chunk === item.answer[index]);
+      if (isCorrect) {
+        const studyResult = studyMode ? recordStudyAnswer(currentStudyItemId, true) : null;
+        playFeedbackSound('correct');
+        score += 1;
+        builderScoreEl.textContent = score;
+        builderBestEl.textContent = studyMode ? getPendingStudyCount() : Math.max(score, getPlayerBest('sentence-building'));
+        showFlash(builderFlashEl, 'correct');
+        showAnswerFeedback(
+          'sentence-building',
+          'correct',
+          '★ 멋져요!',
+          studyResult?.mastered ? '완전히 익혔어요!' : item.sentence
+        );
+        if (!studyMode) celebrateStreak(score);
+        window.setTimeout(() => {
+          clearAnswerFeedback('sentence-building');
+          nextSentenceBuildingItem();
+          acceptingInput = true;
+          renderSentenceBuildingBoard();
+        }, studyMode ? 800 : getNextRoundDelay(score));
+        return;
+      }
+
+      if (studyMode) {
+        recordStudyAnswer(currentStudyItemId, false);
+        score += 1;
+        builderScoreEl.textContent = score;
+        builderBestEl.textContent = getPendingStudyCount();
+      }
+      playFeedbackSound('wrong');
+      showFlash(builderFlashEl, 'wrong');
+      showAnswerFeedback('sentence-building', 'wrong', '한 번 더 살펴봐요!', item.sentence);
+      const explanation = createSentenceBuildingExplanation(item, attemptedChunks);
+      if (studyMode) {
+        window.setTimeout(() => {
+          clearAnswerFeedback('sentence-building');
+          showStudyExplanation(explanation, '올바른 문장');
+        }, 720);
+        return;
+      }
+      finishRound(explanation, 760, '정답 확인');
+    }
+
     function startActivity(activity) {
       const screen = ACTIVITY_SCREENS[activity];
       if (!screen) {
@@ -3539,6 +3924,8 @@
         return;
       }
       activeActivity = activity;
+      if (activity === 'sentence-building') startSentenceBuildingBgm();
+      else stopSentenceBuildingBgm();
       score = 0;
       acceptingInput = false;
       resultModal.classList.remove('show');
@@ -3589,6 +3976,11 @@
         config.best.textContent = studyMode ? getPendingStudyCount() : getPlayerBest(activity);
         showScreen(ACTIVITY_SCREENS[activity]);
         if (!nextToInfinitiveItem(activity)) return;
+      } else if (activity === 'sentence-building') {
+        builderScoreEl.textContent = '0';
+        builderBestEl.textContent = studyMode ? getPendingStudyCount() : getPlayerBest(activity);
+        showScreen(sentenceBuildingScreen);
+        if (!nextSentenceBuildingItem()) return;
       }
       window.setTimeout(() => {
         acceptingInput = true;
@@ -3610,6 +4002,7 @@
       if (activeActivity === 'ing') nextIngItem();
       if (activeActivity === 'sentence-error') nextSentenceErrorItem();
       if (activeActivity === 'to-infinitive-i' || activeActivity === 'to-infinitive-ii') nextToInfinitiveItem(activeActivity);
+      if (activeActivity === 'sentence-building') nextSentenceBuildingItem();
       window.setTimeout(() => {
         acceptingInput = true;
         if (activeActivity === 'sentence-error' && !studyMode) startSentenceErrorTimer();
@@ -3630,6 +4023,7 @@
       lastSentenceErrorCorrect = '';
       recentToInfinitiveIIds = [];
       recentToInfinitiveIIIds = [];
+      recentSentenceBuildingIds = [];
       startActivity(activeActivity);
     }
 
@@ -3970,15 +4364,18 @@
         return;
       }
       activeActivity = activity;
+      stopSentenceBuildingBgm();
       studyMode = false;
       studyModeInput.checked = false;
       studyModeOption.hidden = !STUDY_ACTIVITY_KEYS.has(activity);
+      populateNames(activity);
       updateWelcomeModeCopy();
       showScreen(welcomeScreen);
       window.setTimeout(() => nameSelect.focus(), 0);
     }
 
     function backToActivityMenu() {
+      stopSentenceBuildingBgm();
       activeActivity = '';
       studyMode = false;
       studyModeInput.checked = false;
@@ -3987,6 +4384,7 @@
     }
 
     function changePlayer() {
+      stopSentenceBuildingBgm();
       acceptingInput = false;
       stopPrimeTimer();
       stopGrammarTimer();
@@ -4005,24 +4403,12 @@
       window.setTimeout(() => nameSelect.focus(), 0);
     }
 
-    populateNames();
+    populateNames('');
     sentenceErrorStartButton.disabled = !SENTENCE_ERROR_ITEMS.length;
     if (!SENTENCE_ERROR_ITEMS.length) {
       sentenceErrorStartButton.setAttribute('aria-disabled', 'true');
       sentenceErrorStartButton.setAttribute('aria-label', '문장 오류 찾기: 등록된 문제가 없습니다.');
     }
-    const previousPlayer = localStorage.getItem('quick-tap-last-player');
-    if (previousPlayer) {
-      if (PLAYER_NAMES.includes(previousPlayer)) {
-        nameSelect.value = previousPlayer;
-      } else {
-        nameSelect.value = '__custom__';
-        customNameInput.hidden = false;
-        customNameInput.required = true;
-        customNameInput.value = previousPlayer;
-      }
-    }
-
     nameSelect.addEventListener('change', () => {
       const isCustom = nameSelect.value === '__custom__';
       customNameInput.hidden = !isCustom;
@@ -4041,7 +4427,7 @@
       }
       playerName = chosenName.slice(0, 20);
       studyMode = STUDY_ACTIVITY_KEYS.has(activeActivity) && studyModeInput.checked;
-      localStorage.setItem('quick-tap-last-player', playerName);
+      localStorage.setItem(getLastPlayerStorageKey(), playerName);
       prepareAudio();
       startActivity(activeActivity);
     });
@@ -4079,6 +4465,14 @@
         chooseToInfinitive(button.dataset.toIiAnswer, 'to-infinitive-ii');
       });
     });
+    builderUndoButton.addEventListener('click', undoSentenceBuildingChunk);
+    builderResetButton.addEventListener('click', resetSentenceBuildingBoard);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) builderBgmEl.pause();
+      else if (activeActivity === 'sentence-building' && sentenceBuildingScreen.classList.contains('active')) {
+        startSentenceBuildingBgm();
+      }
+    });
 
     infoContinueButton.addEventListener('click', () => {
       if (hideWordNoteInput.checked) suppressedUsageNotes.add(currentVerb.verb);
@@ -4106,6 +4500,7 @@
       if (activeActivity === 'sentence-error') sentenceErrorBestEl.textContent = '0';
       if (activeActivity === 'to-infinitive-i') toInfinitiveIBestEl.textContent = '0';
       if (activeActivity === 'to-infinitive-ii') toInfinitiveIIBestEl.textContent = '0';
+      if (activeActivity === 'sentence-building') builderBestEl.textContent = '0';
       startActivity(activeActivity);
     });
 
@@ -4209,6 +4604,17 @@
         if (answer) {
           event.preventDefault();
           chooseToInfinitive(answer, 'to-infinitive-ii');
+        }
+      }
+
+      if (activeActivity === 'sentence-building') {
+        if (event.key === 'Backspace') {
+          event.preventDefault();
+          undoSentenceBuildingChunk();
+        }
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          resetSentenceBuildingBoard();
         }
       }
     });
