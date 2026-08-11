@@ -123,30 +123,34 @@
     .grammar-setup {
       display: grid;
       gap: 14px;
+      width: 100%;
+      min-width: 0;
       margin-top: 18px;
       padding: 16px;
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 18px;
-      background: rgba(27,30,37,.86);
+      border: 2px solid var(--steel, #6A89A7);
+      border-radius: 14px;
+      background: var(--surface, #EAF3FB);
     }
-    .grammar-setup legend { padding: 0 7px; color: #a9f8d7; font-size: .82rem; font-weight: 900; }
+    .grammar-setup legend { padding: 0 8px; background: var(--paper, #F8FBFE); color: var(--steel, #6A89A7); font-size: .8rem; font-weight: 900; }
     .mode-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .mode-choice {
       display: grid;
       place-items: center;
       min-height: 46px;
       padding: 8px 10px;
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 13px;
-      background: #22262e;
-      color: rgba(255,255,255,.75);
+      border: 2px solid var(--steel, #6A89A7);
+      border-radius: 11px;
+      background: var(--paper, #F8FBFE);
+      color: var(--ink, #384959);
       cursor: pointer;
       font-size: .82rem;
       font-weight: 900;
       text-align: center;
     }
-    .mode-choice:has(input:checked) { border-color: #7bf0bf; background: rgba(34,76,64,.72); color: #baffdf; }
+    .mode-choice:has(input:checked) { border-color: var(--ink, #384959); background: var(--powder, #BDDDFC); color: var(--ink, #384959); }
     .mode-choice input { position: absolute; opacity: 0; pointer-events: none; }
+    .mode-choice span { display: grid; gap: 3px; }
+    .mode-choice small { color: var(--steel, #6A89A7); font-size: .66rem; font-weight: 750; line-height: 1.25; }
     .grammar-switches { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .compact-option {
       display: flex;
@@ -154,45 +158,60 @@
       gap: 9px;
       min-height: 46px;
       padding: 10px 12px;
-      border-radius: 13px;
-      background: rgba(255,255,255,.055);
-      color: rgba(255,255,255,.82);
+      border: 1px solid var(--steel, #6A89A7);
+      border-radius: 10px;
+      background: var(--paper, #F8FBFE);
+      color: var(--ink, #384959);
       cursor: pointer;
       font-size: .78rem;
       font-weight: 800;
     }
-    .compact-option input { width: 19px; height: 19px; margin: 0; accent-color: #7bf0bf; }
-    .battle-setup { display: grid; gap: 12px; padding-top: 3px; }
-    .battle-fields { display: grid; grid-template-columns: 1fr 140px; gap: 10px; }
+    .compact-option input { flex: 0 0 auto; width: 19px; height: 19px; margin: 0; accent-color: var(--steel, #6A89A7); }
+    .battle-setup {
+      display: grid;
+      grid-template-columns: minmax(190px, .68fr) minmax(340px, 1.32fr);
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 10px 14px;
+      min-width: 0;
+      padding-top: 3px;
+    }
+    .battle-fields { display: grid; grid-column: 1; grid-row: 1 / 3; align-content: start; gap: 10px; min-width: 0; }
     .battle-fields .text-input { margin-top: 0; }
-    .battle-roster-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .battle-roster-header strong { color: rgba(255,255,255,.84); font-size: .82rem; }
+    .battle-roster-header { display: flex; grid-column: 2; grid-row: 1; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; }
+    .battle-roster-header strong { color: var(--ink, #384959); font-size: .82rem; }
     .battle-roster-actions { display: flex; gap: 6px; }
     .battle-roster-actions button {
       padding: 6px 9px;
-      border: 1px solid rgba(255,255,255,.13);
-      border-radius: 9px;
-      background: #262a32;
+      border: 1px solid var(--steel, #6A89A7);
+      border-radius: 8px;
+      background: var(--paper, #F8FBFE);
+      color: var(--ink, #384959);
       cursor: pointer;
       font-size: .7rem;
       font-weight: 800;
     }
     .battle-roster {
       display: grid;
+      grid-column: 2;
+      grid-row: 2;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 6px;
-      max-height: 190px;
+      min-width: 0;
+      max-height: 210px;
       overflow-y: auto;
       padding: 8px;
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 13px;
-      background: rgba(0,0,0,.14);
+      border: 1px solid var(--steel, #6A89A7);
+      border-radius: 10px;
+      background: #fff;
     }
     .battle-roster label { display: flex; align-items: center; gap: 7px; min-width: 0; padding: 7px; border-radius: 8px; font-size: .76rem; cursor: pointer; }
-    .battle-roster label:hover { background: rgba(255,255,255,.06); }
-    .battle-roster input { flex: 0 0 auto; width: 17px; height: 17px; margin: 0; accent-color: #7bf0bf; }
+    .battle-roster label:hover { background: var(--surface, #EAF3FB); }
+    .battle-roster input { flex: 0 0 auto; width: 17px; height: 17px; margin: 0; accent-color: var(--steel, #6A89A7); }
     .battle-roster span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .panel.grammar-setup--battle { width: min(100%, 720px); }
+    .panel.grammar-setup--battle { width: min(100%, 920px); }
+    .panel.grammar-setup--battle .welcome__back { margin-bottom: 16px; }
+    .panel.grammar-setup--battle h1 { font-size: clamp(2.4rem, 6vw, 3.35rem); }
+    .panel.grammar-setup--battle .subtitle { margin: 10px 0 18px; }
     .primary-button, .secondary-button, .danger-button {
       width: 100%;
       min-height: 54px;
@@ -453,42 +472,40 @@
       align-items: center;
       min-height: 42px;
       padding: 8px 13px;
-      border: 1px solid rgba(255,255,255,.18);
-      border-radius: 999px;
-      background: rgba(17,19,24,.76);
-      color: #baffdf;
-      backdrop-filter: blur(10px);
+      border: 2px solid var(--ink, #384959);
+      border-radius: 12px;
+      background: var(--powder, #BDDDFC);
+      color: var(--ink, #384959);
       font-size: .74rem;
       font-weight: 900;
     }
     .battle-hud {
       position: absolute;
       z-index: 18;
-      top: 50%;
-      right: 18px;
+      top: calc(env(safe-area-inset-top) + 138px);
+      left: 50%;
       display: grid;
-      width: min(220px, 23vw);
+      grid-template-columns: minmax(130px, 1.2fr) minmax(0, 4fr);
+      width: min(760px, calc(100% - 24px));
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,.22);
-      border-radius: 20px;
-      background: rgba(17,19,24,.9);
-      box-shadow: 0 14px 38px rgba(0,0,0,.3);
-      transform: translateY(-50%);
+      border: 2px solid var(--ink, #384959);
+      border-radius: 12px;
+      background: var(--paper, #F8FBFE);
+      transform: translateX(-50%);
       pointer-events: none;
     }
-    .battle-hud__student { padding: 14px 15px; border-bottom: 1px solid rgba(255,255,255,.12); }
-    .battle-hud__student span, .battle-hud__metric span { display: block; color: rgba(255,255,255,.62); font-size: .64rem; font-weight: 850; }
-    .battle-hud__student strong { display: block; margin-top: 3px; overflow: hidden; color: #fff1a8; font-size: clamp(1rem, 2vw, 1.4rem); text-overflow: ellipsis; white-space: nowrap; }
-    .battle-hud__metrics { display: grid; grid-template-columns: 1fr 1fr; }
-    .battle-hud__metric { padding: 12px 14px; }
-    .battle-hud__metric:nth-child(odd) { border-right: 1px solid rgba(255,255,255,.1); }
-    .battle-hud__metric:nth-child(-n+2) { border-bottom: 1px solid rgba(255,255,255,.1); }
-    .battle-hud__metric strong { display: block; margin-top: 3px; color: #baffdf; font-size: clamp(.94rem, 1.8vw, 1.2rem); font-variant-numeric: tabular-nums; }
-    .battle-modal__name { margin: 12px 0 4px; color: #fff1a8; font-size: clamp(2.4rem, 9vw, 4.8rem); line-height: 1; letter-spacing: -.05em; }
+    .battle-hud__student { min-width: 0; padding: 10px 13px; border-right: 1px solid var(--steel, #6A89A7); }
+    .battle-hud__student span, .battle-hud__metric span { display: block; color: var(--steel, #6A89A7); font-size: .61rem; font-weight: 850; }
+    .battle-hud__student strong { display: block; margin-top: 2px; overflow: hidden; color: var(--ink, #384959); font-size: clamp(.94rem, 1.6vw, 1.18rem); text-overflow: ellipsis; white-space: nowrap; }
+    .battle-hud__metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); min-width: 0; }
+    .battle-hud__metric { min-width: 0; padding: 10px 11px; border-left: 1px solid var(--powder, #BDDDFC); }
+    .battle-hud__metric:first-child { border-left: 0; }
+    .battle-hud__metric strong { display: block; margin-top: 2px; overflow: hidden; color: var(--ink, #384959); font-size: clamp(.86rem, 1.5vw, 1.05rem); font-variant-numeric: tabular-nums; text-overflow: ellipsis; white-space: nowrap; }
+    .battle-modal__name { margin: 12px 0 4px; color: var(--ink, #384959); font-size: clamp(2.4rem, 9vw, 4.8rem); line-height: 1; letter-spacing: -.05em; }
     .battle-modal__stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 20px 0 4px; }
-    .battle-modal__stat { padding: 13px 8px; border-radius: 13px; background: rgba(255,255,255,.06); text-align: center; }
-    .battle-modal__stat span { display: block; color: rgba(255,255,255,.62); font-size: .68rem; font-weight: 800; }
-    .battle-modal__stat strong { display: block; margin-top: 5px; color: #baffdf; font-size: 1.18rem; }
+    .battle-modal__stat { padding: 13px 8px; border-radius: 10px; background: var(--surface, #EAF3FB); text-align: center; }
+    .battle-modal__stat span { display: block; color: var(--steel, #6A89A7); font-size: .68rem; font-weight: 800; }
+    .battle-modal__stat strong { display: block; margin-top: 5px; color: var(--ink, #384959); font-size: 1.18rem; }
     .battle-modal__actions { display: grid; grid-template-columns: 1fr 1.4fr; gap: 9px; margin-top: 16px; }
     .battle-modal__actions .primary-button { margin-top: 0; }
 
@@ -958,11 +975,11 @@
       .streak-celebration.major .streak-celebration__message { min-width: min(38vw, 340px); padding: 15px 22px 18px; }
     }
     @media (min-width: 768px) and (min-height: 600px) {
-      #info-modal .modal__card, #study-explanation-modal .modal__card, #result-modal .modal__card { width: min(100%, 720px); padding: 48px 50px 40px; border-radius: 34px; }
+      #info-modal .modal__card, #study-explanation-modal .modal__card, #battle-modal .modal__card, #result-modal .modal__card { width: min(100%, 720px); padding: 48px 50px 40px; border-radius: 34px; }
       #study-explanation-modal .modal__card { padding: 28px; }
       #info-modal .modal__eyebrow, #result-modal .modal__eyebrow { margin-bottom: 15px; font-size: 1rem; }
       #info-modal h2, #result-modal h2 { font-size: 3.2rem; }
-      #info-modal .modal__message, #study-explanation-modal .modal__message, #result-modal .modal__message { margin: 22px 0 30px; padding: 24px 26px; font-size: 1.5rem; line-height: 1.8; }
+      #info-modal .modal__message, #study-explanation-modal .modal__message, #battle-modal .modal__message, #result-modal .modal__message { margin: 22px 0 30px; padding: 24px 26px; font-size: 1.5rem; line-height: 1.8; }
       #study-explanation-modal .modal__message { margin: 0 0 16px; }
       #info-modal .info-dismiss { padding: 18px 20px; font-size: 1.08rem; }
       #info-modal .info-dismiss input { width: 23px; height: 23px; }
@@ -1082,6 +1099,7 @@
       background: var(--sky);
       color: var(--ink);
     }
+    #grammar-screen.battle-mode .grammar-mode-badge { display: none; }
 
     .prime-choice--yes, .ing-choice--gerund, .sentence-error-choice--incorrect {
       background: var(--steel);
@@ -1236,6 +1254,7 @@
     .info-dismiss,
     #info-modal .modal__message,
     #study-explanation-modal .modal__message,
+    #battle-modal .modal__message,
     #result-modal .modal__message {
       background: var(--surface);
       color: var(--ink);
@@ -1672,16 +1691,20 @@
     }
 
     @media (max-width: 700px) {
-      .mode-picker { grid-template-columns: 1fr; }
-      .grammar-switches { grid-template-columns: 1fr; }
-      .battle-fields { grid-template-columns: 1fr; }
-      .battle-roster { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .battle-hud { top: auto; right: 10px; bottom: calc(env(safe-area-inset-bottom) + 10px); width: min(310px, calc(100vw - 20px)); transform: none; }
-      .battle-hud__student { padding: 9px 12px; }
+      .mode-picker { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .mode-choice { min-width: 0; padding-inline: 5px; font-size: .74rem; }
+      .mode-choice small { font-size: .58rem; }
+      .grammar-switches { grid-template-columns: 1fr 1fr; }
+      .battle-setup { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
+      .battle-fields { grid-column: 1; grid-row: 1; grid-template-columns: minmax(0, 1fr) 105px; }
+      .battle-roster-header { grid-column: 1; grid-row: 2; }
+      .battle-roster { grid-column: 1; grid-row: 3; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .battle-hud { top: calc(env(safe-area-inset-top) + 128px); left: 50%; width: calc(100% - 16px); transform: translateX(-50%); }
+      .battle-hud__student { padding: 8px 9px; }
       .battle-hud__metrics { grid-template-columns: repeat(4, 1fr); }
-      .battle-hud__metric { padding: 8px 7px; }
-      .battle-hud__metric:nth-child(n) { border: 0; border-left: 1px solid rgba(255,255,255,.1); }
-      .battle-hud__metric strong { font-size: .86rem; }
+      .battle-hud__metric { padding: 8px 5px; }
+      .battle-hud__student span, .battle-hud__metric span { font-size: .5rem; white-space: nowrap; }
+      .battle-hud__student strong, .battle-hud__metric strong { font-size: .78rem; }
       .builder-stage {
         align-content: start;
         width: min(100% - 20px, 680px);
@@ -1704,6 +1727,20 @@
         padding: 13px 19px;
         font-size: clamp(1.3rem, 6.3vw, 1.85rem);
       }
+    }
+    @media (max-width: 480px) {
+      .panel.grammar-setup--battle { padding: 20px 16px; }
+      .panel.grammar-setup--battle h1 { font-size: 2.45rem; }
+      .grammar-setup { gap: 10px; padding: 12px; }
+      .grammar-switches { grid-template-columns: 1fr; }
+      .compact-option { min-height: 40px; }
+      .battle-fields { grid-template-columns: minmax(0, 1fr) 96px; }
+      .battle-roster { max-height: 190px; }
+      .battle-hud { grid-template-columns: minmax(92px, 1.25fr) minmax(0, 4fr); }
+      .battle-hud__student { padding-inline: 7px; }
+    }
+    @media (orientation: landscape) and (max-height: 600px) {
+      .battle-hud { top: calc(env(safe-area-inset-top) + 108px); }
     }
   </style>
 </head>
@@ -1730,9 +1767,9 @@
       <fieldset class="grammar-setup" id="grammar-setup" hidden>
         <legend>목적어 게임 설정</legend>
         <div class="mode-picker" role="radiogroup" aria-label="게임 모드">
-          <label class="mode-choice"><input type="radio" name="grammar-mode" value="normal" checked><span>일반</span></label>
-          <label class="mode-choice"><input type="radio" name="grammar-mode" value="speedrun"><span>100개 스피드런</span></label>
-          <label class="mode-choice"><input type="radio" name="grammar-mode" value="battle"><span>반배틀</span></label>
+          <label class="mode-choice"><input type="radio" name="grammar-mode" value="normal" checked><span>일반<small>5초 · 오답 시 종료</small></span></label>
+          <label class="mode-choice"><input type="radio" name="grammar-mode" value="speedrun"><span>100개 스피드런<small>정답 100개 시간 측정</small></span></label>
+          <label class="mode-choice"><input type="radio" name="grammar-mode" value="battle"><span>반배틀<small>무작위 지목 · 반 목표</small></span></label>
         </div>
         <div class="grammar-switches">
           <label class="compact-option"><input id="grammar-usage-notes-input" type="checkbox" checked><span>remember·forget 등 설명 표시</span></label>
@@ -1849,7 +1886,7 @@
       <div class="battle-hud__student"><span>현재 도전자</span><strong id="battle-current-player">-</strong></div>
       <div class="battle-hud__metrics">
         <div class="battle-hud__metric"><span>목표 잔여</span><strong id="battle-remaining-target">0</strong></div>
-        <div class="battle-hud__metric"><span>도전자 잔여</span><strong id="battle-remaining-players">0명</strong></div>
+        <div class="battle-hud__metric"><span>학생 잔여</span><strong id="battle-remaining-players">0명</strong></div>
         <div class="battle-hud__metric"><span>필요 평균</span><strong id="battle-needed-average">0개</strong></div>
         <div class="battle-hud__metric"><span>반 누적</span><strong id="battle-total-correct">0개</strong></div>
       </div>
@@ -4608,6 +4645,9 @@
         speedrunErrors = 0;
         grammarScreen.classList.toggle('speedrun-mode', grammarMode === 'speedrun');
         grammarScreen.classList.toggle('battle-mode', grammarMode === 'battle');
+        const grammarChangePlayerButton = grammarScreen.querySelector('[data-change-player]');
+        grammarChangePlayerButton.querySelector('.button-label--wide').textContent = grammarMode === 'battle' ? '← 반 설정' : '← 이름 바꾸기';
+        grammarChangePlayerButton.querySelector('.button-label--short').textContent = grammarMode === 'battle' ? '← 설정' : '← 이름';
         battleHudEl.hidden = grammarMode !== 'battle';
         grammarModeBadgeEl.hidden = grammarMode === 'normal';
         grammarModeBadgeEl.textContent = grammarMode === 'speedrun' ? '100개 스피드런' : '반배틀';
