@@ -120,79 +120,6 @@
     .study-option input { flex: 0 0 auto; width: 21px; height: 21px; margin: 2px 0 0; accent-color: #7bf0bf; }
     .study-option strong { display: block; color: #a9f8d7; font-size: .94rem; }
     .study-option span { display: block; margin-top: 4px; color: rgba(255,255,255,.72); font-size: .8rem; line-height: 1.45; }
-    .grammar-setup {
-      display: grid;
-      gap: 14px;
-      margin-top: 18px;
-      padding: 16px;
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 18px;
-      background: rgba(27,30,37,.86);
-    }
-    .grammar-setup legend { padding: 0 7px; color: #a9f8d7; font-size: .82rem; font-weight: 900; }
-    .mode-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .mode-choice {
-      display: grid;
-      place-items: center;
-      min-height: 46px;
-      padding: 8px 10px;
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 13px;
-      background: #22262e;
-      color: rgba(255,255,255,.75);
-      cursor: pointer;
-      font-size: .82rem;
-      font-weight: 900;
-      text-align: center;
-    }
-    .mode-choice:has(input:checked) { border-color: #7bf0bf; background: rgba(34,76,64,.72); color: #baffdf; }
-    .mode-choice input { position: absolute; opacity: 0; pointer-events: none; }
-    .grammar-switches { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .compact-option {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      min-height: 46px;
-      padding: 10px 12px;
-      border-radius: 13px;
-      background: rgba(255,255,255,.055);
-      color: rgba(255,255,255,.82);
-      cursor: pointer;
-      font-size: .78rem;
-      font-weight: 800;
-    }
-    .compact-option input { width: 19px; height: 19px; margin: 0; accent-color: #7bf0bf; }
-    .battle-setup { display: grid; gap: 12px; padding-top: 3px; }
-    .battle-fields { display: grid; grid-template-columns: 1fr 140px; gap: 10px; }
-    .battle-fields .text-input { margin-top: 0; }
-    .battle-roster-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .battle-roster-header strong { color: rgba(255,255,255,.84); font-size: .82rem; }
-    .battle-roster-actions { display: flex; gap: 6px; }
-    .battle-roster-actions button {
-      padding: 6px 9px;
-      border: 1px solid rgba(255,255,255,.13);
-      border-radius: 9px;
-      background: #262a32;
-      cursor: pointer;
-      font-size: .7rem;
-      font-weight: 800;
-    }
-    .battle-roster {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 6px;
-      max-height: 190px;
-      overflow-y: auto;
-      padding: 8px;
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 13px;
-      background: rgba(0,0,0,.14);
-    }
-    .battle-roster label { display: flex; align-items: center; gap: 7px; min-width: 0; padding: 7px; border-radius: 8px; font-size: .76rem; cursor: pointer; }
-    .battle-roster label:hover { background: rgba(255,255,255,.06); }
-    .battle-roster input { flex: 0 0 auto; width: 17px; height: 17px; margin: 0; accent-color: #7bf0bf; }
-    .battle-roster span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .panel.grammar-setup--battle { width: min(100%, 720px); }
     .primary-button, .secondary-button, .danger-button {
       width: 100%;
       min-height: 54px;
@@ -448,49 +375,6 @@
     .grammar-lines::before, .grammar-lines::after { content: ""; position: absolute; z-index: 2; background: rgba(255,255,255,.16); pointer-events: none; }
     .grammar-lines::before { top: 7%; bottom: 7%; left: 50%; width: 1px; }
     .grammar-lines::after { top: 50%; left: 5%; right: 5%; height: 1px; }
-    .grammar-mode-badge {
-      display: inline-flex;
-      align-items: center;
-      min-height: 42px;
-      padding: 8px 13px;
-      border: 1px solid rgba(255,255,255,.18);
-      border-radius: 999px;
-      background: rgba(17,19,24,.76);
-      color: #baffdf;
-      backdrop-filter: blur(10px);
-      font-size: .74rem;
-      font-weight: 900;
-    }
-    .battle-hud {
-      position: absolute;
-      z-index: 18;
-      top: 50%;
-      right: 18px;
-      display: grid;
-      width: min(220px, 23vw);
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,.22);
-      border-radius: 20px;
-      background: rgba(17,19,24,.9);
-      box-shadow: 0 14px 38px rgba(0,0,0,.3);
-      transform: translateY(-50%);
-      pointer-events: none;
-    }
-    .battle-hud__student { padding: 14px 15px; border-bottom: 1px solid rgba(255,255,255,.12); }
-    .battle-hud__student span, .battle-hud__metric span { display: block; color: rgba(255,255,255,.62); font-size: .64rem; font-weight: 850; }
-    .battle-hud__student strong { display: block; margin-top: 3px; overflow: hidden; color: #fff1a8; font-size: clamp(1rem, 2vw, 1.4rem); text-overflow: ellipsis; white-space: nowrap; }
-    .battle-hud__metrics { display: grid; grid-template-columns: 1fr 1fr; }
-    .battle-hud__metric { padding: 12px 14px; }
-    .battle-hud__metric:nth-child(odd) { border-right: 1px solid rgba(255,255,255,.1); }
-    .battle-hud__metric:nth-child(-n+2) { border-bottom: 1px solid rgba(255,255,255,.1); }
-    .battle-hud__metric strong { display: block; margin-top: 3px; color: #baffdf; font-size: clamp(.94rem, 1.8vw, 1.2rem); font-variant-numeric: tabular-nums; }
-    .battle-modal__name { margin: 12px 0 4px; color: #fff1a8; font-size: clamp(2.4rem, 9vw, 4.8rem); line-height: 1; letter-spacing: -.05em; }
-    .battle-modal__stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 20px 0 4px; }
-    .battle-modal__stat { padding: 13px 8px; border-radius: 13px; background: rgba(255,255,255,.06); text-align: center; }
-    .battle-modal__stat span { display: block; color: rgba(255,255,255,.62); font-size: .68rem; font-weight: 800; }
-    .battle-modal__stat strong { display: block; margin-top: 5px; color: #baffdf; font-size: 1.18rem; }
-    .battle-modal__actions { display: grid; grid-template-columns: 1fr 1.4fr; gap: 9px; margin-top: 16px; }
-    .battle-modal__actions .primary-button { margin-top: 0; }
 
     .flash { position: absolute; z-index: 12; inset: 0; opacity: 0; pointer-events: none; }
     .flash.correct { animation: correct 240ms ease-out; }
@@ -1672,16 +1556,6 @@
     }
 
     @media (max-width: 700px) {
-      .mode-picker { grid-template-columns: 1fr; }
-      .grammar-switches { grid-template-columns: 1fr; }
-      .battle-fields { grid-template-columns: 1fr; }
-      .battle-roster { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .battle-hud { top: auto; right: 10px; bottom: calc(env(safe-area-inset-bottom) + 10px); width: min(310px, calc(100vw - 20px)); transform: none; }
-      .battle-hud__student { padding: 9px 12px; }
-      .battle-hud__metrics { grid-template-columns: repeat(4, 1fr); }
-      .battle-hud__metric { padding: 8px 7px; }
-      .battle-hud__metric:nth-child(n) { border: 0; border-left: 1px solid rgba(255,255,255,.1); }
-      .battle-hud__metric strong { font-size: .86rem; }
       .builder-stage {
         align-content: start;
         width: min(100% - 20px, 680px);
@@ -1715,11 +1589,9 @@
       <span class="activity-chip" id="selected-activity-label"></span>
       <h1 id="welcome-title">플레이어를<br>선택하세요</h1>
       <p class="subtitle" id="welcome-subtitle">이름별 최고 연속 정답 기록이 이 기기의 리더보드에 저장됩니다.</p>
-      <div id="player-fields">
-        <label class="field-label" for="name-select">이름</label>
-        <select class="select" id="name-select" required></select>
-        <input class="text-input" id="custom-name" type="text" maxlength="20" autocomplete="name" placeholder="이름을 입력하세요" aria-label="직접 입력할 이름" hidden>
-      </div>
+      <label class="field-label" for="name-select">이름</label>
+      <select class="select" id="name-select" required></select>
+      <input class="text-input" id="custom-name" type="text" maxlength="20" autocomplete="name" placeholder="이름을 입력하세요" aria-label="직접 입력할 이름" hidden>
       <label class="study-option" id="study-mode-option" for="study-mode-input" hidden>
         <input id="study-mode-input" type="checkbox">
         <span>
@@ -1727,38 +1599,6 @@
           <span>시간 제한과 게임 오버 없이 천천히 복습해요.</span>
         </span>
       </label>
-      <fieldset class="grammar-setup" id="grammar-setup" hidden>
-        <legend>목적어 게임 설정</legend>
-        <div class="mode-picker" role="radiogroup" aria-label="게임 모드">
-          <label class="mode-choice"><input type="radio" name="grammar-mode" value="normal" checked><span>일반</span></label>
-          <label class="mode-choice"><input type="radio" name="grammar-mode" value="speedrun"><span>100개 스피드런</span></label>
-          <label class="mode-choice"><input type="radio" name="grammar-mode" value="battle"><span>반배틀</span></label>
-        </div>
-        <div class="grammar-switches">
-          <label class="compact-option"><input id="grammar-usage-notes-input" type="checkbox" checked><span>remember·forget 등 설명 표시</span></label>
-          <label class="compact-option"><input id="grammar-celebrations-input" type="checkbox" checked><span>5! · 10! 축하 문구 표시</span></label>
-        </div>
-        <div class="battle-setup" id="battle-setup" hidden>
-          <div class="battle-fields">
-            <div>
-              <label class="field-label" for="battle-class-name">반 이름</label>
-              <input class="text-input" id="battle-class-name" type="text" maxlength="30" value="우리 반" required>
-            </div>
-            <div>
-              <label class="field-label" for="battle-target">목표 정답 수</label>
-              <input class="text-input" id="battle-target" type="number" min="1" max="9999" value="100" inputmode="numeric" required>
-            </div>
-          </div>
-          <div class="battle-roster-header">
-            <strong>이 반 소속 학생 <span id="battle-roster-count"></span></strong>
-            <div class="battle-roster-actions">
-              <button id="battle-select-all" type="button">전체 선택</button>
-              <button id="battle-clear-all" type="button">전체 해제</button>
-            </div>
-          </div>
-          <div class="battle-roster" id="battle-roster" aria-label="반배틀 참가 학생"></div>
-        </div>
-      </fieldset>
       <button class="primary-button" type="submit">시작하기</button>
     </form>
   </section>
@@ -1833,7 +1673,6 @@
       <div class="topbar__actions">
         <button class="icon-button" type="button" data-change-player><span class="button-label--wide">← 이름 바꾸기</span><span class="button-label--short">← 이름</span></button>
         <button class="icon-button study-toggle" type="button" data-study-toggle aria-pressed="false">학습 모드</button>
-        <span class="grammar-mode-badge" id="grammar-mode-badge" hidden></span>
       </div>
       <div class="score-group">
         <div class="pill"><span class="pill__label" id="grammar-score-label">연속</span><span class="pill__value" id="grammar-score">0</span></div>
@@ -1841,19 +1680,10 @@
       </div>
     </div>
     <div class="game-timer" id="grammar-timer" role="timer" aria-live="off">
-      <div class="game-timer__meta"><span id="grammar-timer-caption">남은 시간</span><strong id="grammar-timer-label">5.0초</strong></div>
+      <div class="game-timer__meta"><span>남은 시간</span><strong id="grammar-timer-label">5.0초</strong></div>
       <div class="game-timer__track"><span class="game-timer__bar" id="grammar-timer-bar"></span></div>
     </div>
     <div class="center-card verb" id="verb" aria-live="assertive">enjoy</div>
-    <aside class="battle-hud" id="battle-hud" aria-label="반배틀 현황" hidden>
-      <div class="battle-hud__student"><span>현재 도전자</span><strong id="battle-current-player">-</strong></div>
-      <div class="battle-hud__metrics">
-        <div class="battle-hud__metric"><span>목표 잔여</span><strong id="battle-remaining-target">0</strong></div>
-        <div class="battle-hud__metric"><span>도전자 잔여</span><strong id="battle-remaining-players">0명</strong></div>
-        <div class="battle-hud__metric"><span>필요 평균</span><strong id="battle-needed-average">0개</strong></div>
-        <div class="battle-hud__metric"><span>반 누적</span><strong id="battle-total-correct">0개</strong></div>
-      </div>
-    </aside>
     <div class="flash" id="grammar-flash" aria-hidden="true"></div>
     <div class="answer-feedback" id="grammar-feedback" role="status" aria-live="assertive"><strong></strong><span></span></div>
   </main>
@@ -2064,24 +1894,6 @@
     </div>
   </section>
 
-  <section class="modal" id="battle-modal" role="dialog" aria-modal="true" aria-labelledby="battle-modal-title">
-    <div class="modal__card">
-      <p class="modal__eyebrow info" id="battle-modal-eyebrow">CLASS BATTLE</p>
-      <h2 id="battle-modal-title">이번 도전자</h2>
-      <div class="battle-modal__name" id="battle-modal-name"></div>
-      <p class="modal__message" id="battle-modal-message"></p>
-      <div class="battle-modal__stats">
-        <div class="battle-modal__stat"><span>목표 잔여</span><strong id="battle-modal-remaining">0</strong></div>
-        <div class="battle-modal__stat"><span>남은 학생</span><strong id="battle-modal-players">0명</strong></div>
-        <div class="battle-modal__stat"><span>필요 평균</span><strong id="battle-modal-average">0개</strong></div>
-      </div>
-      <div class="battle-modal__actions">
-        <button class="secondary-button" id="battle-exit" type="button">반배틀 종료</button>
-        <button class="primary-button" id="battle-primary" type="button">트라이 시작</button>
-      </div>
-    </div>
-  </section>
-
   <section class="modal" id="result-modal" role="dialog" aria-modal="true" aria-labelledby="result-title">
     <div class="modal__card">
       <div class="result-modal__header">
@@ -2095,8 +1907,8 @@
       <div class="result-scroll-content" id="result-scroll-content">
         <div class="modal__message" id="result-message"></div>
         <div class="stats">
-          <div class="stat"><span id="final-score-label">이번 기록</span><strong id="final-score">0</strong></div>
-          <div class="stat"><span id="final-best-label">나의 최고 기록</span><strong id="final-best">0</strong></div>
+          <div class="stat"><span>이번 기록</span><strong id="final-score">0</strong></div>
+          <div class="stat"><span>나의 최고 기록</span><strong id="final-best">0</strong></div>
         </div>
         <div class="leaderboard">
           <div class="leaderboard__title"><h3 id="leaderboard-title">리더보드</h3></div>
@@ -2248,24 +2060,12 @@
     const sentenceBuildingScreen = document.querySelector('#sentence-building-screen');
     const sentenceErrorStartButton = document.querySelector('#sentence-error-start');
     const nameForm = document.querySelector('#name-form');
-    const playerFields = document.querySelector('#player-fields');
     const nameSelect = document.querySelector('#name-select');
     const customNameInput = document.querySelector('#custom-name');
     const selectedActivityLabel = document.querySelector('#selected-activity-label');
-    const welcomeTitleEl = document.querySelector('#welcome-title');
     const welcomeSubtitleEl = document.querySelector('#welcome-subtitle');
     const studyModeOption = document.querySelector('#study-mode-option');
     const studyModeInput = document.querySelector('#study-mode-input');
-    const grammarSetup = document.querySelector('#grammar-setup');
-    const battleSetup = document.querySelector('#battle-setup');
-    const grammarUsageNotesInput = document.querySelector('#grammar-usage-notes-input');
-    const grammarCelebrationsInput = document.querySelector('#grammar-celebrations-input');
-    const battleClassNameInput = document.querySelector('#battle-class-name');
-    const battleTargetInput = document.querySelector('#battle-target');
-    const battleRosterEl = document.querySelector('#battle-roster');
-    const battleRosterCountEl = document.querySelector('#battle-roster-count');
-    const battleSelectAllButton = document.querySelector('#battle-select-all');
-    const battleClearAllButton = document.querySelector('#battle-clear-all');
     const numberEl = document.querySelector('#number');
     const verbEl = document.querySelector('#verb');
     const ingSentenceEl = document.querySelector('#ing-sentence');
@@ -2319,14 +2119,6 @@
     const grammarTimerEl = document.querySelector('#grammar-timer');
     const grammarTimerLabelEl = document.querySelector('#grammar-timer-label');
     const grammarTimerBarEl = document.querySelector('#grammar-timer-bar');
-    const grammarTimerCaptionEl = document.querySelector('#grammar-timer-caption');
-    const grammarModeBadgeEl = document.querySelector('#grammar-mode-badge');
-    const battleHudEl = document.querySelector('#battle-hud');
-    const battleCurrentPlayerEl = document.querySelector('#battle-current-player');
-    const battleRemainingTargetEl = document.querySelector('#battle-remaining-target');
-    const battleRemainingPlayersEl = document.querySelector('#battle-remaining-players');
-    const battleNeededAverageEl = document.querySelector('#battle-needed-average');
-    const battleTotalCorrectEl = document.querySelector('#battle-total-correct');
     const ingTimerEl = document.querySelector('#ing-timer');
     const ingTimerLabelEl = document.querySelector('#ing-timer-label');
     const ingTimerBarEl = document.querySelector('#ing-timer-bar');
@@ -2360,24 +2152,12 @@
     const studyExplanationModal = document.querySelector('#study-explanation-modal');
     const studyExplanationMessageEl = document.querySelector('#study-explanation-message');
     const studyExplanationContinueButton = document.querySelector('#study-explanation-continue');
-    const battleModal = document.querySelector('#battle-modal');
-    const battleModalEyebrowEl = document.querySelector('#battle-modal-eyebrow');
-    const battleModalTitleEl = document.querySelector('#battle-modal-title');
-    const battleModalNameEl = document.querySelector('#battle-modal-name');
-    const battleModalMessageEl = document.querySelector('#battle-modal-message');
-    const battleModalRemainingEl = document.querySelector('#battle-modal-remaining');
-    const battleModalPlayersEl = document.querySelector('#battle-modal-players');
-    const battleModalAverageEl = document.querySelector('#battle-modal-average');
-    const battleExitButton = document.querySelector('#battle-exit');
-    const battlePrimaryButton = document.querySelector('#battle-primary');
     const resultModal = document.querySelector('#result-modal');
     const resultScrollContentEl = document.querySelector('#result-scroll-content');
     const resultTitleEl = document.querySelector('#result-title');
     const resultMessageEl = document.querySelector('#result-message');
     const finalScoreEl = document.querySelector('#final-score');
     const finalBestEl = document.querySelector('#final-best');
-    const finalScoreLabelEl = document.querySelector('#final-score-label');
-    const finalBestLabelEl = document.querySelector('#final-best-label');
     const leaderboardTitleEl = document.querySelector('#leaderboard-title');
     const leaderboardListEl = document.querySelector('#leaderboard-list');
     const restartButton = document.querySelector('#restart');
@@ -2446,22 +2226,6 @@
     const sentenceErrorLastVariantById = new Map();
     let currentIngIndex = 0;
     let studyMode = false;
-    let grammarMode = 'normal';
-    let grammarUsageNotesEnabled = true;
-    let grammarCelebrationsEnabled = true;
-    let speedrunStartedAt = 0;
-    let speedrunElapsed = 0;
-    let speedrunErrors = 0;
-    let battleModalAction = 'start';
-    let battleState = {
-      className: '',
-      initialTarget: 100,
-      remainingTarget: 100,
-      remainingPlayers: [],
-      currentPlayer: '',
-      completedPlayers: [],
-      totalCorrect: 0
-    };
     let studyState = { rounds: 0, reviews: {} };
     let currentStudyItemId = '';
     let currentStudyItemIsReview = false;
@@ -2500,162 +2264,6 @@
 
     function showScreen(screen) {
       screens.forEach(item => item.classList.toggle('active', item === screen));
-    }
-
-    function getSelectedGrammarMode() {
-      return nameForm.querySelector('input[name="grammar-mode"]:checked')?.value || 'normal';
-    }
-
-    function updateBattleRosterCount() {
-      const selected = battleRosterEl.querySelectorAll('input:checked').length;
-      const total = battleRosterEl.querySelectorAll('input').length;
-      battleRosterCountEl.textContent = `(${selected}/${total}명)`;
-    }
-
-    function populateBattleRoster() {
-      battleRosterEl.replaceChildren();
-      PLAYER_NAMES.forEach(name => {
-        const label = document.createElement('label');
-        const input = document.createElement('input');
-        const text = document.createElement('span');
-        input.type = 'checkbox';
-        input.value = name;
-        input.checked = true;
-        text.textContent = name;
-        label.append(input, text);
-        battleRosterEl.append(label);
-      });
-      updateBattleRosterCount();
-    }
-
-    function updateGrammarSetupUI({ applyFastDefaults = false } = {}) {
-      const mode = getSelectedGrammarMode();
-      const isBattle = mode === 'battle';
-      const isFastMode = mode === 'speedrun' || isBattle;
-      playerFields.hidden = isBattle;
-      nameSelect.required = !isBattle;
-      nameSelect.disabled = isBattle;
-      customNameInput.disabled = isBattle;
-      customNameInput.required = !isBattle && nameSelect.value === '__custom__';
-      battleSetup.hidden = !isBattle;
-      battleClassNameInput.disabled = !isBattle;
-      battleTargetInput.disabled = !isBattle;
-      studyModeOption.hidden = activeActivity !== 'grammar' || mode !== 'normal';
-      nameForm.classList.toggle('grammar-setup--battle', isBattle);
-      if (applyFastDefaults && isFastMode) {
-        grammarUsageNotesInput.checked = false;
-        grammarCelebrationsInput.checked = false;
-        studyModeInput.checked = false;
-      }
-      updateWelcomeModeCopy();
-    }
-
-    function getBattleEligiblePlayerCount() {
-      return battleState.remainingPlayers.length + (battleState.currentPlayer ? 1 : 0);
-    }
-
-    function getBattleNeededAverage() {
-      const eligibleCount = getBattleEligiblePlayerCount();
-      if (battleState.remainingTarget <= 0) return 0;
-      return eligibleCount ? battleState.remainingTarget / eligibleCount : Infinity;
-    }
-
-    function formatBattleAverage(value = getBattleNeededAverage()) {
-      if (!Number.isFinite(value)) return '추가 참가 필요';
-      return `${value.toFixed(value % 1 ? 1 : 0)}개`;
-    }
-
-    function updateBattleUI() {
-      const eligibleCount = getBattleEligiblePlayerCount();
-      const average = getBattleNeededAverage();
-      battleCurrentPlayerEl.textContent = battleState.currentPlayer || '-';
-      battleRemainingTargetEl.textContent = battleState.remainingTarget;
-      battleRemainingPlayersEl.textContent = `${eligibleCount}명`;
-      battleNeededAverageEl.textContent = formatBattleAverage(average);
-      battleTotalCorrectEl.textContent = `${battleState.totalCorrect}개`;
-      battleModalRemainingEl.textContent = battleState.remainingTarget;
-      battleModalPlayersEl.textContent = `${eligibleCount}명`;
-      battleModalAverageEl.textContent = formatBattleAverage(average);
-      grammarScoreEl.textContent = score;
-      grammarBestEl.textContent = battleState.remainingTarget;
-    }
-
-    function showBattleModal(action, { title, name = '', message = '', button = '' }) {
-      battleModalAction = action;
-      battleModalTitleEl.textContent = title;
-      battleModalNameEl.textContent = name;
-      battleModalNameEl.hidden = !name;
-      battleModalMessageEl.textContent = message;
-      battlePrimaryButton.textContent = button;
-      updateBattleUI();
-      battleModal.classList.add('show');
-      battlePrimaryButton.focus();
-    }
-
-    function drawNextBattlePlayer() {
-      clearAnswerFeedback('grammar');
-      stopGrammarTimer();
-      acceptingInput = false;
-      if (battleState.remainingTarget <= 0) {
-        finishClassBattle(true);
-        return;
-      }
-      if (!battleState.remainingPlayers.length) {
-        finishClassBattle(false);
-        return;
-      }
-      const index = Math.floor(Math.random() * battleState.remainingPlayers.length);
-      battleState.currentPlayer = battleState.remainingPlayers.splice(index, 1)[0];
-      score = 0;
-      updateBattleUI();
-      showBattleModal('start', {
-        title: '이번 도전자',
-        name: battleState.currentPlayer,
-        message: `${battleState.className} 목표까지 ${battleState.remainingTarget}개 남았습니다.`,
-        button: '트라이 시작'
-      });
-    }
-
-    function startBattleTry() {
-      battleModal.classList.remove('show');
-      nextVerb();
-      window.setTimeout(() => {
-        acceptingInput = true;
-        startGrammarTimer();
-      }, 120);
-    }
-
-    function finishBattleTurn(reason) {
-      acceptingInput = false;
-      stopGrammarTimer();
-      const player = battleState.currentPlayer;
-      battleState.completedPlayers.push({ name: player, score });
-      battleState.currentPlayer = '';
-      updateBattleUI();
-      if (!battleState.remainingPlayers.length) {
-        window.setTimeout(() => finishClassBattle(false), 420);
-        return;
-      }
-      window.setTimeout(() => showBattleModal('next', {
-        title: `${player} 트라이 종료`,
-        name: `${score}개`,
-        message: `${reason} 다음 도전자가 채워야 할 평균은 ${formatBattleAverage()}입니다.`,
-        button: '다음 학생 뽑기'
-      }), 420);
-    }
-
-    function finishClassBattle(succeeded) {
-      acceptingInput = false;
-      stopGrammarTimer();
-      const result = succeeded
-        ? `목표 ${battleState.initialTarget}개를 모두 달성했습니다!`
-        : `목표까지 ${battleState.remainingTarget}개가 남았습니다.`;
-      showBattleModal('complete', {
-        title: succeeded ? '반배틀 성공!' : '모든 트라이 종료',
-        name: battleState.className,
-        message: `${result} 반 누적 정답은 ${battleState.totalCorrect}개입니다.`,
-        button: '설정으로 돌아가기'
-      });
     }
 
     function getPolygonArea(points) {
@@ -3132,54 +2740,6 @@
       });
     }
 
-    function getSpeedrunLeaderboard() {
-      try {
-        const saved = JSON.parse(localStorage.getItem('quick-tap-speedrun-grammar'));
-        return saved && typeof saved === 'object' ? saved : {};
-      } catch {
-        return {};
-      }
-    }
-
-    function recordSpeedrun(time, errors) {
-      const leaderboard = getSpeedrunLeaderboard();
-      const previous = leaderboard[playerName];
-      if (!previous || time < Number(previous.time)) {
-        leaderboard[playerName] = { time, errors, date: Date.now() };
-        localStorage.setItem('quick-tap-speedrun-grammar', JSON.stringify(leaderboard));
-      }
-      return leaderboard[playerName];
-    }
-
-    function renderSpeedrunLeaderboard() {
-      const rows = Object.entries(getSpeedrunLeaderboard())
-        .map(([name, value]) => [name, Number(value?.time) || Infinity, Number(value?.errors) || 0])
-        .filter(([, time]) => Number.isFinite(time))
-        .sort((a, b) => a[1] - b[1] || a[2] - b[2] || a[0].localeCompare(b[0], 'ko'));
-      leaderboardListEl.replaceChildren();
-      if (!rows.length) {
-        const empty = document.createElement('li');
-        empty.className = 'leaderboard__empty';
-        empty.textContent = '아직 완주 기록이 없습니다.';
-        leaderboardListEl.append(empty);
-        return;
-      }
-      rows.forEach(([name, time, errors], index) => {
-        const item = document.createElement('li');
-        item.className = `leaderboard__row${name === playerName ? ' current' : ''}`;
-        const rank = document.createElement('span');
-        rank.className = 'leaderboard__rank';
-        rank.textContent = String(index + 1);
-        const player = document.createElement('span');
-        player.textContent = name;
-        const result = document.createElement('span');
-        result.className = 'leaderboard__score';
-        result.textContent = `${(time / 1000).toFixed(2)}초 · 오답 ${errors}`;
-        item.append(rank, player, result);
-        leaderboardListEl.append(item);
-      });
-    }
-
     function getStudyStorageKey(activity = activeActivity, name = playerName) {
       return `quick-tap-study-${activity}-${encodeURIComponent(name)}`;
     }
@@ -3254,27 +2814,10 @@
 
     function updateWelcomeModeCopy() {
       const isStudySelection = STUDY_ACTIVITY_KEYS.has(activeActivity) && studyModeInput.checked;
-      const selectedGrammarMode = activeActivity === 'grammar' ? getSelectedGrammarMode() : 'normal';
-      const modeLabel = selectedGrammarMode === 'speedrun'
-        ? ' · 100개 스피드런'
-        : selectedGrammarMode === 'battle'
-          ? ' · 반배틀'
-          : isStudySelection ? ' · 학습 모드' : '';
-      selectedActivityLabel.textContent = `${ACTIVITY_LABELS[activeActivity]}${modeLabel}`;
-      welcomeTitleEl.replaceChildren(
-        document.createTextNode(selectedGrammarMode === 'battle' ? '반배틀을' : '플레이어를'),
-        document.createElement('br'),
-        document.createTextNode(selectedGrammarMode === 'battle' ? '설정하세요' : '선택하세요')
-      );
-      if (selectedGrammarMode === 'speedrun') {
-        welcomeSubtitleEl.textContent = '오답으로 끝나지 않습니다. 정답 100개를 채우는 시간을 측정합니다.';
-      } else if (selectedGrammarMode === 'battle') {
-        welcomeSubtitleEl.textContent = '학생을 무작위로 뽑아 한 번씩 트라이하고, 반 목표의 남은 수와 필요 평균을 실시간 계산합니다.';
-      } else {
-        welcomeSubtitleEl.textContent = isStudySelection
-          ? '시간 제한 없이 진행하며, 틀린 문제의 복습 일정은 플레이어별로 이 기기에 저장됩니다.'
-          : '이름별 최고 연속 정답 기록이 이 기기의 리더보드에 저장됩니다.';
-      }
+      selectedActivityLabel.textContent = `${ACTIVITY_LABELS[activeActivity]}${isStudySelection ? ' · 학습 모드' : ''}`;
+      welcomeSubtitleEl.textContent = isStudySelection
+        ? '시간 제한 없이 진행하며, 틀린 문제의 복습 일정은 플레이어별로 이 기기에 저장됩니다.'
+        : '이름별 최고 연속 정답 기록이 이 기기의 리더보드에 저장됩니다.';
     }
 
     function pickWeightedItem(items) {
@@ -3390,8 +2933,6 @@
     }
 
     function getNextRoundDelay(value) {
-      if (activeActivity === 'grammar' && grammarMode === 'speedrun') return 70;
-      if (activeActivity === 'grammar' && !grammarCelebrationsEnabled) return 650;
       const milestone = getStreakMilestone(value);
       if (milestone === 'major') return 2050;
       if (milestone === 'standard') return 1500;
@@ -3407,7 +2948,6 @@
     }
 
     function celebrateStreak(value) {
-      if (activeActivity === 'grammar' && !grammarCelebrationsEnabled) return;
       const milestone = getStreakMilestone(value);
       if (!milestone) return;
 
@@ -3583,14 +3123,6 @@
     }
 
     function updateGrammarTimer() {
-      if (grammarMode === 'speedrun') {
-        speedrunElapsed = performance.now() - speedrunStartedAt;
-        grammarTimerBarEl.style.transform = `scaleX(${Math.min(1, score / 100)})`;
-        grammarTimerLabelEl.textContent = `${(speedrunElapsed / 1000).toFixed(1)}초`;
-        grammarTimerEl.classList.remove('urgent');
-        grammarTimerAnimationId = window.requestAnimationFrame(updateGrammarTimer);
-        return;
-      }
       const remaining = Math.max(0, grammarDeadline - performance.now());
       const ratio = remaining / 5000;
       grammarTimerBarEl.style.transform = `scaleX(${ratio})`;
@@ -3600,7 +3132,6 @@
     }
 
     function getCurrentUsageNote() {
-      if (!grammarUsageNotesEnabled) return '';
       if (suppressedUsageNotes.has(currentVerb.verb)) return '';
       return USAGE_NOTES[currentVerb.verb] || '';
     }
@@ -3612,26 +3143,12 @@
       playFeedbackSound('wrong');
       showFlash(grammarFlashEl, 'wrong');
       showAnswerFeedback('grammar', 'wrong', '✕ 시간 초과!', `정답: ${CATEGORY_LABELS[currentVerb.category]}`, null);
-      if (grammarMode === 'battle') {
-        finishBattleTurn('시간이 초과되었습니다.');
-        return;
-      }
       const note = getCurrentUsageNote();
       finishRound(`시간이 초과되었습니다.\n${currentVerb.verb}의 정답은 ‘${CATEGORY_LABELS[currentVerb.category]}’입니다.${note ? `\n\n${note}` : ''}`);
     }
 
     function startGrammarTimer() {
       stopGrammarTimer();
-      if (grammarMode === 'speedrun') {
-        if (!speedrunStartedAt) speedrunStartedAt = performance.now();
-        grammarTimerCaptionEl.textContent = '경과 시간 · 100개 진행률';
-        grammarTimerBarEl.style.transform = `scaleX(${Math.min(1, score / 100)})`;
-        grammarTimerLabelEl.textContent = `${(speedrunElapsed / 1000).toFixed(1)}초`;
-        grammarTimerEl.classList.remove('urgent');
-        grammarTimerAnimationId = window.requestAnimationFrame(updateGrammarTimer);
-        return;
-      }
-      grammarTimerCaptionEl.textContent = '남은 시간';
       grammarDeadline = performance.now() + 5000;
       grammarTimerEl.classList.remove('urgent');
       grammarTimerBarEl.style.transform = 'scaleX(1)';
@@ -4580,7 +4097,6 @@
       resultModal.classList.remove('show');
       infoModal.classList.remove('show');
       studyExplanationModal.classList.remove('show');
-      battleModal.classList.remove('show');
       resetFlashFeedback();
       clearStreakCelebration();
       stopPrimeTimer();
@@ -4603,26 +4119,10 @@
         nextPrimeNumber();
       } else if (activity === 'grammar') {
         suppressedUsageNotes.clear();
-        speedrunStartedAt = 0;
-        speedrunElapsed = 0;
-        speedrunErrors = 0;
-        grammarScreen.classList.toggle('speedrun-mode', grammarMode === 'speedrun');
-        grammarScreen.classList.toggle('battle-mode', grammarMode === 'battle');
-        battleHudEl.hidden = grammarMode !== 'battle';
-        grammarModeBadgeEl.hidden = grammarMode === 'normal';
-        grammarModeBadgeEl.textContent = grammarMode === 'speedrun' ? '100개 스피드런' : '반배틀';
-        grammarScreen.querySelector('[data-study-toggle]').hidden = grammarMode !== 'normal';
         grammarScoreEl.textContent = '0';
-        grammarScoreLabelEl.textContent = grammarMode === 'speedrun' ? '진행' : grammarMode === 'battle' ? '이번 트라이' : studyMode ? '학습' : '연속';
-        grammarBestLabelEl.textContent = grammarMode === 'speedrun' ? '목표' : grammarMode === 'battle' ? '목표 잔여' : studyMode ? '복습 대기' : '최고';
-        grammarBestEl.textContent = grammarMode === 'speedrun' ? '100' : grammarMode === 'battle' ? battleState.remainingTarget : studyMode ? getPendingStudyCount() : getPlayerBest('grammar');
+        grammarBestEl.textContent = studyMode ? getPendingStudyCount() : getPlayerBest('grammar');
         showScreen(grammarScreen);
-        if (grammarMode === 'battle') {
-          updateBattleUI();
-          window.setTimeout(drawNextBattlePlayer, 160);
-        } else {
-          nextVerb();
-        }
+        nextVerb();
       } else if (activity === 'ing') {
         ingScoreEl.textContent = '0';
         ingBestEl.textContent = studyMode ? getPendingStudyCount() : getPlayerBest('ing');
@@ -4650,10 +4150,9 @@
         if (!nextSentenceBuildingItem()) return;
       }
       window.setTimeout(() => {
-        if (activity === 'grammar' && grammarMode === 'battle') return;
         acceptingInput = true;
         if (activity === 'prime') startPrimeTimer();
-        if (activity === 'grammar' && !studyMode && grammarMode !== 'battle') startGrammarTimer();
+        if (activity === 'grammar' && !studyMode) startGrammarTimer();
         if (activity === 'ing' && !studyMode) startIngTimer();
         if (activity === 'sentence-error' && !studyMode) startSentenceErrorTimer();
         if ((activity === 'to-infinitive-i' || activity === 'to-infinitive-ii') && !studyMode) startToInfinitiveTimer();
@@ -4711,9 +4210,6 @@
       stopSentenceErrorTimer();
       stopToInfinitiveTimer();
       stopSentenceBuildingTimer();
-      finalScoreLabelEl.textContent = '이번 기록';
-      finalBestLabelEl.textContent = '나의 최고 기록';
-      resetLeaderboardButton.hidden = false;
       const best = recordScore(activeActivity, score);
       const roundOverTitle = activeActivity === 'sentence-building' ? '아쉬워요!' : getRandomRoundOverTitle();
       resultTitleEl.replaceChildren(document.createTextNode(roundOverTitle));
@@ -4737,29 +4233,6 @@
         resultModal.classList.add('show');
         restartButton.focus();
       }, delay);
-    }
-
-    function finishSpeedrun() {
-      acceptingInput = false;
-      speedrunElapsed = performance.now() - speedrunStartedAt;
-      stopGrammarTimer();
-      const best = recordSpeedrun(speedrunElapsed, speedrunErrors);
-      resultTitleEl.textContent = '100개 완주!';
-      resultMessageEl.classList.remove('has-rich-explanation');
-      resultMessageEl.textContent = `정답 100개 · 오답 ${speedrunErrors}개`;
-      finalScoreLabelEl.textContent = '완주 시간';
-      finalBestLabelEl.textContent = '나의 최고 시간';
-      finalScoreEl.textContent = `${(speedrunElapsed / 1000).toFixed(2)}초`;
-      finalBestEl.textContent = `${(Number(best.time) / 1000).toFixed(2)}초`;
-      leaderboardTitleEl.textContent = '동사의 목적어 100개 스피드런';
-      resetLeaderboardButton.hidden = false;
-      renderSpeedrunLeaderboard();
-      window.setTimeout(() => {
-        resultScrollContentEl.scrollTop = 0;
-        leaderboardListEl.scrollTop = 0;
-        resultModal.classList.add('show');
-        restartButton.focus();
-      }, 180);
     }
 
     function choosePrime(answer) {
@@ -4799,19 +4272,6 @@
       infoContinueButton.focus();
     }
 
-    function advanceGrammarRound(delay = 0) {
-      window.setTimeout(() => {
-        clearAnswerFeedback('grammar');
-        if (grammarMode === 'battle' && battleState.remainingTarget <= 0) {
-          finishClassBattle(true);
-          return;
-        }
-        nextVerb();
-        acceptingInput = true;
-        if (!studyMode) startGrammarTimer();
-      }, delay);
-    }
-
     function chooseGrammar(answer) {
       if (!acceptingInput || activeActivity !== 'grammar') return;
       acceptingInput = false;
@@ -4820,36 +4280,16 @@
         const studyResult = studyMode ? recordStudyAnswer(currentStudyItemId, true) : null;
         playFeedbackSound('correct');
         score += 1;
-        if (grammarMode === 'battle') {
-          battleState.remainingTarget = Math.max(0, battleState.remainingTarget - 1);
-          battleState.totalCorrect += 1;
-          updateBattleUI();
-        } else {
-          grammarScoreEl.textContent = grammarMode === 'speedrun' ? `${score}/100` : score;
-          grammarBestEl.textContent = grammarMode === 'speedrun'
-            ? '100'
-            : studyMode ? getPendingStudyCount() : Math.max(score, getPlayerBest('grammar'));
-        }
+        grammarScoreEl.textContent = score;
+        grammarBestEl.textContent = studyMode ? getPendingStudyCount() : Math.max(score, getPlayerBest('grammar'));
         showFlash(grammarFlashEl, 'correct');
         const studyDetail = studyResult?.mastered
           ? '2회 연속 정답! 오답 목록에서 제외했어요.'
           : studyResult?.correctStreak
             ? `${studyResult.correctStreak}회 연속 정답`
-            : grammarMode === 'speedrun'
-              ? `${score}/100`
-              : grammarMode === 'battle'
-                ? `목표까지 ${battleState.remainingTarget}개`
-                : CATEGORY_LABELS[currentVerb.category];
+            : CATEGORY_LABELS[currentVerb.category];
         showAnswerFeedback('grammar', 'correct', '✓ 정답!', studyDetail, answer);
         if (!studyMode) celebrateStreak(score);
-        if (grammarMode === 'speedrun' && score >= 100) {
-          window.setTimeout(finishSpeedrun, 90);
-          return;
-        }
-        if (grammarMode === 'battle' && battleState.remainingTarget <= 0) {
-          window.setTimeout(() => finishClassBattle(true), 280);
-          return;
-        }
         const nextRoundDelay = studyMode ? 650 : getNextRoundDelay(score);
         if (getCurrentUsageNote()) {
           window.setTimeout(() => {
@@ -4857,7 +4297,12 @@
             showUsageNote();
           }, nextRoundDelay);
         } else {
-          advanceGrammarRound(nextRoundDelay);
+          window.setTimeout(() => {
+            clearAnswerFeedback('grammar');
+            nextVerb();
+            acceptingInput = true;
+            if (!studyMode) startGrammarTimer();
+          }, nextRoundDelay);
         }
         return;
       }
@@ -4873,10 +4318,9 @@
       showAnswerFeedback(
         'grammar',
         'wrong',
-        grammarMode === 'speedrun' ? '✕ 계속!' : '✕ 다시 익혀요!',
+        '✕ 다시 익혀요!',
         `정답: ${CATEGORY_LABELS[currentVerb.category]}`,
-        answer,
-        currentVerb.category
+        answer
       );
       const usageNote = getCurrentUsageNote();
       const note = usageNote ? `\n\n${usageNote}` : '';
@@ -4885,22 +4329,6 @@
           clearAnswerFeedback('grammar');
           showStudyExplanation(`${currentVerb.verb}의 정답은 ‘${CATEGORY_LABELS[currentVerb.category]}’입니다.${note}`);
         }, 650);
-        return;
-      }
-      if (grammarMode === 'speedrun') {
-        speedrunErrors += 1;
-        if (usageNote) {
-          window.setTimeout(() => {
-            clearAnswerFeedback('grammar');
-            showUsageNote();
-          }, 180);
-        } else {
-          advanceGrammarRound(180);
-        }
-        return;
-      }
-      if (grammarMode === 'battle') {
-        finishBattleTurn(`정답은 ‘${CATEGORY_LABELS[currentVerb.category]}’입니다.`);
         return;
       }
       finishRound(`${currentVerb.verb}의 정답은 ‘${CATEGORY_LABELS[currentVerb.category]}’입니다.${note}`);
@@ -5108,25 +4536,11 @@
       stopSentenceBuildingBgm();
       studyMode = false;
       studyModeInput.checked = false;
-      grammarSetup.hidden = activity !== 'grammar';
-      playerFields.hidden = false;
-      nameSelect.required = true;
       studyModeOption.hidden = !STUDY_ACTIVITY_KEYS.has(activity);
       populateNames(activity);
-      if (activity === 'grammar') updateGrammarSetupUI();
-      else {
-        nameSelect.disabled = false;
-        customNameInput.disabled = false;
-        battleClassNameInput.disabled = true;
-        battleTargetInput.disabled = true;
-        nameForm.classList.remove('grammar-setup--battle');
-      }
       updateWelcomeModeCopy();
       showScreen(welcomeScreen);
-      window.setTimeout(() => {
-        if (activity === 'grammar' && getSelectedGrammarMode() === 'battle') battleClassNameInput.focus();
-        else nameSelect.focus();
-      }, 0);
+      window.setTimeout(() => nameSelect.focus(), 0);
     }
 
     function backToActivityMenu() {
@@ -5135,15 +4549,6 @@
       studyMode = false;
       studyModeInput.checked = false;
       studyModeOption.hidden = true;
-      grammarSetup.hidden = true;
-      battleSetup.hidden = true;
-      playerFields.hidden = false;
-      nameSelect.required = true;
-      nameSelect.disabled = false;
-      customNameInput.disabled = false;
-      battleClassNameInput.disabled = true;
-      battleTargetInput.disabled = true;
-      nameForm.classList.remove('grammar-setup--battle');
       showScreen(menuScreen);
     }
 
@@ -5159,23 +4564,16 @@
       resultModal.classList.remove('show');
       infoModal.classList.remove('show');
       studyExplanationModal.classList.remove('show');
-      battleModal.classList.remove('show');
       clearAnswerFeedback(activeActivity);
       clearStreakCelebration();
-      grammarSetup.hidden = activeActivity !== 'grammar';
       studyModeOption.hidden = !STUDY_ACTIVITY_KEYS.has(activeActivity);
       studyModeInput.checked = studyMode;
-      if (activeActivity === 'grammar') updateGrammarSetupUI();
       updateWelcomeModeCopy();
       showScreen(welcomeScreen);
-      window.setTimeout(() => {
-        if (activeActivity === 'grammar' && getSelectedGrammarMode() === 'battle') battleClassNameInput.focus();
-        else nameSelect.focus();
-      }, 0);
+      window.setTimeout(() => nameSelect.focus(), 0);
     }
 
     populateNames('');
-    populateBattleRoster();
     sentenceErrorStartButton.disabled = !SENTENCE_ERROR_ITEMS.length;
     if (!SENTENCE_ERROR_ITEMS.length) {
       sentenceErrorStartButton.setAttribute('aria-disabled', 'true');
@@ -5188,61 +4586,17 @@
       if (isCustom) customNameInput.focus();
     });
     studyModeInput.addEventListener('change', updateWelcomeModeCopy);
-    nameForm.querySelectorAll('input[name="grammar-mode"]').forEach(input => {
-      input.addEventListener('change', () => updateGrammarSetupUI({ applyFastDefaults: true }));
-    });
-    battleRosterEl.addEventListener('change', updateBattleRosterCount);
-    battleSelectAllButton.addEventListener('click', () => {
-      battleRosterEl.querySelectorAll('input').forEach(input => { input.checked = true; });
-      updateBattleRosterCount();
-    });
-    battleClearAllButton.addEventListener('click', () => {
-      battleRosterEl.querySelectorAll('input').forEach(input => { input.checked = false; });
-      updateBattleRosterCount();
-    });
     backToActivitiesButton.addEventListener('click', backToActivityMenu);
 
     nameForm.addEventListener('submit', event => {
       event.preventDefault();
-      grammarMode = activeActivity === 'grammar' ? getSelectedGrammarMode() : 'normal';
-      grammarUsageNotesEnabled = grammarUsageNotesInput.checked;
-      grammarCelebrationsEnabled = grammarCelebrationsInput.checked;
-      if (grammarMode === 'battle') {
-        const className = battleClassNameInput.value.trim().slice(0, 30);
-        const target = Math.max(1, Math.min(9999, Number.parseInt(battleTargetInput.value, 10) || 0));
-        const participants = [...battleRosterEl.querySelectorAll('input:checked')].map(input => input.value);
-        if (!className) {
-          battleClassNameInput.focus();
-          return;
-        }
-        if (!participants.length) {
-          window.alert('반배틀에 참가할 학생을 한 명 이상 선택해 주세요.');
-          battleRosterEl.querySelector('input')?.focus();
-          return;
-        }
-        battleTargetInput.value = target;
-        battleState = {
-          className,
-          initialTarget: target,
-          remainingTarget: target,
-          remainingPlayers: [...participants],
-          currentPlayer: '',
-          completedPlayers: [],
-          totalCorrect: 0
-        };
-        playerName = battleState.className;
-        studyMode = false;
-        prepareAudio();
-        startActivity(activeActivity);
-        return;
-      }
       const chosenName = nameSelect.value === '__custom__' ? customNameInput.value.trim() : nameSelect.value;
       if (!chosenName) {
         customNameInput.focus();
         return;
       }
       playerName = chosenName.slice(0, 20);
-      studyMode = grammarMode === 'normal' && STUDY_ACTIVITY_KEYS.has(activeActivity) && studyModeInput.checked;
+      studyMode = STUDY_ACTIVITY_KEYS.has(activeActivity) && studyModeInput.checked;
       localStorage.setItem(getLastPlayerStorageKey(), playerName);
       prepareAudio();
       startActivity(activeActivity);
@@ -5293,32 +4647,19 @@
     infoContinueButton.addEventListener('click', () => {
       if (hideWordNoteInput.checked) suppressedUsageNotes.add(currentVerb.verb);
       infoModal.classList.remove('show');
-      advanceGrammarRound(140);
+      nextVerb();
+      window.setTimeout(() => {
+        acceptingInput = true;
+        if (!studyMode) startGrammarTimer();
+      }, 140);
     });
 
     studyExplanationContinueButton.addEventListener('click', continueStudySession);
-    battlePrimaryButton.addEventListener('click', () => {
-      if (battleModalAction === 'start') startBattleTry();
-      else if (battleModalAction === 'next') {
-        battleModal.classList.remove('show');
-        drawNextBattlePlayer();
-      } else {
-        changePlayer();
-      }
-    });
-    battleExitButton.addEventListener('click', changePlayer);
     restartButton.addEventListener('click', () => startActivity(activeActivity));
     changeResultPlayerButton.addEventListener('click', changePlayer);
     sentenceErrorEmptyBackButton.addEventListener('click', backToActivityMenu);
     resetLeaderboardButton.addEventListener('click', () => {
       const label = ACTIVITY_LABELS[activeActivity];
-      if (activeActivity === 'grammar' && grammarMode === 'speedrun') {
-        if (!window.confirm('동사의 목적어 100개 스피드런 기록을 모두 지울까요?')) return;
-        localStorage.removeItem('quick-tap-speedrun-grammar');
-        renderSpeedrunLeaderboard();
-        finalBestEl.textContent = '-';
-        return;
-      }
       if (!window.confirm(`${label} 리더보드의 모든 기록을 지울까요?`)) return;
       localStorage.removeItem(`quick-tap-leaderboard-${activeActivity}`);
       renderLeaderboard(activeActivity);
@@ -5339,17 +4680,6 @@
         target instanceof HTMLElement
         && (target.matches('input, select, textarea') || target.isContentEditable)
       ) return;
-      if (battleModal.classList.contains('show')) {
-        if (event.key === 'Enter') {
-          event.preventDefault();
-          battlePrimaryButton.click();
-        }
-        if (event.key === 'Escape') {
-          event.preventDefault();
-          battleExitButton.click();
-        }
-        return;
-      }
       if (resultModal.classList.contains('show')) {
         const resultShortcut = event.key.toLowerCase();
         if (event.code === 'KeyC' || resultShortcut === 'c') {
