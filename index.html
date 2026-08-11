@@ -1954,22 +1954,22 @@
 
   <main class="screen game radial-game radial-game--six" id="to-infinitive-ii-screen" aria-label="to 부정사 용법 구분 2 게임">
     <button class="choice radial-choice radial-choice--ii-purpose" type="button" data-to-ii-answer="purpose" aria-label="1번, 목적">
-      <span class="radial-choice__label"><kbd>1</kbd><strong>목적</strong><small>~하기 위해서</small></span>
+      <span class="radial-choice__label"><kbd>1</kbd><strong>목적</strong><small>...하기 위해서</small></span>
     </button>
     <button class="choice radial-choice radial-choice--ii-emotion" type="button" data-to-ii-answer="emotion" aria-label="2번, 감정의 원인">
-      <span class="radial-choice__label"><kbd>2</kbd><strong>감정의 원인</strong><small>~해서</small></span>
+      <span class="radial-choice__label"><kbd>2</kbd><strong>감정의 원인</strong><small>...해서</small></span>
     </button>
     <button class="choice radial-choice radial-choice--ii-judgment" type="button" data-to-ii-answer="judgment" aria-label="3번, 판단의 근거">
-      <span class="radial-choice__label"><kbd>3</kbd><strong>판단의 근거</strong><small>~하다니</small></span>
+      <span class="radial-choice__label"><kbd>3</kbd><strong>판단의 근거</strong><small>...하다니</small></span>
     </button>
     <button class="choice radial-choice radial-choice--ii-result" type="button" data-to-ii-answer="result" aria-label="4번, 결과">
-      <span class="radial-choice__label"><kbd>4</kbd><strong>결과</strong><small>결국 ~하게 되다</small></span>
+      <span class="radial-choice__label"><kbd>4</kbd><strong>결과</strong><small>결국 ...하게 되다</small></span>
     </button>
     <button class="choice radial-choice radial-choice--ii-adjective" type="button" data-to-ii-answer="adjective-modifier" aria-label="5번, 형용사 수식">
-      <span class="radial-choice__label"><kbd>5</kbd><strong>형용사 수식</strong><small>~하기에</small></span>
+      <span class="radial-choice__label"><kbd>5</kbd><strong>형용사 수식</strong><small>...하기에</small></span>
     </button>
     <button class="choice radial-choice radial-choice--ii-condition" type="button" data-to-ii-answer="condition" aria-label="6번, 조건">
-      <span class="radial-choice__label"><kbd>6</kbd><strong>조건</strong><small>~한다면</small></span>
+      <span class="radial-choice__label"><kbd>6</kbd><strong>조건</strong><small>...한다면</small></span>
     </button>
     <svg class="radial-seams" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
       <line x1="50" y1="52" x2="20" y2="0"></line>
@@ -2116,7 +2116,7 @@
       '박범준', '배승우', '윤해든', '이룩', '이수민', '이우진', '이은수', '이지우',
       '임윤아', '채범기', '한지아', '김경민', '김시아', '이은성',
       '강용제', '김예승', '김재윤', '김하준', '박시현', '박이환', '백시율', '이해원',
-      '조현우', '지수연', '황은찬'
+      '조현우', '지수연', '황은찬', '김소이', '홍경서', '박정준', '임지율', '장재희', '차예주'
     ].sort((a, b) => a.localeCompare(b, 'ko'));
 
     const HEPTA_PLAYER_NAMES = [
@@ -2129,9 +2129,9 @@
       .map(([koreanName, englishName]) => `${koreanName}(${englishName})`);
 
     const VERBS = [
-      ...['enjoy', 'finish', 'keep', 'stop', 'avoid', 'give up', 'mind', 'consider', 'put off'].map(verb => ({ verb, category: 'gerund' })),
-      ...['want', 'decide', 'hope', 'expect', 'plan', 'ask', 'promise', 'refuse'].map(verb => ({ verb, category: 'infinitive' })),
-      ...['like', 'love', 'hate', 'begin', 'dislike', 'start', 'continue'].map(verb => ({ verb, category: 'both-same' })),
+      ...['enjoy', 'finish', 'keep', 'stop', 'avoid', 'give up', 'deny', 'mind', 'consider', 'put off'].map(verb => ({ verb, category: 'gerund' })),
+      ...['want', 'decide', 'hope', 'expect', 'plan', 'agree', 'ask', 'promise', 'refuse'].map(verb => ({ verb, category: 'infinitive' })),
+      ...['like', 'love', 'hate', 'begin', 'dislike', 'start', 'continue','prefer'].map(verb => ({ verb, category: 'both-same' })),
       ...['remember', 'forget', 'try', 'regret'].map(verb => ({ verb, category: 'both-different' }))
     ];
     const VERB_COOLDOWN = 8;
@@ -2150,42 +2150,41 @@
       'sentence-error': '문장 오류 찾기',
       'to-infinitive-i': 'to v. 용법 구분 I',
       'to-infinitive-ii': 'to v. 용법 구분 II',
-      'sentence-building': '(Hepta) Sentence Building'
+      'sentence-building': '(Hepta) 문장 완성'
     };
     const STUDY_ACTIVITY_KEYS = new Set(['grammar', 'ing', 'sentence-error', 'to-infinitive-i', 'to-infinitive-ii', 'sentence-building']);
     const ROUND_OVER_TITLES = [
       '아쉬워요!',
-      '잘 하지~',
+      '아쉽구만',
       '아쉽다~',
-      '와 이걸 틀리네',
-      '엌ㅋㅋㅋ',
-      '왘ㅋㅋㅋㅋ진짴ㅋㅋㅋ',
-      '와 이걸 진짜.. 와 ㅋㅋㅋ',
-      '수준~'
+      '아쉬워라',
+      'ㄲㅂ',
+      '와 아쉬워',
+      '너무 아쉽다',
+      '이렇게 아쉬울 수가'
     ];
     const BUILDER_CORRECT_MESSAGES = [
-      '정말 잘했어!',
-      '멋지게 해냈어!',
-      '차근차근 잘했어!',
-      '와, 문장을 딱 맞췄네!',
-      '집중력이 정말 멋져!',
-      '오늘도 한 뼘 자랐네!',
-      '최고야, 계속 가 보자!',
-      '문장 박사님이네!',
-      '아주 훌륭해!',
-      '네가 해낼 줄 알았어!',
-      '정말 반짝이는 답이야!',
-      '끝까지 잘 생각했구나!',
-      '멋진 선택이었어!',
-      '대단해, 또 해냈어!',
-      '정답을 쏙 찾았네!',
-      '아주 야무지게 잘했어!',
-      '한 번에 척척이네!',
-      '좋아, 정말 잘하고 있어!',
-      '실력이 쑥쑥 자라고 있어!',
-      '마음껏 자랑해도 돼!',
-      '너의 생각이 정말 멋져!',
-      '포기하지 않고 잘 해냈어!'
+      '정말 잘했어요!',
+      '멋지게 해냈어요!',
+      '차근차근 잘했어요!',
+      '와, 문장을 딱 맞췄네요!',
+      '집중력이 정말 멋져요!',
+      '오늘도 한 뼘 자랐네요!',
+      '최고에요!',
+      '아주 훌륭해요!',
+      '해낼 줄 알았어요!',
+      '너무 잘 했어요!',
+      '끝까지 잘 생각했네요!',
+      '멋진 선택이었어요!',
+      '대단해, 또 해냈어요!',
+      '정답을 쏙 찾았네요!',
+      '아주 야무지게 잘했어요!',
+      '한 번에 척척!',
+      '좋아, 정말 잘하고 있어요!',
+      '실력이 쑥쑥 자라고 있어요!',
+      '친구들에게 자랑하세요!',
+      '너무 멋있어요!',
+      '포기하지 않고 잘 해냈어요!'
     ];
 
     const USAGE_NOTES = {

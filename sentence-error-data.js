@@ -585,6 +585,258 @@
       category: 'preposition',
       level: 'middle-1',
       tags: ['전치사', '타동사', 'answer', 'to']
+    },
+        {
+      id: 'article-021',
+      incorrect: 'Window was broken by Jake.',
+      correct: 'The window was broken by Jake.',
+      reason: 'window 셀 수 있는 명사라 a 또는 the',
+      category: 'article',
+      level: 'middle-1',
+      tags: ['관사', '셀 수 있는 명사', '단수 명사']
+    },
+    {
+      id: 'voice-002',
+      incorrect: 'Jake was broken the window.',
+      correct: 'Jake broke the window.',
+      reason: '능동, 수동 잘 구분해서',
+      category: 'voice',
+      level: 'middle-1',
+      tags: ['능동태', '수동태', '과거시제']
+    },
+    {
+      id: 'subject-verb-agreement-009',
+      incorrect: 'The window were broken by Jake.',
+      correct: 'The window was broken by Jake.',
+      reason: '창문 하나라 was',
+      category: 'subject-verb-agreement',
+      level: 'middle-1',
+      tags: ['be동사', '단수 주어', 'was', 'were', '수동태']
+    },
+    {
+      id: 'multiple-errors-010',
+      incorrect: 'In internet used by many people?',
+      correct: 'Is the Internet used by many people?',
+      reason: 'internet 무조건 the 붙이고 복수화',
+      category: 'multiple-errors',
+      level: 'middle-1',
+      tags: ['수동태', '의문문', '정관사', 'Internet']
+    },
+    {
+      id: 'subject-verb-agreement-010',
+      incorrect: 'Trees was planted by people.',
+      correct: 'Trees were planted by people.',
+      reason: '주어 복수라 were',
+      category: 'subject-verb-agreement',
+      level: 'middle-1',
+      tags: ['복수 주어', 'be동사', 'was', 'were', '수동태']
+    },
+    {
+      id: 'voice-003',
+      incorrect: 'Milk delivered this morning.',
+      correct: 'Milk was delivered this morning.',
+      reason: '수동은 "be" + pp',
+      category: 'voice',
+      level: 'middle-1',
+      tags: ['수동태', 'be동사', '과거분사']
+    },
+    {
+      id: 'article-022',
+      incorrect: 'A trash was seen on the street.',
+      correct: 'Trash was seen on the street.',
+      reason: 'trash 셀 수 없는 명사',
+      category: 'article',
+      level: 'middle-1',
+      tags: ['관사', '셀 수 없는 명사', 'trash']
+    },
+    {
+      id: 'noun-number-009',
+      incorrect: 'Trashes were seen on the street.',
+      correct: 'Trash was seen on the street.',
+      reason: 'trash 셀 수 없는 명사',
+      category: 'noun-number',
+      level: 'middle-1',
+      tags: ['셀 수 없는 명사', '복수형', 'trash']
+    },
+    {
+      id: 'verb-form-002',
+      incorrect: 'The thief was arrest by police officers.',
+      correct: 'The thief was arrested by police officers.',
+      reason: 'pp 제대로 안씀',
+      category: 'verb-form',
+      level: 'middle-1',
+      tags: ['수동태', '과거분사', 'pp', 'arrest']
+    },
+    {
+      id: 'tense-003',
+      incorrect: 'Bill fix my computer.',
+      correct: 'Bill fixed my computer.',
+      reason: '-es를 붙이든가 -ed 붙여야 함(주어 3인칭 단수)',
+      category: 'tense',
+      level: 'middle-1',
+      tags: ['과거시제', '3인칭 단수', '동사 형태']
+    },
+    {
+      id: 'verb-form-003',
+      incorrect: 'The country was hitted by a storm last night.',
+      correct: 'The country was hit by a storm last night.',
+      reason: 'hit pp는 hit',
+      category: 'verb-form',
+      level: 'middle-1',
+      tags: ['수동태', '과거분사', '불규칙동사', 'hit']
+    },
+    {
+      id: 'word-choice-002',
+      incorrect: 'The country was hit by the country last night.',
+      correct: 'The country was hit by a storm last night.',
+      reason: '이건 뭐죠',
+      category: 'word-choice',
+      level: 'middle-1',
+      tags: ['단어 선택', 'country', 'storm', '수동태']
+    },
+    {
+      id: 'multiple-errors-011',
+      incorrect: 'The country was hitten by the country last night.',
+      correct: 'The country was hit by a storm last night.',
+      reason: 'hit pp는 hit',
+      category: 'multiple-errors',
+      level: 'middle-1',
+      tags: ['수동태', '과거분사', '불규칙동사', 'hit', '단어 선택']
+    },
+    {
+      id: 'article-023',
+      incorrect: 'Messi wears new uniform.',
+      correct: 'Messi wears a new uniform.',
+      reason: 'uniform 셀 수 있음',
+      category: 'article',
+      level: 'middle-1',
+      tags: ['관사', '셀 수 있는 명사', '단수 명사', 'uniform']
+    },
+    {
+      id: 'subject-verb-agreement-011',
+      incorrect: 'Steve are visited by Mina.',
+      correct: 'Steve is visited by Mina.',
+      reason: 'Steve 단수',
+      category: 'subject-verb-agreement',
+      level: 'middle-1',
+      tags: ['단수 주어', 'be동사', 'is', 'are', '수동태']
+    },
+    {
+      id: 'subject-verb-agreement-012',
+      incorrect: 'Steve visit Mina.',
+      correct: 'Steve visits Mina.',
+      reason: '-s 안붙임',
+      category: 'subject-verb-agreement',
+      level: 'middle-1',
+      tags: ['현재시제', '3인칭 단수', '주어-동사 수일치']
+    },
+    {
+      id: 'multiple-errors-012',
+      incorrect: 'I cutted by paper.',
+      correct: 'I was cut by paper.',
+      reason: 'be 동사 안 씀, cut pp cut',
+      category: 'multiple-errors',
+      level: 'middle-1',
+      tags: ['수동태', 'be동사', '과거분사', '불규칙동사', 'cut']
+    },
+    {
+      id: 'verb-form-004',
+      incorrect: 'I was cutted by paper.',
+      correct: 'I was cut by paper.',
+      reason: 'cut pp cut',
+      category: 'verb-form',
+      level: 'middle-1',
+      tags: ['수동태', '과거분사', '불규칙동사', 'cut']
+    },
+    {
+      id: 'verb-form-005',
+      incorrect: 'Harry Potter is readed by many people.',
+      correct: 'Harry Potter is read by many people.',
+      reason: 'read pp read',
+      category: 'verb-form',
+      level: 'middle-1',
+      tags: ['수동태', '과거분사', '불규칙동사', 'read']
+    },
+    {
+      id: 'multiple-errors-013',
+      incorrect: 'Pictures took by her.',
+      correct: 'Pictures were taken by her.',
+      reason: 'be pp 제대로 안씀',
+      category: 'multiple-errors',
+      level: 'middle-1',
+      tags: ['수동태', 'be동사', '과거분사', 'take', 'taken']
+    },
+    {
+      id: 'verb-form-006',
+      incorrect: 'History is wrote by the victors.',
+      correct: 'History is written by the victors.',
+      reason: 'pp 제대로 안씀',
+      category: 'verb-form',
+      level: 'middle-1',
+      tags: ['수동태', '과거분사', 'write', 'written']
+    },
+    {
+      id: 'subject-verb-agreement-013',
+      incorrect: 'The victors writes history.',
+      correct: 'The victors write history.',
+      reason: '주어 복수',
+      category: 'subject-verb-agreement',
+      level: 'middle-1',
+      tags: ['현재시제', '복수 주어', '주어-동사 수일치']
+    },
+    {
+      id: 'multiple-errors-014',
+      incorrect: 'The school newspaper made by our.',
+      correct: 'The school newspaper is made by us.',
+      reason: 'be pp 제대로 안씀',
+      category: 'multiple-errors',
+      level: 'middle-1',
+      tags: ['수동태', 'be동사', '과거분사', '목적격']
+    },
+    {
+      id: 'pronoun-001',
+      incorrect: 'The school newspaper is made by we.',
+      correct: 'The school newspaper is made by us.',
+      reason: 'by 다음 목적격',
+      category: 'pronoun',
+      level: 'middle-1',
+      tags: ['대명사', '목적격', 'we', 'us', '전치사']
+    },
+    {
+      id: 'verb-form-007',
+      incorrect: 'Vegetables are grew by farmers.',
+      correct: 'Vegetables are grown by farmers.',
+      reason: 'pp 제대로 안씀',
+      category: 'verb-form',
+      level: 'middle-1',
+      tags: ['수동태', '과거분사', 'grow', 'grown']
+    },
+    {
+      id: 'verb-form-008',
+      incorrect: 'Vegetables are growen by farmers.',
+      correct: 'Vegetables are grown by farmers.',
+      reason: 'pp 제대로 안씀',
+      category: 'verb-form',
+      level: 'middle-1',
+      tags: ['수동태', '과거분사', 'grow', 'grown']
+    },
+    {
+      id: 'verb-form-009',
+      incorrect: 'Vegetables are growned by farmers.',
+      correct: 'Vegetables are grown by farmers.',
+      reason: 'pp 제대로 안씀',
+      category: 'verb-form',
+      level: 'middle-1',
+      tags: ['수동태', '과거분사', 'grow', 'grown']
+    },
+    {
+      id: 'verb-form-010',
+      incorrect: 'Vegetables are grow by farmers.',
+      correct: 'Vegetables are grown by farmers.',
+      reason: 'pp 제대로 안씀',
+      category: 'verb-form',
+      level: 'middle-1',
+      tags: ['수동태', '과거분사', 'grow', 'grown']
     }
   ];
 })();
