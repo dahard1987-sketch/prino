@@ -36,6 +36,7 @@ const ACTIVITY_LABELS = {
   'sentence-error': '문장 오류 찾기',
   'to-infinitive-i': 'to v. 용법 구분 I',
   'to-infinitive-ii': 'to v. 용법 구분 II',
+  'participle-preposition': '분사 + 전치사',
   'sentence-building': '(Hepta) 문장 완성'
 };
 const STUDY_ACTIVITY_KEYS = new Set(['grammar', 'ing', 'sentence-error', 'to-infinitive-i', 'to-infinitive-ii', 'sentence-building']);
@@ -98,6 +99,8 @@ const SENTENCE_ERROR_DIFF_TYPES = new Set(['same', 'delete', 'insert']);
 const SENTENCE_ERROR_ITEMS = validateSentenceErrorItems(window.SENTENCE_ERROR_ITEMS);
 const TO_INFINITIVE_I_ITEMS = Array.isArray(window.TO_INFINITIVE_I_ITEMS) ? window.TO_INFINITIVE_I_ITEMS : [];
 const TO_INFINITIVE_II_ITEMS = Array.isArray(window.TO_INFINITIVE_II_ITEMS) ? window.TO_INFINITIVE_II_ITEMS : [];
+const PARTICIPLE_PREPOSITION_ITEMS = validateParticiplePrepositionItems(window.PARTICIPLE_PREPOSITION_ITEMS);
+const PARTICIPLE_PREPOSITION_COOLDOWN = 4;
 const SENTENCE_BUILDING_ITEMS = Array.isArray(window.SENTENCE_BUILDING_ITEMS) ? window.SENTENCE_BUILDING_ITEMS : [];
 const SENTENCE_BUILDING_COOLDOWN = 3;
 const SENTENCE_BUILDING_HINT_REMOVAL_SCORE = 30;
@@ -188,13 +191,14 @@ const ingScreen = document.querySelector('#ing-screen');
 const sentenceErrorScreen = document.querySelector('#sentence-error-screen');
 const toInfinitiveIScreen = document.querySelector('#to-infinitive-i-screen');
 const toInfinitiveIIScreen = document.querySelector('#to-infinitive-ii-screen');
+const participlePrepositionScreen = document.querySelector('#participle-preposition-screen');
 const sentenceBuildingScreen = document.querySelector('#sentence-building-screen');
 const sentenceErrorStartButton = document.querySelector('#sentence-error-start');
+const prepositionStartButton = document.querySelector('#preposition-start');
 const nameForm = document.querySelector('#name-form');
 const nameSelect = document.querySelector('#name-select');
 const customNameInput = document.querySelector('#custom-name');
 const selectedActivityLabel = document.querySelector('#selected-activity-label');
-const welcomeSubtitleEl = document.querySelector('#welcome-subtitle');
 const studyModeOption = document.querySelector('#study-mode-option');
 const studyModeInput = document.querySelector('#study-mode-input');
 const numberEl = document.querySelector('#number');
@@ -203,6 +207,8 @@ const ingSentenceEl = document.querySelector('#ing-sentence');
 const sentenceErrorSentenceEl = document.querySelector('#sentence-error-sentence');
 const toInfinitiveISentenceEl = document.querySelector('#to-i-sentence');
 const toInfinitiveIISentenceEl = document.querySelector('#to-ii-sentence');
+const prepositionSentenceEl = document.querySelector('#preposition-sentence');
+const prepositionChoicesEl = document.querySelector('#preposition-choices');
 const builderAnswerEl = document.querySelector('#builder-answer');
 const builderBankEl = document.querySelector('#builder-bank');
 const builderBoardEl = document.querySelector('.builder-board');
@@ -218,12 +224,14 @@ const ingScoreEl = document.querySelector('#ing-score');
 const sentenceErrorScoreEl = document.querySelector('#sentence-error-score');
 const toInfinitiveIScoreEl = document.querySelector('#to-i-score');
 const toInfinitiveIIScoreEl = document.querySelector('#to-ii-score');
+const prepositionScoreEl = document.querySelector('#preposition-score');
 const builderScoreEl = document.querySelector('#builder-score');
 const grammarScoreLabelEl = document.querySelector('#grammar-score-label');
 const ingScoreLabelEl = document.querySelector('#ing-score-label');
 const sentenceErrorScoreLabelEl = document.querySelector('#sentence-error-score-label');
 const toInfinitiveIScoreLabelEl = document.querySelector('#to-i-score-label');
 const toInfinitiveIIScoreLabelEl = document.querySelector('#to-ii-score-label');
+const prepositionScoreLabelEl = document.querySelector('#preposition-score-label');
 const builderScoreLabelEl = document.querySelector('#builder-score-label');
 const primeBestEl = document.querySelector('#prime-best');
 const grammarBestEl = document.querySelector('#grammar-best');
@@ -231,12 +239,14 @@ const ingBestEl = document.querySelector('#ing-best');
 const sentenceErrorBestEl = document.querySelector('#sentence-error-best');
 const toInfinitiveIBestEl = document.querySelector('#to-i-best');
 const toInfinitiveIIBestEl = document.querySelector('#to-ii-best');
+const prepositionBestEl = document.querySelector('#preposition-best');
 const builderBestEl = document.querySelector('#builder-best');
 const grammarBestLabelEl = document.querySelector('#grammar-best-label');
 const ingBestLabelEl = document.querySelector('#ing-best-label');
 const sentenceErrorBestLabelEl = document.querySelector('#sentence-error-best-label');
 const toInfinitiveIBestLabelEl = document.querySelector('#to-i-best-label');
 const toInfinitiveIIBestLabelEl = document.querySelector('#to-ii-best-label');
+const prepositionBestLabelEl = document.querySelector('#preposition-best-label');
 const builderBestLabelEl = document.querySelector('#builder-best-label');
 const primeFlashEl = document.querySelector('#prime-flash');
 const grammarFlashEl = document.querySelector('#grammar-flash');
@@ -244,6 +254,7 @@ const ingFlashEl = document.querySelector('#ing-flash');
 const sentenceErrorFlashEl = document.querySelector('#sentence-error-flash');
 const toInfinitiveIFlashEl = document.querySelector('#to-i-flash');
 const toInfinitiveIIFlashEl = document.querySelector('#to-ii-flash');
+const prepositionFlashEl = document.querySelector('#preposition-flash');
 const builderFlashEl = document.querySelector('#builder-flash');
 const primeTimerEl = document.querySelector('#prime-timer');
 const primeTimerLabelEl = document.querySelector('#prime-timer-label');
@@ -272,6 +283,7 @@ const ingFeedbackEl = document.querySelector('#ing-feedback');
 const sentenceErrorFeedbackEl = document.querySelector('#sentence-error-feedback');
 const toInfinitiveIFeedbackEl = document.querySelector('#to-i-feedback');
 const toInfinitiveIIFeedbackEl = document.querySelector('#to-ii-feedback');
+const prepositionFeedbackEl = document.querySelector('#preposition-feedback');
 const builderFeedbackEl = document.querySelector('#builder-feedback');
 const streakCelebrationEl = document.querySelector('#streak-celebration');
 const streakCelebrationScoreEl = document.querySelector('#streak-celebration-score');
@@ -303,6 +315,7 @@ const ACTIVITY_SCREENS = {
   'sentence-error': sentenceErrorScreen,
   'to-infinitive-i': toInfinitiveIScreen,
   'to-infinitive-ii': toInfinitiveIIScreen,
+  'participle-preposition': participlePrepositionScreen,
   'sentence-building': sentenceBuildingScreen
 };
 const ACTIVITY_FEEDBACK = {
@@ -312,6 +325,7 @@ const ACTIVITY_FEEDBACK = {
   'sentence-error': sentenceErrorFeedbackEl,
   'to-infinitive-i': toInfinitiveIFeedbackEl,
   'to-infinitive-ii': toInfinitiveIIFeedbackEl,
+  'participle-preposition': prepositionFeedbackEl,
   'sentence-building': builderFeedbackEl
 };
 const ACTIVITY_ANSWER_ATTRIBUTES = {
@@ -320,7 +334,8 @@ const ACTIVITY_ANSWER_ATTRIBUTES = {
   ing: 'data-ing-answer',
   'sentence-error': 'data-sentence-error-answer',
   'to-infinitive-i': 'data-to-i-answer',
-  'to-infinitive-ii': 'data-to-ii-answer'
+  'to-infinitive-ii': 'data-to-ii-answer',
+  'participle-preposition': 'data-preposition-answer'
 };
 const ACTIVITY_SCORE_UI = {
   grammar: { score: grammarScoreEl, scoreLabel: grammarScoreLabelEl, best: grammarBestEl, bestLabel: grammarBestLabelEl },
@@ -333,6 +348,7 @@ const ACTIVITY_SCORE_UI = {
   },
   'to-infinitive-i': { score: toInfinitiveIScoreEl, scoreLabel: toInfinitiveIScoreLabelEl, best: toInfinitiveIBestEl, bestLabel: toInfinitiveIBestLabelEl },
   'to-infinitive-ii': { score: toInfinitiveIIScoreEl, scoreLabel: toInfinitiveIIScoreLabelEl, best: toInfinitiveIIBestEl, bestLabel: toInfinitiveIIBestLabelEl },
+  'participle-preposition': { score: prepositionScoreEl, scoreLabel: prepositionScoreLabelEl, best: prepositionBestEl, bestLabel: prepositionBestLabelEl },
   'sentence-building': { score: builderScoreEl, scoreLabel: builderScoreLabelEl, best: builderBestEl, bestLabel: builderBestLabelEl }
 };
 
@@ -346,6 +362,7 @@ let currentSentenceErrorItem = SENTENCE_ERROR_ITEMS[0];
 let currentSentenceErrorVariant = 'incorrect';
 let currentToInfinitiveIItem = TO_INFINITIVE_I_ITEMS[0];
 let currentToInfinitiveIIItem = TO_INFINITIVE_II_ITEMS[0];
+let currentParticiplePrepositionItem = PARTICIPLE_PREPOSITION_ITEMS[0];
 let currentSentenceBuildingItem = SENTENCE_BUILDING_ITEMS[0];
 let currentBuilderSelection = [];
 let recentVerbs = [];
@@ -355,6 +372,8 @@ let recentSentenceErrorVerdicts = [];
 let lastSentenceErrorCorrect = '';
 let recentToInfinitiveIIds = [];
 let recentToInfinitiveIIIds = [];
+let recentParticiplePrepositionIds = [];
+let lastPrepositionCorrectSlot = -1;
 let recentSentenceBuildingIds = [];
 const sentenceErrorLastVariantById = new Map();
 let sentenceErrorPracticeState = { rounds: 0, reviews: {}, lastWrongKey: '' };
@@ -833,6 +852,44 @@ function validateSentenceErrorItems(rawItems) {
   return validItems;
 }
 
+function validateParticiplePrepositionItems(rawItems) {
+  if (!Array.isArray(rawItems)) {
+    console.warn('[분사 + 전치사] PARTICIPLE_PREPOSITION_ITEMS 배열을 찾을 수 없습니다.');
+    return [];
+  }
+
+  const seenIds = new Set();
+  return rawItems.filter((item, index) => {
+    const label = item?.id || `항목 ${index + 1}`;
+    const choices = Array.isArray(item?.choices) ? item.choices : [];
+    const accepted = Array.isArray(item?.acceptedPrepositions) ? item.acceptedPrepositions : [];
+    const blankCount = typeof item?.sentence === 'string'
+      ? (item.sentence.match(/___/g) || []).length
+      : 0;
+    const isValid = (
+      typeof item?.id === 'string'
+      && item.id.length > 0
+      && !seenIds.has(item.id)
+      && typeof item?.participle === 'string'
+      && item.participle.length > 0
+      && typeof item?.targetPreposition === 'string'
+      && blankCount === 1
+      && choices.length === 4
+      && new Set(choices).size === 4
+      && choices.every(choice => typeof choice === 'string' && choice.length > 0)
+      && choices.includes(item.targetPreposition)
+      && accepted.length === 1
+      && accepted[0] === item.targetPreposition
+    );
+    if (!isValid) {
+      console.warn(`[분사 + 전치사] ${label}: 4지선다 또는 단일 정답 형식이 올바르지 않아 제외했습니다.`);
+      return false;
+    }
+    seenIds.add(item.id);
+    return true;
+  });
+}
+
 function getLastPlayerStorageKey(activity = activeActivity) {
   return activity === 'sentence-building'
     ? 'quick-tap-last-player-hepta'
@@ -1138,12 +1195,9 @@ function updateStudyModeUI() {
   ui.best.textContent = studyMode ? getPendingStudyCount() : getPlayerBest(activeActivity);
 }
 
-function updateWelcomeModeCopy() {
+function updateWelcomeSelection() {
   const isStudySelection = STUDY_ACTIVITY_KEYS.has(activeActivity) && studyModeInput.checked;
   selectedActivityLabel.textContent = `${ACTIVITY_LABELS[activeActivity]}${isStudySelection ? ' · 학습 모드' : ''}`;
-  welcomeSubtitleEl.textContent = isStudySelection
-    ? '시간 제한 없이 진행하며, 틀린 문제의 복습 일정은 플레이어별로 이 기기에 저장됩니다.'
-    : '이름별 최고 연속 정답 기록이 이 기기의 리더보드에 저장됩니다.';
 }
 
 function pickWeightedItem(items) {
@@ -1398,6 +1452,7 @@ function resetFlashFeedback() {
   sentenceErrorFlashEl.className = 'flash';
   toInfinitiveIFlashEl.className = 'flash';
   toInfinitiveIIFlashEl.className = 'flash';
+  prepositionFlashEl.className = 'flash';
   builderFlashEl.className = 'flash';
 }
 
@@ -2283,6 +2338,94 @@ function nextToInfinitiveItem(activity) {
   return true;
 }
 
+function shufflePrepositionChoices(item) {
+  const choices = [...item.choices];
+  for (let index = choices.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [choices[index], choices[swapIndex]] = [choices[swapIndex], choices[index]];
+  }
+
+  const correctSlot = choices.indexOf(item.targetPreposition);
+  if (correctSlot === lastPrepositionCorrectSlot) {
+    const offset = Math.floor(Math.random() * (choices.length - 1)) + 1;
+    const swapIndex = (correctSlot + offset) % choices.length;
+    [choices[correctSlot], choices[swapIndex]] = [choices[swapIndex], choices[correctSlot]];
+  }
+  lastPrepositionCorrectSlot = choices.indexOf(item.targetPreposition);
+  return choices;
+}
+
+function renderParticiplePrepositionItem() {
+  const item = currentParticiplePrepositionItem;
+  if (!item) return;
+  prepositionSentenceEl.textContent = item.sentence;
+  shufflePrepositionChoices(item).forEach((choice, index) => {
+    const button = prepositionChoicesEl.children[index];
+    button.dataset.prepositionAnswer = choice;
+    button.querySelector('span').textContent = choice;
+    button.setAttribute('aria-label', `${index + 1}번, ${choice}`);
+  });
+}
+
+function nextParticiplePrepositionItem() {
+  if (!PARTICIPLE_PREPOSITION_ITEMS.length) return false;
+  const candidates = PARTICIPLE_PREPOSITION_ITEMS.filter(item => (
+    !recentParticiplePrepositionIds.includes(item.id)
+  ));
+  currentParticiplePrepositionItem = pickWeightedItem(
+    candidates.length ? candidates : PARTICIPLE_PREPOSITION_ITEMS
+  );
+  recentParticiplePrepositionIds.push(currentParticiplePrepositionItem.id);
+  if (recentParticiplePrepositionIds.length > PARTICIPLE_PREPOSITION_COOLDOWN) {
+    recentParticiplePrepositionIds.shift();
+  }
+  renderParticiplePrepositionItem();
+  return true;
+}
+
+function chooseParticiplePreposition(answer) {
+  if (
+    !acceptingInput
+    || activeActivity !== 'participle-preposition'
+    || !currentParticiplePrepositionItem
+  ) return;
+  acceptingInput = false;
+  const item = currentParticiplePrepositionItem;
+  const isCorrect = item.acceptedPrepositions.includes(answer);
+  const targetCombination = `${item.participle} ${item.targetPreposition}`;
+
+  if (isCorrect) {
+    score += 1;
+    playFeedbackSound('correct');
+    celebrateStreak(score);
+  } else {
+    score = 0;
+    playFeedbackSound('wrong');
+  }
+
+  const best = isCorrect
+    ? recordScore('participle-preposition', score)
+    : getPlayerBest('participle-preposition');
+  prepositionScoreEl.textContent = score;
+  prepositionBestEl.textContent = best;
+  showFlash(prepositionFlashEl, isCorrect ? 'correct' : 'wrong');
+  showAnswerFeedback(
+    'participle-preposition',
+    isCorrect ? 'correct' : 'wrong',
+    isCorrect ? '✓ 정답!' : `✕ 정답: ${item.targetPreposition}`,
+    targetCombination,
+    answer,
+    item.targetPreposition
+  );
+
+  scheduleActivityTask(() => {
+    clearAnswerFeedback('participle-preposition');
+    nextParticiplePrepositionItem();
+    acceptingInput = true;
+    focusActivityControl('participle-preposition');
+  }, 1050);
+}
+
 function formatSentenceBuildingChunk(item, chunk) {
   if (score < SENTENCE_BUILDING_HINT_REMOVAL_SCORE) return chunk;
   let formatted = chunk.replace(/[.,!?;:]/g, '');
@@ -2523,6 +2666,8 @@ function resetRecentQuestionHistory() {
   lastSentenceErrorCorrect = '';
   recentToInfinitiveIIds = [];
   recentToInfinitiveIIIds = [];
+  recentParticiplePrepositionIds = [];
+  lastPrepositionCorrectSlot = -1;
   recentSentenceBuildingIds = [];
 }
 
@@ -2588,6 +2733,11 @@ function startActivity(activity) {
     config.best.textContent = studyMode ? getPendingStudyCount() : getPlayerBest(activity);
     showScreen(ACTIVITY_SCREENS[activity]);
     if (!nextToInfinitiveItem(activity)) return;
+  } else if (activity === 'participle-preposition') {
+    prepositionScoreEl.textContent = '0';
+    prepositionBestEl.textContent = getPlayerBest(activity);
+    showScreen(participlePrepositionScreen);
+    if (!nextParticiplePrepositionItem()) return;
   } else if (activity === 'sentence-building') {
     builderScoreEl.textContent = '0';
     builderBestEl.textContent = studyMode ? getPendingStudyCount() : getPlayerBest(activity);
@@ -3002,7 +3152,7 @@ function chooseActivity(activity) {
   studyModeInput.checked = false;
   studyModeOption.hidden = !STUDY_ACTIVITY_KEYS.has(activity);
   populateNames(activity);
-  updateWelcomeModeCopy();
+  updateWelcomeSelection();
   showScreen(welcomeScreen);
   window.setTimeout(() => nameSelect.focus(), 0);
 }
@@ -3033,7 +3183,7 @@ function changePlayer() {
   clearStreakCelebration();
   studyModeOption.hidden = !STUDY_ACTIVITY_KEYS.has(activeActivity);
   studyModeInput.checked = studyMode;
-  updateWelcomeModeCopy();
+  updateWelcomeSelection();
   showScreen(welcomeScreen);
   window.setTimeout(() => nameSelect.focus(), 0);
 }
@@ -3044,13 +3194,18 @@ if (!SENTENCE_ERROR_ITEMS.length) {
   sentenceErrorStartButton.setAttribute('aria-disabled', 'true');
   sentenceErrorStartButton.setAttribute('aria-label', '문장 오류 찾기: 등록된 문제가 없습니다.');
 }
+prepositionStartButton.disabled = !PARTICIPLE_PREPOSITION_ITEMS.length;
+if (!PARTICIPLE_PREPOSITION_ITEMS.length) {
+  prepositionStartButton.setAttribute('aria-disabled', 'true');
+  prepositionStartButton.setAttribute('aria-label', '분사 + 전치사: 등록된 문제가 없습니다.');
+}
 nameSelect.addEventListener('change', () => {
   const isCustom = nameSelect.value === '__custom__';
   customNameInput.hidden = !isCustom;
   customNameInput.required = isCustom;
   if (isCustom) customNameInput.focus();
 });
-studyModeInput.addEventListener('change', updateWelcomeModeCopy);
+studyModeInput.addEventListener('change', updateWelcomeSelection);
 backToActivitiesButton.addEventListener('click', backToActivityMenu);
 
 nameForm.addEventListener('submit', event => {
@@ -3084,6 +3239,7 @@ bindAnswerButtons('[data-ing-answer]', ({ ingAnswer }) => chooseIng(ingAnswer));
 bindAnswerButtons('[data-sentence-error-answer]', ({ sentenceErrorAnswer }) => chooseSentenceError(sentenceErrorAnswer));
 bindAnswerButtons('[data-to-i-answer]', ({ toIAnswer }) => chooseToInfinitive(toIAnswer, 'to-infinitive-i'));
 bindAnswerButtons('[data-to-ii-answer]', ({ toIiAnswer }) => chooseToInfinitive(toIiAnswer, 'to-infinitive-ii'));
+bindAnswerButtons('.preposition-choice', ({ prepositionAnswer }) => chooseParticiplePreposition(prepositionAnswer));
 builderUndoButton.addEventListener('click', undoSentenceBuildingChunk);
 builderResetButton.addEventListener('click', resetSentenceBuildingBoard);
 document.addEventListener('visibilitychange', () => {
@@ -3217,6 +3373,11 @@ document.addEventListener('keydown', event => {
       event.preventDefault();
       chooseToInfinitive(answer, 'to-infinitive-ii');
     }
+  }
+
+  if (activeActivity === 'participle-preposition' && /^[1-4]$/.test(event.key)) {
+    event.preventDefault();
+    prepositionChoicesEl.children[Number(event.key) - 1]?.click();
   }
 
   if (activeActivity === 'sentence-building') {

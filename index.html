@@ -22,27 +22,21 @@
       <p class="brand">QUICK TAP</p>
       <span class="activity-chip" id="selected-activity-label"></span>
       <h1 id="welcome-title">플레이어를<br>선택하세요</h1>
-      <p class="subtitle" id="welcome-subtitle">이름별 최고 연속 정답 기록이 이 기기의 리더보드에 저장됩니다.</p>
       <label class="field-label" for="name-select">이름</label>
       <select class="select" id="name-select" required></select>
       <input class="text-input" id="custom-name" type="text" maxlength="20" autocomplete="name" placeholder="이름을 입력하세요" aria-label="직접 입력할 이름" hidden>
       <label class="study-option" id="study-mode-option" for="study-mode-input" hidden>
         <input id="study-mode-input" type="checkbox">
-        <span>
-          <strong>학습 모드로 시작</strong>
-          <span>시간 제한과 게임 오버 없이 천천히 복습해요.</span>
-        </span>
+        <strong>학습 모드</strong>
       </label>
       <button class="primary-button" type="submit">시작하기</button>
     </form>
   </section>
 
-  <section class="screen menu active" id="menu-screen" aria-labelledby="menu-title">
+  <section class="screen menu active" id="menu-screen" aria-label="Quick Tap 활동 선택">
     <div class="panel">
-      <header class="menu-header">
-        <p class="brand">QUICK TAP</p>
-        <h1 id="menu-title">오늘 연습할 활동</h1>
-        <p>활동을 고르고, 이름별 최고 기록에 도전해 보세요.</p>
+      <header class="menu-masthead" aria-hidden="true">
+        <p class="menu-wordmark"><span>QUICK</span><span>TAP</span></p>
       </header>
       <div class="activity-list">
         <button class="activity-card activity-card--prime" type="button" data-start="prime" hidden>
@@ -68,6 +62,10 @@
         <button class="activity-card activity-card--to-ii" type="button" data-start="to-infinitive-ii">
           <span class="activity-card__icon">to v. → ?</span>
           <strong>to v. 용법 구분 II</strong>
+        </button>
+        <button class="activity-card activity-card--preposition" id="preposition-start" type="button" data-start="participle-preposition">
+          <span class="activity-card__icon">-ed + ?</span>
+          <strong>분사 + 전치사</strong>
         </button>
         <button class="activity-card activity-card--hepta" type="button" data-start="sentence-building">
           <span class="activity-card__icon">A · B · C</span>
@@ -298,6 +296,27 @@
     <audio id="builder-bgm-intense" src="assets/audio/hepta-rising-dread.mp3" preload="none" loop></audio>
   </main>
 
+  <main class="screen game preposition-game" id="participle-preposition-screen" aria-label="분사와 전치사 조합 연습">
+    <div class="preposition-choices preposition-lines" id="preposition-choices" aria-label="전치사 선택지">
+      <button class="choice preposition-choice" type="button"><kbd>1</kbd><span></span></button>
+      <button class="choice preposition-choice" type="button"><kbd>2</kbd><span></span></button>
+      <button class="choice preposition-choice" type="button"><kbd>3</kbd><span></span></button>
+      <button class="choice preposition-choice" type="button"><kbd>4</kbd><span></span></button>
+    </div>
+    <div class="topbar">
+      <button class="icon-button" type="button" data-change-player><span class="button-label--wide">← 이름 바꾸기</span><span class="button-label--short">← 이름</span></button>
+      <div class="score-group">
+        <div class="pill"><span class="pill__label" id="preposition-score-label">연속</span><span class="pill__value" id="preposition-score">0</span></div>
+        <div class="pill"><span class="pill__label" id="preposition-best-label">최고</span><span class="pill__value" id="preposition-best">0</span></div>
+      </div>
+    </div>
+    <div class="center-card preposition-question-card">
+      <div class="preposition-sentence" id="preposition-sentence" aria-live="assertive"></div>
+    </div>
+    <div class="flash" id="preposition-flash" aria-hidden="true"></div>
+    <div class="answer-feedback preposition-feedback" id="preposition-feedback" role="status" aria-live="assertive"><strong></strong><span></span></div>
+  </main>
+
   <div class="streak-celebration" id="streak-celebration" role="status" aria-live="polite" aria-atomic="true">
     <div class="streak-celebration__message">
       <strong id="streak-celebration-score"></strong>
@@ -366,6 +385,7 @@
   <script src="sentence-error-data.js"></script>
   <script src="to-infinitive-data.js"></script>
   <script src="sentence-building-data.js"></script>
+  <script src="participle-preposition-data.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

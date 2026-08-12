@@ -8,6 +8,7 @@
 - 동명사 / 현재분사: 문장 속 `-ing` 용법 판단
 - 문장 오류 찾기: 맞는 문장과 틀린 문장 판단
 - to v. 용법 구분 I/II
+- 분사 + 전치사: 문맥에 맞는 전치사 4지선다
 - Hepta Sentence Building: 문장 덩어리 배열
 
 ## 실행
@@ -28,6 +29,7 @@ python -m http.server 8000
 - `ing-data.js`: 동명사 / 현재분사 문제
 - `sentence-error-data.js`: 문장 오류 찾기 문제
 - `to-infinitive-data.js`: to부정사 용법 문제
+- `participle-preposition-data.js`: 분사와 전치사 조합 4지선다 문제
 - `sentence-building-data.js`: Hepta 문장 덩어리와 정답 배열
 - `assets/`: 앱 아이콘과 Hepta 오디오
 
@@ -39,7 +41,7 @@ python -m http.server 8000
 
 외부 의존성은 없습니다. 수정 후에는 최소한 다음을 확인합니다.
 
-- 네 개 데이터 파일과 `app.js`의 JavaScript 구문
+- 데이터 파일과 `app.js`의 JavaScript 구문
 - 문제 ID 중복, 필수 필드, 표시 문장 마킹, Hepta 덩어리/정답 일치
 - 모바일과 데스크톱 화면의 오버플로우
 - 키보드, 터치/마우스, 타이머, 재도전, 복습 큐의 실제 브라우저 흐름

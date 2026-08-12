@@ -1,7 +1,6 @@
 {
   "name": "Quick Tap 영어 연습",
   "short_name": "Quick Tap",
-  "description": "영어 문법·문장 판단·문장 완성을 빠르게 연습하는 활동",
   "lang": "ko",
   "start_url": "./",
   "scope": "./",
