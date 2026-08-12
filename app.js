@@ -39,7 +39,15 @@ const ACTIVITY_LABELS = {
   'participle-preposition': '분사 + 전치사',
   'sentence-building': '(Hepta) 문장 완성'
 };
-const STUDY_ACTIVITY_KEYS = new Set(['grammar', 'ing', 'sentence-error', 'to-infinitive-i', 'to-infinitive-ii', 'sentence-building']);
+const STUDY_ACTIVITY_KEYS = new Set([
+  'grammar',
+  'ing',
+  'sentence-error',
+  'to-infinitive-i',
+  'to-infinitive-ii',
+  'participle-preposition',
+  'sentence-building'
+]);
 const ROUND_OVER_TITLES = [
   '아쉬워요!',
   '아쉽구만',
@@ -101,6 +109,7 @@ const TO_INFINITIVE_I_ITEMS = Array.isArray(window.TO_INFINITIVE_I_ITEMS) ? wind
 const TO_INFINITIVE_II_ITEMS = Array.isArray(window.TO_INFINITIVE_II_ITEMS) ? window.TO_INFINITIVE_II_ITEMS : [];
 const PARTICIPLE_PREPOSITION_ITEMS = validateParticiplePrepositionItems(window.PARTICIPLE_PREPOSITION_ITEMS);
 const PARTICIPLE_PREPOSITION_COOLDOWN = 4;
+const PARTICIPLE_PREPOSITION_TIME_LIMIT = 10000;
 const SENTENCE_BUILDING_ITEMS = Array.isArray(window.SENTENCE_BUILDING_ITEMS) ? window.SENTENCE_BUILDING_ITEMS : [];
 const SENTENCE_BUILDING_COOLDOWN = 3;
 const SENTENCE_BUILDING_HINT_REMOVAL_SCORE = 30;
@@ -274,6 +283,9 @@ const toInfinitiveITimerBarEl = document.querySelector('#to-i-timer-bar');
 const toInfinitiveIITimerEl = document.querySelector('#to-ii-timer');
 const toInfinitiveIITimerLabelEl = document.querySelector('#to-ii-timer-label');
 const toInfinitiveIITimerBarEl = document.querySelector('#to-ii-timer-bar');
+const prepositionTimerEl = document.querySelector('#preposition-timer');
+const prepositionTimerLabelEl = document.querySelector('#preposition-timer-label');
+const prepositionTimerBarEl = document.querySelector('#preposition-timer-bar');
 const builderTimerEl = document.querySelector('#builder-timer');
 const builderTimerLabelEl = document.querySelector('#builder-timer-label');
 const builderTimerBarEl = document.querySelector('#builder-timer-bar');
@@ -411,6 +423,10 @@ let toInfinitiveTimeoutId = null;
 let toInfinitiveTickIntervalId = null;
 let toInfinitiveTimerAnimationId = null;
 let toInfinitiveDeadline = 0;
+let prepositionTimeoutId = null;
+let prepositionTickIntervalId = null;
+let prepositionTimerAnimationId = null;
+let prepositionDeadline = 0;
 let sentenceBuildingTimeoutId = null;
 let sentenceBuildingTickIntervalId = null;
 let sentenceBuildingTimerAnimationId = null;
@@ -419,6 +435,7 @@ let sentenceBuildingTimeLimit = 15000;
 let sentenceBuildingFeedbackVolumeTimeoutId = null;
 let lastBuilderCorrectMessage = '';
 let streakCelebrationTimeoutId = null;
+let confettiAppearanceCount = 0;
 const suppressedUsageNotes = new Set();
 
 function showScreen(screen) {
@@ -873,6 +890,8 @@ function validateParticiplePrepositionItems(rawItems) {
       && typeof item?.participle === 'string'
       && item.participle.length > 0
       && typeof item?.targetPreposition === 'string'
+      && typeof item?.meaning === 'string'
+      && item.meaning.length > 0
       && blankCount === 1
       && choices.length === 4
       && new Set(choices).size === 4
@@ -1133,6 +1152,7 @@ function getStudyItemIds(activity = activeActivity) {
   if (activity === 'sentence-error') return new Set(SENTENCE_ERROR_ITEMS.map(item => item.id));
   if (activity === 'to-infinitive-i') return new Set(TO_INFINITIVE_I_ITEMS.map(item => item.id));
   if (activity === 'to-infinitive-ii') return new Set(TO_INFINITIVE_II_ITEMS.map(item => item.id));
+  if (activity === 'participle-preposition') return new Set(PARTICIPLE_PREPOSITION_ITEMS.map(item => item.id));
   if (activity === 'sentence-building') return new Set(SENTENCE_BUILDING_ITEMS.map(item => item.id));
   return new Set();
 }
@@ -1181,6 +1201,7 @@ function updateStudyModeUI() {
   sentenceErrorScreen.classList.toggle('study-mode', studyMode && activeActivity === 'sentence-error');
   toInfinitiveIScreen.classList.toggle('study-mode', studyMode && activeActivity === 'to-infinitive-i');
   toInfinitiveIIScreen.classList.toggle('study-mode', studyMode && activeActivity === 'to-infinitive-ii');
+  participlePrepositionScreen.classList.toggle('study-mode', studyMode && activeActivity === 'participle-preposition');
   sentenceBuildingScreen.classList.toggle('study-mode', studyMode && activeActivity === 'sentence-building');
   document.querySelectorAll('[data-study-toggle]').forEach(button => {
     button.setAttribute('aria-pressed', String(studyMode));
@@ -1297,8 +1318,17 @@ function celebrateStreak(value) {
 
   clearStreakCelebration();
   const isMajor = milestone === 'major';
-  const colors = ['#F8FBFE', '#BDDDFC', '#88BDF2', '#6A89A7', '#384959'];
-  const particleCount = isMajor ? 84 : 42;
+  confettiAppearanceCount += 1;
+  const baseColors = [
+    '#BDDDFC', '#88BDF2', '#6A89A7', '#384959', '#F8FBFE',
+    '#F5C84C', '#9FE7C2', '#FFB8CB', '#D9C7F5', '#FF9B73'
+  ];
+  const colors = Array.from(
+    { length: 3 + confettiAppearanceCount },
+    (_, index) => baseColors[index]
+      || `hsl(${Math.round((index * 137.508) % 360)} 78% 62%)`
+  );
+  const particleCount = Math.max(isMajor ? 84 : 42, colors.length);
   const burstOrigins = isMajor
     ? [{ x: 25, y: 27 }, { x: 50, y: 20 }, { x: 75, y: 27 }]
     : [{ x: 42, y: 24 }, { x: 58, y: 24 }];
@@ -2120,7 +2150,9 @@ function clearAnswerFeedback(activity) {
   const screen = ACTIVITY_SCREENS[activity];
   const feedback = ACTIVITY_FEEDBACK[activity];
   if (!screen || !feedback) return;
-  screen.querySelectorAll('.choice').forEach(button => button.classList.remove('answer-correct', 'answer-wrong'));
+  screen.querySelectorAll('.choice').forEach(button => {
+    button.classList.remove('answer-selected', 'answer-correct', 'answer-wrong');
+  });
   feedback.className = 'answer-feedback';
 }
 
@@ -2131,7 +2163,10 @@ function showAnswerFeedback(activity, type, title, detail, answer, correctAnswer
   const attribute = ACTIVITY_ANSWER_ATTRIBUTES[activity];
   if (!screen || !feedback) return;
   const selectedButton = answer && attribute ? screen.querySelector(`[${attribute}="${answer}"]`) : null;
-  if (selectedButton) selectedButton.classList.add(type === 'correct' ? 'answer-correct' : 'answer-wrong');
+  if (selectedButton) {
+    selectedButton.classList.add('answer-selected', type === 'correct' ? 'answer-correct' : 'answer-wrong');
+    selectedButton.focus({ preventScroll: true });
+  }
   const correctButton = correctAnswer && attribute ? screen.querySelector(`[${attribute}="${correctAnswer}"]`) : null;
   if (type === 'wrong' && correctButton && correctButton !== selectedButton) correctButton.classList.add('answer-correct');
   feedback.querySelector('strong').textContent = title;
@@ -2365,22 +2400,134 @@ function renderParticiplePrepositionItem() {
     button.querySelector('span').textContent = choice;
     button.setAttribute('aria-label', `${index + 1}번, ${choice}`);
   });
+  animateCard(prepositionSentenceEl);
 }
 
 function nextParticiplePrepositionItem() {
   if (!PARTICIPLE_PREPOSITION_ITEMS.length) return false;
-  const candidates = PARTICIPLE_PREPOSITION_ITEMS.filter(item => (
-    !recentParticiplePrepositionIds.includes(item.id)
-  ));
-  currentParticiplePrepositionItem = pickWeightedItem(
-    candidates.length ? candidates : PARTICIPLE_PREPOSITION_ITEMS
-  );
+  if (studyMode) {
+    const selection = getStudySelection(
+      PARTICIPLE_PREPOSITION_ITEMS,
+      item => item.id,
+      recentParticiplePrepositionIds
+    );
+    currentParticiplePrepositionItem = selection.item;
+    currentStudyItemId = selection.id;
+    currentStudyItemIsReview = selection.isReview;
+  } else {
+    const candidates = PARTICIPLE_PREPOSITION_ITEMS.filter(item => (
+      !recentParticiplePrepositionIds.includes(item.id)
+    ));
+    currentParticiplePrepositionItem = pickWeightedItem(
+      candidates.length ? candidates : PARTICIPLE_PREPOSITION_ITEMS
+    );
+    currentStudyItemId = '';
+    currentStudyItemIsReview = false;
+  }
   recentParticiplePrepositionIds.push(currentParticiplePrepositionItem.id);
   if (recentParticiplePrepositionIds.length > PARTICIPLE_PREPOSITION_COOLDOWN) {
     recentParticiplePrepositionIds.shift();
   }
   renderParticiplePrepositionItem();
   return true;
+}
+
+function appendCompletedPrepositionSentence(container, item, answer, markAnswer = false) {
+  const [before, after] = item.sentence.split('___');
+  container.append(document.createTextNode(before));
+  if (markAnswer) {
+    const mark = document.createElement('mark');
+    mark.textContent = answer;
+    container.append(mark);
+  } else {
+    container.append(document.createTextNode(answer));
+  }
+  container.append(document.createTextNode(after));
+}
+
+function createParticiplePrepositionExplanation(item, selectedAnswer = '') {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'preposition-result';
+
+  if (selectedAnswer && !item.acceptedPrepositions.includes(selectedAnswer)) {
+    const attempt = document.createElement('div');
+    attempt.className = 'preposition-result__attempt';
+    appendCompletedPrepositionSentence(attempt, item, selectedAnswer);
+    wrapper.append(attempt);
+  }
+
+  const correct = document.createElement('div');
+  correct.className = 'preposition-result__correct';
+  appendCompletedPrepositionSentence(correct, item, item.targetPreposition, true);
+
+  const combination = document.createElement('div');
+  combination.className = 'preposition-result__combination';
+  const phrase = document.createElement('strong');
+  phrase.textContent = `${item.participle} ${item.targetPreposition}`;
+  const meaning = document.createElement('span');
+  meaning.textContent = item.meaning;
+  combination.append(phrase, meaning);
+  wrapper.append(correct, combination);
+  return wrapper;
+}
+
+function stopParticiplePrepositionTimer() {
+  window.clearTimeout(prepositionTimeoutId);
+  window.clearInterval(prepositionTickIntervalId);
+  window.cancelAnimationFrame(prepositionTimerAnimationId);
+  prepositionTimeoutId = null;
+  prepositionTickIntervalId = null;
+  prepositionTimerAnimationId = null;
+}
+
+function updateParticiplePrepositionTimer() {
+  const remaining = Math.max(0, prepositionDeadline - performance.now());
+  const ratio = remaining / PARTICIPLE_PREPOSITION_TIME_LIMIT;
+  prepositionTimerBarEl.style.transform = `scaleX(${ratio})`;
+  prepositionTimerLabelEl.textContent = `${(remaining / 1000).toFixed(1)}초`;
+  prepositionTimerEl.classList.toggle('urgent', ratio <= .34);
+  if (remaining > 0) {
+    prepositionTimerAnimationId = window.requestAnimationFrame(updateParticiplePrepositionTimer);
+  }
+}
+
+function handleParticiplePrepositionTimeout() {
+  if (!acceptingInput || activeActivity !== 'participle-preposition' || studyMode) return;
+  acceptingInput = false;
+  stopParticiplePrepositionTimer();
+  const item = currentParticiplePrepositionItem;
+  const targetCombination = `${item.participle} ${item.targetPreposition}`;
+  playFeedbackSound('wrong');
+  showFlash(prepositionFlashEl, 'wrong');
+  showAnswerFeedback(
+    'participle-preposition',
+    'wrong',
+    '✕ 시간 초과!',
+    targetCombination,
+    null,
+    item.targetPreposition
+  );
+  finishRound(
+    createParticiplePrepositionExplanation(item),
+    720,
+    `정답: ${item.targetPreposition}`
+  );
+}
+
+function startParticiplePrepositionTimer() {
+  stopParticiplePrepositionTimer();
+  prepositionDeadline = performance.now() + PARTICIPLE_PREPOSITION_TIME_LIMIT;
+  prepositionTimerEl.classList.remove('urgent');
+  prepositionTimerBarEl.style.transform = 'scaleX(1)';
+  prepositionTimerLabelEl.textContent = `${(PARTICIPLE_PREPOSITION_TIME_LIMIT / 1000).toFixed(1)}초`;
+  prepositionTimeoutId = window.setTimeout(
+    handleParticiplePrepositionTimeout,
+    PARTICIPLE_PREPOSITION_TIME_LIMIT
+  );
+  prepositionTickIntervalId = window.setInterval(() => {
+    if (performance.now() < prepositionDeadline - 100) playFeedbackSound('tick');
+  }, 1000);
+  prepositionTimerAnimationId = window.requestAnimationFrame(updateParticiplePrepositionTimer);
 }
 
 function chooseParticiplePreposition(answer) {
@@ -2390,40 +2537,68 @@ function chooseParticiplePreposition(answer) {
     || !currentParticiplePrepositionItem
   ) return;
   acceptingInput = false;
+  stopParticiplePrepositionTimer();
   const item = currentParticiplePrepositionItem;
   const isCorrect = item.acceptedPrepositions.includes(answer);
   const targetCombination = `${item.participle} ${item.targetPreposition}`;
 
   if (isCorrect) {
+    const studyResult = studyMode ? recordStudyAnswer(currentStudyItemId, true) : null;
     score += 1;
+    prepositionScoreEl.textContent = score;
+    prepositionBestEl.textContent = studyMode
+      ? getPendingStudyCount()
+      : Math.max(score, getPlayerBest('participle-preposition'));
     playFeedbackSound('correct');
-    celebrateStreak(score);
-  } else {
-    score = 0;
-    playFeedbackSound('wrong');
+    showFlash(prepositionFlashEl, 'correct');
+    const detail = studyResult?.mastered
+      ? '2회 연속 정답! 오답 목록에서 제외했어요.'
+      : studyResult?.correctStreak
+        ? `${studyResult.correctStreak}회 연속 정답`
+        : targetCombination;
+    showAnswerFeedback(
+      'participle-preposition',
+      'correct',
+      '✓ 정답!',
+      detail,
+      answer
+    );
+    if (!studyMode) celebrateStreak(score);
+    scheduleActivityTask(() => {
+      clearAnswerFeedback('participle-preposition');
+      nextParticiplePrepositionItem();
+      acceptingInput = true;
+      if (!studyMode) startParticiplePrepositionTimer();
+      focusActivityControl('participle-preposition');
+    }, studyMode ? 650 : getNextRoundDelay(score));
+    return;
   }
 
-  const best = isCorrect
-    ? recordScore('participle-preposition', score)
-    : getPlayerBest('participle-preposition');
-  prepositionScoreEl.textContent = score;
-  prepositionBestEl.textContent = best;
-  showFlash(prepositionFlashEl, isCorrect ? 'correct' : 'wrong');
+  if (studyMode) {
+    recordStudyAnswer(currentStudyItemId, false);
+    score += 1;
+    prepositionScoreEl.textContent = score;
+    prepositionBestEl.textContent = getPendingStudyCount();
+  }
+  playFeedbackSound('wrong');
+  showFlash(prepositionFlashEl, 'wrong');
   showAnswerFeedback(
     'participle-preposition',
-    isCorrect ? 'correct' : 'wrong',
-    isCorrect ? '✓ 정답!' : `✕ 정답: ${item.targetPreposition}`,
+    'wrong',
+    studyMode ? '✕ 다시 확인해요!' : '✕ 오답!',
     targetCombination,
     answer,
     item.targetPreposition
   );
-
-  scheduleActivityTask(() => {
-    clearAnswerFeedback('participle-preposition');
-    nextParticiplePrepositionItem();
-    acceptingInput = true;
-    focusActivityControl('participle-preposition');
-  }, 1050);
+  const explanation = createParticiplePrepositionExplanation(item, answer);
+  if (studyMode) {
+    scheduleActivityTask(() => {
+      clearAnswerFeedback('participle-preposition');
+      showStudyExplanation(explanation);
+    }, 650);
+    return;
+  }
+  finishRound(explanation, 720, `정답: ${item.targetPreposition}`);
 }
 
 function formatSentenceBuildingChunk(item, chunk) {
@@ -2607,6 +2782,7 @@ function stopAllTimers() {
   stopIngTimer();
   stopSentenceErrorTimer();
   stopToInfinitiveTimer();
+  stopParticiplePrepositionTimer();
   stopSentenceBuildingTimer();
 }
 
@@ -2735,7 +2911,7 @@ function startActivity(activity) {
     if (!nextToInfinitiveItem(activity)) return;
   } else if (activity === 'participle-preposition') {
     prepositionScoreEl.textContent = '0';
-    prepositionBestEl.textContent = getPlayerBest(activity);
+    prepositionBestEl.textContent = studyMode ? getPendingStudyCount() : getPlayerBest(activity);
     showScreen(participlePrepositionScreen);
     if (!nextParticiplePrepositionItem()) return;
   } else if (activity === 'sentence-building') {
@@ -2751,6 +2927,7 @@ function startActivity(activity) {
     if (activity === 'ing' && !studyMode) startIngTimer();
     if (activity === 'sentence-error' && !studyMode) startSentenceErrorTimer();
     if ((activity === 'to-infinitive-i' || activity === 'to-infinitive-ii') && !studyMode) startToInfinitiveTimer();
+    if (activity === 'participle-preposition' && !studyMode) startParticiplePrepositionTimer();
     if (activity === 'sentence-building' && !studyMode) startSentenceBuildingTimer();
     focusActivityControl(activity);
   }, 160);
@@ -2764,6 +2941,7 @@ function continueStudySession() {
   if (activeActivity === 'ing') nextIngItem();
   if (activeActivity === 'sentence-error') nextSentenceErrorItem();
   if (activeActivity === 'to-infinitive-i' || activeActivity === 'to-infinitive-ii') nextToInfinitiveItem(activeActivity);
+  if (activeActivity === 'participle-preposition') nextParticiplePrepositionItem();
   if (activeActivity === 'sentence-building') nextSentenceBuildingItem();
   scheduleActivityTask(() => {
     acceptingInput = true;
