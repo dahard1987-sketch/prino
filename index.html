@@ -4412,9 +4412,7 @@
     }
 
     function getAchievementResultMessage(activity, value) {
-      const threshold = activity === 'sentence-building'
-        ? 20
-        : activity === 'sentence-error' ? 50 : Number.POSITIVE_INFINITY;
+      const threshold = activity === 'sentence-error' ? 20 : 50;
       if (value <= threshold) return '';
       const createMessage = ACHIEVEMENT_RESULT_MESSAGES[
         Math.floor(Math.random() * ACHIEVEMENT_RESULT_MESSAGES.length)
