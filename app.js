@@ -112,10 +112,12 @@ const PARTICIPLE_PREPOSITION_COOLDOWN = 4;
 const PARTICIPLE_PREPOSITION_TIME_LIMIT = 10000;
 const SENTENCE_BUILDING_ITEMS = Array.isArray(window.SENTENCE_BUILDING_ITEMS) ? window.SENTENCE_BUILDING_ITEMS : [];
 const SENTENCE_BUILDING_COOLDOWN = 3;
-const SENTENCE_BUILDING_HINT_REMOVAL_SCORE = 30;
+const SENTENCE_BUILDING_PUNCTUATION_REMOVAL_SCORE = 20;
+const SENTENCE_BUILDING_CAPITAL_HINT_REMOVAL_SCORE = 30;
 const SENTENCE_BUILDING_INTENSE_BGM_THRESHOLD = 30;
 const SENTENCE_BUILDING_BGM_VOLUME = .17;
 const SENTENCE_BUILDING_FEEDBACK_BGM_VOLUME = .055;
+const SENTENCE_BUILDING_BGM_FADE_DURATION = 1600;
 const SENTENCE_BUILDING_LOWERCASE_STARTS = new Set([
   'the', 'he', 'they', 'we', 'everyone', 'it', 'six', 'raindrops', 'stop'
 ]);
@@ -167,8 +169,8 @@ const FEEDBACK_TONES = {
     { frequency: 293.66, delay: .14, duration: .28, volume: .24, wave: 'square' }
   ],
   'builder-tick': [
-    { frequency: 196, endFrequency: 118, delay: 0, duration: .11, volume: .34, wave: 'square', attack: .004, reverb: .9 },
-    { frequency: 82.41, endFrequency: 55, delay: .012, duration: .2, volume: .38, wave: 'sine', attack: .006, reverb: 1.15 }
+    { frequency: 1320, endFrequency: 980, delay: 0, duration: .042, volume: .07, wave: 'triangle', attack: .003 },
+    { frequency: 2200, endFrequency: 1760, delay: .004, duration: .022, volume: .035, wave: 'sine', attack: .002 }
   ],
   tick: [{ frequency: 1046.5, delay: 0, duration: .045, volume: .075, wave: 'triangle' }]
 };
@@ -400,8 +402,10 @@ let lastRoundOverTitle = '';
 let acceptingInput = false;
 let activitySessionId = 0;
 let audioContext = null;
-let sentenceBuildingTickReverb = null;
 let activeBuilderBgmEl = builderBgmEl;
+let sentenceBuildingBgmFadeAnimationId = null;
+let sentenceBuildingBgmMix = null;
+let sentenceBuildingBgmDucked = false;
 let primeTimeoutId = null;
 let primeTickIntervalId = null;
 let primeTimerAnimationId = null;
@@ -1265,7 +1269,7 @@ function recordStudyAnswer(itemId, isCorrect) {
 }
 
 function showStudyExplanation(content, title = '오답 해설') {
-  if (activeActivity === 'sentence-building') activeBuilderBgmEl.pause();
+  if (activeActivity === 'sentence-building') pauseSentenceBuildingBgm();
   document.querySelector('#study-explanation-title').textContent = title;
   studyExplanationMessageEl.classList.toggle('has-rich-explanation', typeof content !== 'string');
   studyExplanationMessageEl.replaceChildren();
@@ -1383,59 +1387,112 @@ function getSentenceBuildingBgm() {
   return score >= SENTENCE_BUILDING_INTENSE_BGM_THRESHOLD ? builderIntenseBgmEl : builderBgmEl;
 }
 
+function getSentenceBuildingBgmVolume() {
+  return sentenceBuildingBgmDucked
+    ? SENTENCE_BUILDING_FEEDBACK_BGM_VOLUME
+    : SENTENCE_BUILDING_BGM_VOLUME;
+}
+
+function stopSentenceBuildingBgmFade() {
+  window.cancelAnimationFrame(sentenceBuildingBgmFadeAnimationId);
+  sentenceBuildingBgmFadeAnimationId = null;
+  sentenceBuildingBgmMix = null;
+}
+
+function applySentenceBuildingBgmMix(now = performance.now()) {
+  const volume = getSentenceBuildingBgmVolume();
+  if (!sentenceBuildingBgmMix) {
+    [builderBgmEl, builderIntenseBgmEl].forEach(bgmEl => {
+      bgmEl.volume = bgmEl === activeBuilderBgmEl && !bgmEl.paused ? volume : 0;
+    });
+    return true;
+  }
+
+  const { from, to, startedAt, duration } = sentenceBuildingBgmMix;
+  const progress = Math.min(1, Math.max(0, (now - startedAt) / duration));
+  const eased = progress * progress * (3 - 2 * progress);
+  if (from) from.volume = volume * (1 - eased);
+  to.volume = volume * eased;
+
+  if (progress < 1) return false;
+  if (from) {
+    from.pause();
+    from.currentTime = 0;
+    from.volume = 0;
+  }
+  sentenceBuildingBgmMix = null;
+  sentenceBuildingBgmFadeAnimationId = null;
+  to.volume = volume;
+  return true;
+}
+
+function runSentenceBuildingBgmFade(now) {
+  if (applySentenceBuildingBgmMix(now)) return;
+  sentenceBuildingBgmFadeAnimationId = window.requestAnimationFrame(runSentenceBuildingBgmFade);
+}
+
+function beginSentenceBuildingBgmFade(from, to, duration = SENTENCE_BUILDING_BGM_FADE_DURATION) {
+  stopSentenceBuildingBgmFade();
+  const mix = { from, to, startedAt: performance.now(), duration };
+  sentenceBuildingBgmMix = mix;
+  to.volume = 0;
+  to.play().then(() => {
+    if (sentenceBuildingBgmMix !== mix) {
+      to.pause();
+      return;
+    }
+    sentenceBuildingBgmFadeAnimationId = window.requestAnimationFrame(runSentenceBuildingBgmFade);
+  }).catch(() => {
+    if (sentenceBuildingBgmMix !== mix) return;
+    sentenceBuildingBgmMix = null;
+    to.pause();
+    if (from) {
+      activeBuilderBgmEl = from;
+      from.volume = getSentenceBuildingBgmVolume();
+    }
+  });
+}
+
 function startSentenceBuildingBgm() {
   const nextBgmEl = getSentenceBuildingBgm();
   if (activeBuilderBgmEl !== nextBgmEl) {
-    activeBuilderBgmEl.pause();
-    activeBuilderBgmEl.currentTime = 0;
+    const previousBgmEl = activeBuilderBgmEl;
     activeBuilderBgmEl = nextBgmEl;
+    beginSentenceBuildingBgmFade(previousBgmEl, nextBgmEl);
+    return;
   }
-  activeBuilderBgmEl.volume = SENTENCE_BUILDING_BGM_VOLUME;
-  if (!activeBuilderBgmEl.paused) return;
-  activeBuilderBgmEl.play().catch(() => {
-    // 자동 재생이 막히면 다음 사용자 입력 때 다시 시도한다.
-  });
+  if (sentenceBuildingBgmMix || !activeBuilderBgmEl.paused) return;
+  beginSentenceBuildingBgmFade(null, activeBuilderBgmEl, 700);
+}
+
+function pauseSentenceBuildingBgm() {
+  stopSentenceBuildingBgmFade();
+  [builderBgmEl, builderIntenseBgmEl].forEach(bgmEl => bgmEl.pause());
 }
 
 function stopSentenceBuildingBgm() {
   window.clearTimeout(sentenceBuildingFeedbackVolumeTimeoutId);
   sentenceBuildingFeedbackVolumeTimeoutId = null;
+  sentenceBuildingBgmDucked = false;
+  stopSentenceBuildingBgmFade();
   [builderBgmEl, builderIntenseBgmEl].forEach(bgmEl => {
     bgmEl.pause();
     bgmEl.currentTime = 0;
+    bgmEl.volume = 0;
   });
   activeBuilderBgmEl = builderBgmEl;
 }
 
 function playSentenceBuildingFeedbackSound(type) {
   window.clearTimeout(sentenceBuildingFeedbackVolumeTimeoutId);
-  activeBuilderBgmEl.volume = SENTENCE_BUILDING_FEEDBACK_BGM_VOLUME;
+  sentenceBuildingBgmDucked = true;
+  applySentenceBuildingBgmMix();
   playFeedbackSound(`builder-${type}`);
   sentenceBuildingFeedbackVolumeTimeoutId = window.setTimeout(() => {
-    activeBuilderBgmEl.volume = SENTENCE_BUILDING_BGM_VOLUME;
+    sentenceBuildingBgmDucked = false;
+    applySentenceBuildingBgmMix();
     sentenceBuildingFeedbackVolumeTimeoutId = null;
   }, 650);
-}
-
-function getSentenceBuildingTickReverb() {
-  if (sentenceBuildingTickReverb) return sentenceBuildingTickReverb;
-  const duration = 1.8;
-  const impulse = audioContext.createBuffer(2, audioContext.sampleRate * duration, audioContext.sampleRate);
-  for (let channel = 0; channel < impulse.numberOfChannels; channel += 1) {
-    const samples = impulse.getChannelData(channel);
-    for (let index = 0; index < samples.length; index += 1) {
-      const fade = Math.pow(1 - index / samples.length, 2.35);
-      samples[index] = (Math.random() * 2 - 1) * fade;
-    }
-  }
-  const convolver = audioContext.createConvolver();
-  const wetGain = audioContext.createGain();
-  convolver.buffer = impulse;
-  wetGain.gain.value = .72;
-  convolver.connect(wetGain);
-  wetGain.connect(audioContext.destination);
-  sentenceBuildingTickReverb = convolver;
-  return sentenceBuildingTickReverb;
 }
 
 function playFeedbackSound(type) {
@@ -1458,17 +1515,9 @@ function playFeedbackSound(type) {
     gain.gain.exponentialRampToValueAtTime(.0001, toneEnd);
     oscillator.connect(gain);
     gain.connect(audioContext.destination);
-    let reverbSend = null;
-    if (tone.reverb) {
-      reverbSend = audioContext.createGain();
-      reverbSend.gain.value = tone.reverb;
-      gain.connect(reverbSend);
-      reverbSend.connect(getSentenceBuildingTickReverb());
-    }
     oscillator.addEventListener('ended', () => {
       oscillator.disconnect();
       gain.disconnect();
-      reverbSend?.disconnect();
     }, { once: true });
     oscillator.start(toneStart);
     oscillator.stop(toneEnd);
@@ -2003,6 +2052,14 @@ function getSentenceBuildingTimeLimit() {
   if (score >= 20) return 8000;
   if (score >= 10) return 11000;
   return 13000;
+}
+
+function updateSentenceBuildingIntensityUI() {
+  sentenceBuildingScreen.classList.toggle(
+    'high-tension',
+    activeActivity === 'sentence-building'
+      && score >= SENTENCE_BUILDING_INTENSE_BGM_THRESHOLD
+  );
 }
 
 function stopSentenceBuildingTimer() {
@@ -2602,8 +2659,9 @@ function chooseParticiplePreposition(answer) {
 }
 
 function formatSentenceBuildingChunk(item, chunk) {
-  if (score < SENTENCE_BUILDING_HINT_REMOVAL_SCORE) return chunk;
+  if (score < SENTENCE_BUILDING_PUNCTUATION_REMOVAL_SCORE) return chunk;
   let formatted = chunk.replace(/[.,!?;:]/g, '');
+  if (score < SENTENCE_BUILDING_CAPITAL_HINT_REMOVAL_SCORE) return formatted;
   if (chunk !== item.answer[0]) return formatted;
   const firstWord = formatted.match(/^[A-Za-z]+/)?.[0] || '';
   if (!SENTENCE_BUILDING_LOWERCASE_STARTS.has(firstWord.toLowerCase())) return formatted;
@@ -2734,6 +2792,7 @@ function checkSentenceBuildingAnswer() {
   if (isCorrect) {
     const studyResult = studyMode ? recordStudyAnswer(currentStudyItemId, true) : null;
     score += 1;
+    updateSentenceBuildingIntensityUI();
     startSentenceBuildingBgm();
     playSentenceBuildingFeedbackSound('correct');
     builderScoreEl.textContent = score;
@@ -2759,6 +2818,7 @@ function checkSentenceBuildingAnswer() {
   if (studyMode) {
     recordStudyAnswer(currentStudyItemId, false);
     score += 1;
+    updateSentenceBuildingIntensityUI();
     builderScoreEl.textContent = score;
     builderBestEl.textContent = getPendingStudyCount();
   }
@@ -2857,6 +2917,7 @@ function startActivity(activity) {
   invalidateActivitySession();
   activeActivity = activity;
   score = 0;
+  updateSentenceBuildingIntensityUI();
   acceptingInput = false;
   closeAllModals();
   resetFlashFeedback();
@@ -3421,7 +3482,7 @@ bindAnswerButtons('.preposition-choice', ({ prepositionAnswer }) => choosePartic
 builderUndoButton.addEventListener('click', undoSentenceBuildingChunk);
 builderResetButton.addEventListener('click', resetSentenceBuildingBoard);
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) activeBuilderBgmEl.pause();
+  if (document.hidden) pauseSentenceBuildingBgm();
   else if (
     activeActivity === 'sentence-building'
     && sentenceBuildingScreen.classList.contains('active')

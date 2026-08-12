@@ -1617,6 +1617,7 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   background: #FFF8DA;
   color: #24324A;
   isolation: isolate;
+  transition: background-color 900ms ease, color 900ms ease;
 }
 .sentence-builder::before,
 .sentence-builder::after {
@@ -1628,6 +1629,7 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   border-radius: 44% 56% 65% 35%;
   pointer-events: none;
   transform: rotate(18deg);
+  transition: background-color 900ms ease, border-radius 900ms ease, opacity 900ms ease, transform 900ms ease;
 }
 .sentence-builder::before { top: -16%; left: -9%; background: #A9E5FF; }
 .sentence-builder::after { right: -10%; bottom: -22%; background: #FFD6E5; transform: rotate(-22deg); }
@@ -1673,6 +1675,7 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   border-radius: 28px;
   background: rgba(255,255,255,.92);
   box-shadow: 0 9px 0 #24324A;
+  transition: background-color 900ms ease, border-color 900ms ease, box-shadow 900ms ease;
 }
 .builder-answer,
 .builder-bank {
@@ -1688,6 +1691,7 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   border: 3px dashed #8D86FF;
   border-radius: 20px;
   background: #F3F1FF;
+  transition: background-color 900ms ease, border-color 900ms ease;
 }
 .builder-bank { min-height: 86px; padding: 12px 4px 2px; }
 .builder-chip {
@@ -1702,7 +1706,7 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   font-size: clamp(1.03rem, 2.5vmin, 1.52rem);
   font-weight: 900;
   line-height: 1.2;
-  transition: transform 100ms ease, box-shadow 100ms ease, opacity 120ms ease;
+  transition: transform 100ms ease, box-shadow 100ms ease, opacity 120ms ease, background-color 900ms ease, color 900ms ease, border-color 900ms ease;
 }
 .builder-bank .builder-chip:nth-child(4n+1) { background: #FFE17D; }
 .builder-bank .builder-chip:nth-child(4n+2) { background: #9FE7C2; }
@@ -1725,6 +1729,59 @@ button:focus-visible, input:focus-visible, select:focus-visible {
 }
 .builder-action:disabled { opacity: .38; cursor: default; }
 .builder-action--reset { background: #FFE17D; }
+
+.sentence-builder.high-tension {
+  background: var(--surface);
+  color: var(--ink);
+}
+.sentence-builder.high-tension::before {
+  border-radius: 0;
+  background: var(--powder);
+  opacity: .46;
+  transform: rotate(8deg);
+}
+.sentence-builder.high-tension::after {
+  border-radius: 0;
+  background: var(--steel);
+  opacity: .18;
+  transform: rotate(-8deg);
+}
+.sentence-builder.high-tension .icon-button,
+.sentence-builder.high-tension .pill,
+.sentence-builder.high-tension .builder-timer {
+  border-color: var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 4px 0 var(--ink);
+}
+.sentence-builder.high-tension .pill__label { color: var(--steel); }
+.sentence-builder.high-tension .builder-timer .game-timer__track {
+  border-color: var(--steel);
+  background: var(--powder);
+}
+.sentence-builder.high-tension .builder-timer .game-timer__bar { background: var(--steel); }
+.sentence-builder.high-tension .builder-timer.urgent .game-timer__bar { background: var(--danger); }
+.sentence-builder.high-tension .builder-board {
+  border-color: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 9px 0 var(--steel);
+}
+.sentence-builder.high-tension .builder-answer {
+  border-color: var(--steel);
+  background: var(--powder);
+}
+.sentence-builder.high-tension .builder-bank .builder-chip:nth-child(4n+1) { background: var(--paper); }
+.sentence-builder.high-tension .builder-bank .builder-chip:nth-child(4n+2) { background: var(--powder); }
+.sentence-builder.high-tension .builder-bank .builder-chip:nth-child(4n+3) { background: var(--sky); }
+.sentence-builder.high-tension .builder-bank .builder-chip:nth-child(4n) { background: var(--steel); color: #fff; }
+.sentence-builder.high-tension .builder-answer .builder-chip { background: var(--ink); color: #fff; }
+.sentence-builder.high-tension .builder-action {
+  border-color: var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 4px 0 var(--ink);
+}
+.sentence-builder.high-tension .builder-action--reset { background: var(--powder); }
 .builder-board[data-size="medium"] .builder-chip {
   min-height: clamp(62px, 7vmin, 78px);
   padding: 12px clamp(18px, 2.8vmin, 30px);
