@@ -1856,6 +1856,7 @@
     <div class="flash" id="builder-flash" aria-hidden="true"></div>
     <div class="answer-feedback" id="builder-feedback" role="status" aria-live="assertive"><strong></strong><span></span></div>
     <audio id="builder-bgm" src="assets/audio/hepta-bg.mp3" preload="none" loop></audio>
+    <audio id="builder-bgm-intense" src="assets/audio/hepta-rising-dread.mp3" preload="auto" loop></audio>
   </main>
 
   <div class="streak-celebration" id="streak-celebration" role="status" aria-live="polite" aria-atomic="true">
@@ -2027,6 +2028,7 @@
     const SENTENCE_BUILDING_ITEMS = Array.isArray(window.SENTENCE_BUILDING_ITEMS) ? window.SENTENCE_BUILDING_ITEMS : [];
     const SENTENCE_BUILDING_COOLDOWN = 3;
     const SENTENCE_BUILDING_HINT_REMOVAL_SCORE = 30;
+    const SENTENCE_BUILDING_INTENSE_BGM_THRESHOLD = 30;
     const SENTENCE_BUILDING_BGM_VOLUME = .17;
     const SENTENCE_BUILDING_FEEDBACK_BGM_VOLUME = .055;
     const SENTENCE_BUILDING_LOWERCASE_STARTS = new Set([
@@ -2090,6 +2092,7 @@
     const builderUndoButton = document.querySelector('#builder-undo');
     const builderResetButton = document.querySelector('#builder-reset');
     const builderBgmEl = document.querySelector('#builder-bgm');
+    const builderIntenseBgmEl = document.querySelector('#builder-bgm-intense');
     const sentenceErrorEmptyEl = document.querySelector('#sentence-error-empty');
     const sentenceErrorEmptyBackButton = document.querySelector('#sentence-error-empty-back');
     const primeScoreEl = document.querySelector('#prime-score');
@@ -2247,6 +2250,8 @@
     let lastRoundOverTitle = '';
     let acceptingInput = false;
     let audioContext = null;
+    let sentenceBuildingTickReverb = null;
+    let activeBuilderBgmEl = builderBgmEl;
     let primeTimeoutId = null;
     let primeTickIntervalId = null;
     let primeTimerAnimationId = null;
@@ -3142,10 +3147,20 @@
       return audioContext;
     }
 
+    function getSentenceBuildingBgm() {
+      return score > SENTENCE_BUILDING_INTENSE_BGM_THRESHOLD ? builderIntenseBgmEl : builderBgmEl;
+    }
+
     function startSentenceBuildingBgm() {
-      builderBgmEl.volume = SENTENCE_BUILDING_BGM_VOLUME;
-      if (!builderBgmEl.paused) return;
-      builderBgmEl.play().catch(() => {
+      const nextBgmEl = getSentenceBuildingBgm();
+      if (activeBuilderBgmEl !== nextBgmEl) {
+        activeBuilderBgmEl.pause();
+        activeBuilderBgmEl.currentTime = 0;
+        activeBuilderBgmEl = nextBgmEl;
+      }
+      activeBuilderBgmEl.volume = SENTENCE_BUILDING_BGM_VOLUME;
+      if (!activeBuilderBgmEl.paused) return;
+      activeBuilderBgmEl.play().catch(() => {
         // 자동 재생이 막히면 다음 사용자 입력 때 다시 시도한다.
       });
     }
@@ -3153,18 +3168,42 @@
     function stopSentenceBuildingBgm() {
       window.clearTimeout(sentenceBuildingFeedbackVolumeTimeoutId);
       sentenceBuildingFeedbackVolumeTimeoutId = null;
-      builderBgmEl.pause();
-      builderBgmEl.currentTime = 0;
+      [builderBgmEl, builderIntenseBgmEl].forEach(bgmEl => {
+        bgmEl.pause();
+        bgmEl.currentTime = 0;
+      });
+      activeBuilderBgmEl = builderBgmEl;
     }
 
     function playSentenceBuildingFeedbackSound(type) {
       window.clearTimeout(sentenceBuildingFeedbackVolumeTimeoutId);
-      builderBgmEl.volume = SENTENCE_BUILDING_FEEDBACK_BGM_VOLUME;
+      activeBuilderBgmEl.volume = SENTENCE_BUILDING_FEEDBACK_BGM_VOLUME;
       playFeedbackSound(`builder-${type}`);
       sentenceBuildingFeedbackVolumeTimeoutId = window.setTimeout(() => {
-        builderBgmEl.volume = SENTENCE_BUILDING_BGM_VOLUME;
+        activeBuilderBgmEl.volume = SENTENCE_BUILDING_BGM_VOLUME;
         sentenceBuildingFeedbackVolumeTimeoutId = null;
       }, 650);
+    }
+
+    function getSentenceBuildingTickReverb() {
+      if (sentenceBuildingTickReverb) return sentenceBuildingTickReverb;
+      const duration = 1.8;
+      const impulse = audioContext.createBuffer(2, audioContext.sampleRate * duration, audioContext.sampleRate);
+      for (let channel = 0; channel < impulse.numberOfChannels; channel += 1) {
+        const samples = impulse.getChannelData(channel);
+        for (let index = 0; index < samples.length; index += 1) {
+          const fade = Math.pow(1 - index / samples.length, 2.35);
+          samples[index] = (Math.random() * 2 - 1) * fade;
+        }
+      }
+      const convolver = audioContext.createConvolver();
+      const wetGain = audioContext.createGain();
+      convolver.buffer = impulse;
+      wetGain.gain.value = .72;
+      convolver.connect(wetGain);
+      wetGain.connect(audioContext.destination);
+      sentenceBuildingTickReverb = convolver;
+      return sentenceBuildingTickReverb;
     }
 
     function playFeedbackSound(type) {
@@ -3190,6 +3229,10 @@
           { frequency: 392, delay: 0, duration: .16, volume: .27, wave: 'square' },
           { frequency: 293.66, delay: .14, duration: .28, volume: .24, wave: 'square' }
         ],
+        'builder-tick': [
+          { frequency: 196, endFrequency: 118, delay: 0, duration: .11, volume: .34, wave: 'square', attack: .004, reverb: .9 },
+          { frequency: 82.41, endFrequency: 55, delay: .012, duration: .2, volume: .38, wave: 'sine', attack: .006, reverb: 1.15 }
+        ],
         tick: [{ frequency: 1046.5, delay: 0, duration: .045, volume: .075, wave: 'triangle' }]
       };
       const tones = toneSets[type] || [];
@@ -3205,10 +3248,16 @@
           oscillator.frequency.exponentialRampToValueAtTime(tone.endFrequency, toneEnd);
         }
         gain.gain.setValueAtTime(.0001, toneStart);
-        gain.gain.exponentialRampToValueAtTime(tone.volume, toneStart + .018);
+        gain.gain.exponentialRampToValueAtTime(tone.volume, toneStart + (tone.attack || .018));
         gain.gain.exponentialRampToValueAtTime(.0001, toneEnd);
         oscillator.connect(gain);
         gain.connect(audioContext.destination);
+        if (tone.reverb) {
+          const reverbSend = audioContext.createGain();
+          reverbSend.gain.value = tone.reverb;
+          gain.connect(reverbSend);
+          reverbSend.connect(getSentenceBuildingTickReverb());
+        }
         oscillator.start(toneStart);
         oscillator.stop(toneEnd);
       });
@@ -3786,7 +3835,7 @@
       builderTimerLabelEl.textContent = `${(sentenceBuildingTimeLimit / 1000).toFixed(1)}초`;
       sentenceBuildingTimeoutId = window.setTimeout(handleSentenceBuildingTimeout, sentenceBuildingTimeLimit);
       sentenceBuildingTickIntervalId = window.setInterval(() => {
-        if (performance.now() < sentenceBuildingDeadline - 100) playFeedbackSound('tick');
+        if (performance.now() < sentenceBuildingDeadline - 100) playFeedbackSound('builder-tick');
       }, 1000);
       sentenceBuildingTimerAnimationId = window.requestAnimationFrame(updateSentenceBuildingTimer);
     }
@@ -4242,8 +4291,9 @@
       const isCorrect = attemptedChunks.every((chunk, index) => chunk === item.answer[index]);
       if (isCorrect) {
         const studyResult = studyMode ? recordStudyAnswer(currentStudyItemId, true) : null;
-        playSentenceBuildingFeedbackSound('correct');
         score += 1;
+        startSentenceBuildingBgm();
+        playSentenceBuildingFeedbackSound('correct');
         builderScoreEl.textContent = score;
         builderBestEl.textContent = studyMode ? getPendingStudyCount() : Math.max(score, getPlayerBest('sentence-building'));
         showFlash(builderFlashEl, 'correct');
@@ -4292,9 +4342,9 @@
         return;
       }
       activeActivity = activity;
+      score = 0;
       if (activity === 'sentence-building') startSentenceBuildingBgm();
       else stopSentenceBuildingBgm();
-      score = 0;
       acceptingInput = false;
       resultModal.classList.remove('show');
       infoModal.classList.remove('show');
@@ -4861,7 +4911,7 @@
     builderUndoButton.addEventListener('click', undoSentenceBuildingChunk);
     builderResetButton.addEventListener('click', resetSentenceBuildingBoard);
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) builderBgmEl.pause();
+      if (document.hidden) activeBuilderBgmEl.pause();
       else if (activeActivity === 'sentence-building' && sentenceBuildingScreen.classList.contains('active')) {
         startSentenceBuildingBgm();
       }
