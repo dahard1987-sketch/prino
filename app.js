@@ -58,30 +58,6 @@ const ROUND_OVER_TITLES = [
   '너무 아쉽다',
   '이렇게 아쉬울 수가'
 ];
-const BUILDER_CORRECT_MESSAGES = [
-  '정말 잘했어요!',
-  '멋지게 해냈어요!',
-  '차근차근 잘했어요!',
-  '와, 문장을 딱 맞췄네요!',
-  '집중력이 정말 멋져요!',
-  '오늘도 한 뼘 자랐네요!',
-  '최고에요!',
-  '아주 훌륭해요!',
-  '해낼 줄 알았어요!',
-  '너무 잘 했어요!',
-  '끝까지 잘 생각했네요!',
-  '멋진 선택이었어요!',
-  '대단해, 또 해냈어요!',
-  '정답을 쏙 찾았네요!',
-  '아주 야무지게 잘했어요!',
-  '한 번에 척척!',
-  '좋아, 정말 잘하고 있어요!',
-  '실력이 쑥쑥 자라고 있어요!',
-  '친구들에게 자랑하세요!',
-  '너무 멋있어요!',
-  '포기하지 않고 잘 해냈어요!'
-];
-
 const ACHIEVEMENT_RESULT_MESSAGES = [
   value => `${value}\uAC1C\uB294 \uC880 \uB300\uB2E8\uD55C\uB370\uC694?`,
   value => `${value}\uAC1C\uB294 \uAD49\uC7A5\uD788 \uC798\uD588\uB124.`,
@@ -114,10 +90,11 @@ const SENTENCE_BUILDING_ITEMS = Array.isArray(window.SENTENCE_BUILDING_ITEMS) ? 
 const SENTENCE_BUILDING_COOLDOWN = 3;
 const SENTENCE_BUILDING_PUNCTUATION_REMOVAL_SCORE = 20;
 const SENTENCE_BUILDING_CAPITAL_HINT_REMOVAL_SCORE = 30;
+const SENTENCE_BUILDING_CROSSFADE_START_SCORE = 27;
 const SENTENCE_BUILDING_INTENSE_BGM_THRESHOLD = 30;
+const SENTENCE_BUILDING_INTENSE_MIX_STEPS = [.06, .2, .48, 1];
 const SENTENCE_BUILDING_BGM_VOLUME = .17;
-const SENTENCE_BUILDING_FEEDBACK_BGM_VOLUME = .055;
-const SENTENCE_BUILDING_BGM_FADE_DURATION = 1600;
+const SENTENCE_BUILDING_BGM_FADE_DURATION = 5000;
 const SENTENCE_BUILDING_LOWERCASE_STARTS = new Set([
   'the', 'he', 'they', 'we', 'everyone', 'it', 'six', 'raindrops', 'stop'
 ]);
@@ -402,10 +379,9 @@ let lastRoundOverTitle = '';
 let acceptingInput = false;
 let activitySessionId = 0;
 let audioContext = null;
-let activeBuilderBgmEl = builderBgmEl;
 let sentenceBuildingBgmFadeAnimationId = null;
 let sentenceBuildingBgmMix = null;
-let sentenceBuildingBgmDucked = false;
+let sentenceBuildingBgmTargetMix = -1;
 let primeTimeoutId = null;
 let primeTickIntervalId = null;
 let primeTimerAnimationId = null;
@@ -436,8 +412,6 @@ let sentenceBuildingTickIntervalId = null;
 let sentenceBuildingTimerAnimationId = null;
 let sentenceBuildingDeadline = 0;
 let sentenceBuildingTimeLimit = 15000;
-let sentenceBuildingFeedbackVolumeTimeoutId = null;
-let lastBuilderCorrectMessage = '';
 let streakCelebrationTimeoutId = null;
 let confettiAppearanceCount = 0;
 const suppressedUsageNotes = new Set();
@@ -1383,14 +1357,12 @@ function prepareAudio() {
   return audioContext;
 }
 
-function getSentenceBuildingBgm() {
-  return score >= SENTENCE_BUILDING_INTENSE_BGM_THRESHOLD ? builderIntenseBgmEl : builderBgmEl;
-}
-
-function getSentenceBuildingBgmVolume() {
-  return sentenceBuildingBgmDucked
-    ? SENTENCE_BUILDING_FEEDBACK_BGM_VOLUME
-    : SENTENCE_BUILDING_BGM_VOLUME;
+function getSentenceBuildingIntenseMix() {
+  const stepIndex = score - SENTENCE_BUILDING_CROSSFADE_START_SCORE;
+  if (stepIndex < 0) return 0;
+  return SENTENCE_BUILDING_INTENSE_MIX_STEPS[
+    Math.min(stepIndex, SENTENCE_BUILDING_INTENSE_MIX_STEPS.length - 1)
+  ];
 }
 
 function stopSentenceBuildingBgmFade() {
@@ -1400,29 +1372,31 @@ function stopSentenceBuildingBgmFade() {
 }
 
 function applySentenceBuildingBgmMix(now = performance.now()) {
-  const volume = getSentenceBuildingBgmVolume();
-  if (!sentenceBuildingBgmMix) {
-    [builderBgmEl, builderIntenseBgmEl].forEach(bgmEl => {
-      bgmEl.volume = bgmEl === activeBuilderBgmEl && !bgmEl.paused ? volume : 0;
-    });
-    return true;
-  }
-
-  const { from, to, startedAt, duration } = sentenceBuildingBgmMix;
+  if (!sentenceBuildingBgmMix) return true;
+  const {
+    normalStart,
+    normalTarget,
+    intenseStart,
+    intenseTarget,
+    startedAt,
+    duration
+  } = sentenceBuildingBgmMix;
   const progress = Math.min(1, Math.max(0, (now - startedAt) / duration));
   const eased = progress * progress * (3 - 2 * progress);
-  if (from) from.volume = volume * (1 - eased);
-  to.volume = volume * eased;
+  builderBgmEl.volume = normalStart + (normalTarget - normalStart) * eased;
+  builderIntenseBgmEl.volume = intenseStart + (intenseTarget - intenseStart) * eased;
 
   if (progress < 1) return false;
-  if (from) {
-    from.pause();
-    from.currentTime = 0;
-    from.volume = 0;
-  }
   sentenceBuildingBgmMix = null;
   sentenceBuildingBgmFadeAnimationId = null;
-  to.volume = volume;
+  if (normalTarget === 0) {
+    builderBgmEl.pause();
+    builderBgmEl.currentTime = 0;
+  }
+  if (intenseTarget === 0) {
+    builderIntenseBgmEl.pause();
+    builderIntenseBgmEl.currentTime = 0;
+  }
   return true;
 }
 
@@ -1431,38 +1405,38 @@ function runSentenceBuildingBgmFade(now) {
   sentenceBuildingBgmFadeAnimationId = window.requestAnimationFrame(runSentenceBuildingBgmFade);
 }
 
-function beginSentenceBuildingBgmFade(from, to, duration = SENTENCE_BUILDING_BGM_FADE_DURATION) {
+function beginSentenceBuildingBgmFade(targetMix, duration = SENTENCE_BUILDING_BGM_FADE_DURATION) {
   stopSentenceBuildingBgmFade();
-  const mix = { from, to, startedAt: performance.now(), duration };
-  sentenceBuildingBgmMix = mix;
-  to.volume = 0;
-  to.play().then(() => {
-    if (sentenceBuildingBgmMix !== mix) {
-      to.pause();
-      return;
-    }
-    sentenceBuildingBgmFadeAnimationId = window.requestAnimationFrame(runSentenceBuildingBgmFade);
-  }).catch(() => {
-    if (sentenceBuildingBgmMix !== mix) return;
-    sentenceBuildingBgmMix = null;
-    to.pause();
-    if (from) {
-      activeBuilderBgmEl = from;
-      from.volume = getSentenceBuildingBgmVolume();
-    }
-  });
+  const normalTarget = SENTENCE_BUILDING_BGM_VOLUME * (1 - targetMix);
+  const intenseTarget = SENTENCE_BUILDING_BGM_VOLUME * targetMix;
+  const normalStart = builderBgmEl.paused ? 0 : builderBgmEl.volume;
+  const intenseStart = builderIntenseBgmEl.paused ? 0 : builderIntenseBgmEl.volume;
+  builderBgmEl.volume = normalStart;
+  builderIntenseBgmEl.volume = intenseStart;
+  if (normalTarget > 0) builderBgmEl.play().catch(() => {});
+  if (intenseTarget > 0) builderIntenseBgmEl.play().catch(() => {});
+  sentenceBuildingBgmMix = {
+    normalStart,
+    normalTarget,
+    intenseStart,
+    intenseTarget,
+    startedAt: performance.now(),
+    duration
+  };
+  sentenceBuildingBgmTargetMix = targetMix;
+  sentenceBuildingBgmFadeAnimationId = window.requestAnimationFrame(runSentenceBuildingBgmFade);
 }
 
 function startSentenceBuildingBgm() {
-  const nextBgmEl = getSentenceBuildingBgm();
-  if (activeBuilderBgmEl !== nextBgmEl) {
-    const previousBgmEl = activeBuilderBgmEl;
-    activeBuilderBgmEl = nextBgmEl;
-    beginSentenceBuildingBgmFade(previousBgmEl, nextBgmEl);
-    return;
-  }
-  if (sentenceBuildingBgmMix || !activeBuilderBgmEl.paused) return;
-  beginSentenceBuildingBgmFade(null, activeBuilderBgmEl, 700);
+  const targetMix = getSentenceBuildingIntenseMix();
+  const normalReady = targetMix === 1 || !builderBgmEl.paused;
+  const intenseReady = targetMix === 0 || !builderIntenseBgmEl.paused;
+  if (
+    targetMix === sentenceBuildingBgmTargetMix
+    && (sentenceBuildingBgmMix || (normalReady && intenseReady))
+  ) return;
+  const isStartingFromSilence = builderBgmEl.paused && builderIntenseBgmEl.paused;
+  beginSentenceBuildingBgmFade(targetMix, isStartingFromSilence ? 700 : SENTENCE_BUILDING_BGM_FADE_DURATION);
 }
 
 function pauseSentenceBuildingBgm() {
@@ -1471,28 +1445,17 @@ function pauseSentenceBuildingBgm() {
 }
 
 function stopSentenceBuildingBgm() {
-  window.clearTimeout(sentenceBuildingFeedbackVolumeTimeoutId);
-  sentenceBuildingFeedbackVolumeTimeoutId = null;
-  sentenceBuildingBgmDucked = false;
   stopSentenceBuildingBgmFade();
   [builderBgmEl, builderIntenseBgmEl].forEach(bgmEl => {
     bgmEl.pause();
     bgmEl.currentTime = 0;
     bgmEl.volume = 0;
   });
-  activeBuilderBgmEl = builderBgmEl;
+  sentenceBuildingBgmTargetMix = -1;
 }
 
 function playSentenceBuildingFeedbackSound(type) {
-  window.clearTimeout(sentenceBuildingFeedbackVolumeTimeoutId);
-  sentenceBuildingBgmDucked = true;
-  applySentenceBuildingBgmMix();
   playFeedbackSound(`builder-${type}`);
-  sentenceBuildingFeedbackVolumeTimeoutId = window.setTimeout(() => {
-    sentenceBuildingBgmDucked = false;
-    applySentenceBuildingBgmMix();
-    sentenceBuildingFeedbackVolumeTimeoutId = null;
-  }, 650);
 }
 
 function playFeedbackSound(type) {
@@ -2090,7 +2053,7 @@ function handleSentenceBuildingTimeout() {
   builderResetButton.disabled = true;
   playSentenceBuildingFeedbackSound('wrong');
   showFlash(builderFlashEl, 'wrong');
-  showAnswerFeedback('sentence-building', 'wrong', '아쉬워요!', '시간이 다 됐어요.');
+  showAnswerFeedback('sentence-building', 'wrong', '시간 초과', '');
   const attemptedChunks = currentBuilderSelection.map(index => currentSentenceBuildingItem.chunks[index]);
   finishRound(createSentenceBuildingExplanation(currentSentenceBuildingItem, attemptedChunks), 760);
 }
@@ -2740,13 +2703,6 @@ function createSentenceBuildingExplanation(item, attemptedChunks = []) {
   return wrapper;
 }
 
-function getBuilderCorrectMessage() {
-  const candidates = BUILDER_CORRECT_MESSAGES.filter(message => message !== lastBuilderCorrectMessage);
-  const message = candidates[Math.floor(Math.random() * candidates.length)];
-  lastBuilderCorrectMessage = message;
-  return message;
-}
-
 function nextSentenceBuildingItem() {
   if (!SENTENCE_BUILDING_ITEMS.length) return false;
   let selection;
@@ -2790,7 +2746,7 @@ function checkSentenceBuildingAnswer() {
   const attemptedChunks = currentBuilderSelection.map(index => item.chunks[index]);
   const isCorrect = attemptedChunks.every((chunk, index) => chunk === item.answer[index]);
   if (isCorrect) {
-    const studyResult = studyMode ? recordStudyAnswer(currentStudyItemId, true) : null;
+    if (studyMode) recordStudyAnswer(currentStudyItemId, true);
     score += 1;
     updateSentenceBuildingIntensityUI();
     startSentenceBuildingBgm();
@@ -2798,12 +2754,6 @@ function checkSentenceBuildingAnswer() {
     builderScoreEl.textContent = score;
     builderBestEl.textContent = studyMode ? getPendingStudyCount() : Math.max(score, getPlayerBest('sentence-building'));
     showFlash(builderFlashEl, 'correct');
-    showAnswerFeedback(
-      'sentence-building',
-      'correct',
-      getBuilderCorrectMessage(),
-      studyResult?.mastered ? '완전히 익혔어요!' : ''
-    );
     if (!studyMode) celebrateStreak(score);
     scheduleActivityTask(() => {
       clearAnswerFeedback('sentence-building');
@@ -2824,7 +2774,7 @@ function checkSentenceBuildingAnswer() {
   }
   playSentenceBuildingFeedbackSound('wrong');
   showFlash(builderFlashEl, 'wrong');
-  showAnswerFeedback('sentence-building', 'wrong', '아쉬워요!', '정답을 같이 확인해 봐요.');
+  showAnswerFeedback('sentence-building', 'wrong', '오답', '');
   const explanation = createSentenceBuildingExplanation(item, attemptedChunks);
   if (studyMode) {
     scheduleActivityTask(() => {
@@ -3065,7 +3015,7 @@ function finishRound(message, delay = 720, titleDetail = '') {
   const achievementMessage = getAchievementResultMessage(activeActivity, score);
   const roundOverTitle = achievementMessage
     ? '대단해요!'
-    : activeActivity === 'sentence-building' ? '아쉬워요!' : getRandomRoundOverTitle();
+    : activeActivity === 'sentence-building' ? '정답 확인' : getRandomRoundOverTitle();
   resultTitleEl.replaceChildren(document.createTextNode(roundOverTitle));
   if (titleDetail) {
     const answer = document.createElement('span');
