@@ -1999,6 +1999,12 @@
       '포기하지 않고 잘 해냈어요!'
     ];
 
+    const ACHIEVEMENT_RESULT_MESSAGES = [
+      value => `${value}\uAC1C\uB294 \uC880 \uB300\uB2E8\uD55C\uB370\uC694?`,
+      value => `${value}\uAC1C\uB294 \uAD49\uC7A5\uD788 \uC798\uD588\uB124.`,
+      value => `${value}\uAC1C...?`
+    ];
+
     const USAGE_NOTES = {
       stop: 'stop + 동명사: 하던 일을 멈추다\nstop + to 부정사: ... 하려고 멈추다\n\n※ to 부정사도 쓸 수 있지만 이때는 목적어가 아니라 부사(목적)입니다.',
       dislike: 'dislike는 동명사와 to 부정사를 모두 목적어로 쓸 수 있지만 주로 동명사를 사용합니다.',
@@ -2020,6 +2026,12 @@
     const TO_INFINITIVE_II_ITEMS = Array.isArray(window.TO_INFINITIVE_II_ITEMS) ? window.TO_INFINITIVE_II_ITEMS : [];
     const SENTENCE_BUILDING_ITEMS = Array.isArray(window.SENTENCE_BUILDING_ITEMS) ? window.SENTENCE_BUILDING_ITEMS : [];
     const SENTENCE_BUILDING_COOLDOWN = 3;
+    const SENTENCE_BUILDING_HINT_REMOVAL_SCORE = 30;
+    const SENTENCE_BUILDING_BGM_VOLUME = .17;
+    const SENTENCE_BUILDING_FEEDBACK_BGM_VOLUME = .055;
+    const SENTENCE_BUILDING_LOWERCASE_STARTS = new Set([
+      'the', 'he', 'they', 'we', 'everyone', 'it', 'six', 'raindrops', 'stop'
+    ]);
     const TO_INFINITIVE_COOLDOWN = 3;
     const TO_INFINITIVE_I_TIME_LIMIT = 10000;
     const TO_INFINITIVE_II_TIME_LIMIT = 15000;
@@ -2224,6 +2236,9 @@
     let recentToInfinitiveIIIds = [];
     let recentSentenceBuildingIds = [];
     const sentenceErrorLastVariantById = new Map();
+    let sentenceErrorPracticeState = { rounds: 0, reviews: {}, lastWrongKey: '' };
+    let sentenceErrorRetryQuestionKey = '';
+    let currentSentenceErrorQuestionKey = '';
     let currentIngIndex = 0;
     let studyMode = false;
     let studyState = { rounds: 0, reviews: {} };
@@ -2258,6 +2273,7 @@
     let sentenceBuildingTimerAnimationId = null;
     let sentenceBuildingDeadline = 0;
     let sentenceBuildingTimeLimit = 15000;
+    let sentenceBuildingFeedbackVolumeTimeoutId = null;
     let lastBuilderCorrectMessage = '';
     let streakCelebrationTimeoutId = null;
     const suppressedUsageNotes = new Set();
@@ -2740,6 +2756,127 @@
       });
     }
 
+    function getSentenceErrorQuestionKey(itemId, variant) {
+      return `${itemId}::${variant}`;
+    }
+
+    function resolveSentenceErrorQuestion(questionKey) {
+      const separatorIndex = questionKey.lastIndexOf('::');
+      if (separatorIndex < 0) return null;
+      const itemId = questionKey.slice(0, separatorIndex);
+      const variant = questionKey.slice(separatorIndex + 2);
+      const item = SENTENCE_ERROR_ITEMS.find(candidate => candidate.id === itemId);
+      return item && item.variants.includes(variant) ? { item, variant, key: questionKey } : null;
+    }
+
+    function getSentenceErrorPracticeStorageKey(name = playerName) {
+      return `quick-tap-sentence-error-practice-${encodeURIComponent(name)}`;
+    }
+
+    function loadSentenceErrorPracticeState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(getSentenceErrorPracticeStorageKey()));
+        const rounds = Number.isInteger(saved?.rounds) && saved.rounds >= 0 ? saved.rounds : 0;
+        const reviews = {};
+        Object.entries(saved?.reviews || {}).forEach(([key, review]) => {
+          if (!resolveSentenceErrorQuestion(key)) return;
+          const stage = Number(review?.stage);
+          const due = Number(review?.due);
+          const addedAt = Number(review?.addedAt);
+          const correctStreak = Number(review?.correctStreak);
+          if (!Number.isInteger(stage) || stage < 0 || stage >= STUDY_REVIEW_INTERVALS.length) return;
+          if (!Number.isInteger(due) || due < 0) return;
+          reviews[key] = {
+            stage,
+            due,
+            addedAt: Number.isInteger(addedAt) && addedAt >= 0 ? addedAt : 0,
+            correctStreak: Number.isInteger(correctStreak) && correctStreak >= 0
+              ? Math.min(correctStreak, 1)
+              : 0
+          };
+        });
+        const lastWrongKey = resolveSentenceErrorQuestion(saved?.lastWrongKey || '')
+          ? saved.lastWrongKey
+          : '';
+        return { rounds, reviews, lastWrongKey };
+      } catch {
+        return { rounds: 0, reviews: {}, lastWrongKey: '' };
+      }
+    }
+
+    function saveSentenceErrorPracticeState() {
+      if (!playerName) return;
+      localStorage.setItem(
+        getSentenceErrorPracticeStorageKey(),
+        JSON.stringify(sentenceErrorPracticeState)
+      );
+    }
+
+    function getSentenceErrorPracticeSelection() {
+      const retry = resolveSentenceErrorQuestion(sentenceErrorRetryQuestionKey);
+      sentenceErrorRetryQuestionKey = '';
+      if (retry) return { ...retry, id: retry.item.id, isReview: true };
+
+      const dueEntry = Object.entries(sentenceErrorPracticeState.reviews)
+        .filter(([, review]) => review.due <= sentenceErrorPracticeState.rounds)
+        .sort((a, b) => a[1].due - b[1].due || a[1].addedAt - b[1].addedAt)[0];
+      if (!dueEntry) return null;
+      const due = resolveSentenceErrorQuestion(dueEntry[0]);
+      return due ? { ...due, id: due.item.id, isReview: true } : null;
+    }
+
+    function recordSentenceErrorPracticeAnswer(isCorrect, answeredSlowly = false) {
+      if (studyMode || !currentSentenceErrorQuestionKey) return;
+      sentenceErrorPracticeState.rounds += 1;
+      const key = currentSentenceErrorQuestionKey;
+      const existing = sentenceErrorPracticeState.reviews[key];
+
+      if (!isCorrect) {
+        const stage = existing
+          ? Math.min(existing.stage + 1, STUDY_REVIEW_INTERVALS.length - 1)
+          : 0;
+        sentenceErrorPracticeState.reviews[key] = {
+          stage,
+          due: sentenceErrorPracticeState.rounds + STUDY_REVIEW_INTERVALS[stage],
+          addedAt: existing?.addedAt ?? sentenceErrorPracticeState.rounds,
+          correctStreak: 0
+        };
+        sentenceErrorPracticeState.lastWrongKey = key;
+      } else if (existing) {
+        const correctStreak = existing.correctStreak + 1;
+        if (correctStreak >= 2) {
+          delete sentenceErrorPracticeState.reviews[key];
+        } else {
+          const stage = Math.min(existing.stage + 1, STUDY_REVIEW_INTERVALS.length - 1);
+          sentenceErrorPracticeState.reviews[key] = {
+            stage,
+            due: sentenceErrorPracticeState.rounds + STUDY_REVIEW_INTERVALS[stage],
+            addedAt: existing.addedAt,
+            correctStreak
+          };
+        }
+      } else if (answeredSlowly) {
+        sentenceErrorPracticeState.reviews[key] = {
+          stage: 0,
+          due: sentenceErrorPracticeState.rounds + STUDY_REVIEW_INTERVALS[0],
+          addedAt: sentenceErrorPracticeState.rounds,
+          correctStreak: 0
+        };
+      }
+      if (isCorrect && sentenceErrorPracticeState.lastWrongKey === key) {
+        sentenceErrorPracticeState.lastWrongKey = '';
+      }
+
+      saveSentenceErrorPracticeState();
+    }
+
+    function isSentenceErrorAnswerSlow() {
+      if (studyMode || !sentenceErrorDeadline) return false;
+      const remaining = Math.max(0, sentenceErrorDeadline - performance.now());
+      return sentenceErrorTimerEl.classList.contains('urgent')
+        || remaining / SENTENCE_ERROR_TIME_LIMIT <= .34;
+    }
+
     function getStudyStorageKey(activity = activeActivity, name = playerName) {
       return `quick-tap-study-${activity}-${encodeURIComponent(name)}`;
     }
@@ -3006,7 +3143,7 @@
     }
 
     function startSentenceBuildingBgm() {
-      builderBgmEl.volume = .2;
+      builderBgmEl.volume = SENTENCE_BUILDING_BGM_VOLUME;
       if (!builderBgmEl.paused) return;
       builderBgmEl.play().catch(() => {
         // 자동 재생이 막히면 다음 사용자 입력 때 다시 시도한다.
@@ -3014,8 +3151,20 @@
     }
 
     function stopSentenceBuildingBgm() {
+      window.clearTimeout(sentenceBuildingFeedbackVolumeTimeoutId);
+      sentenceBuildingFeedbackVolumeTimeoutId = null;
       builderBgmEl.pause();
       builderBgmEl.currentTime = 0;
+    }
+
+    function playSentenceBuildingFeedbackSound(type) {
+      window.clearTimeout(sentenceBuildingFeedbackVolumeTimeoutId);
+      builderBgmEl.volume = SENTENCE_BUILDING_FEEDBACK_BGM_VOLUME;
+      playFeedbackSound(`builder-${type}`);
+      sentenceBuildingFeedbackVolumeTimeoutId = window.setTimeout(() => {
+        builderBgmEl.volume = SENTENCE_BUILDING_BGM_VOLUME;
+        sentenceBuildingFeedbackVolumeTimeoutId = null;
+      }, 650);
     }
 
     function playFeedbackSound(type) {
@@ -3031,6 +3180,15 @@
           { frequency: 880, delay: 0, duration: .12, volume: .18, wave: 'triangle' },
           { frequency: 739.99, delay: .095, duration: .15, volume: .17, wave: 'triangle' },
           { frequency: 587.33, endFrequency: 440, delay: .21, duration: .32, volume: .17, wave: 'triangle' }
+        ],
+        'builder-correct': [
+          { frequency: 523.25, delay: 0, duration: .13, volume: .3, wave: 'sine' },
+          { frequency: 659.25, delay: .09, duration: .15, volume: .28, wave: 'sine' },
+          { frequency: 783.99, delay: .19, duration: .24, volume: .27, wave: 'sine' }
+        ],
+        'builder-wrong': [
+          { frequency: 392, delay: 0, duration: .16, volume: .27, wave: 'square' },
+          { frequency: 293.66, delay: .14, duration: .28, volume: .24, wave: 'square' }
         ],
         tick: [{ frequency: 1046.5, delay: 0, duration: .045, volume: .075, wave: 'triangle' }]
       };
@@ -3545,6 +3703,7 @@
     function handleSentenceErrorTimeout() {
       if (!acceptingInput || activeActivity !== 'sentence-error') return;
       acceptingInput = false;
+      recordSentenceErrorPracticeAnswer(false);
       stopSentenceErrorTimer();
       playFeedbackSound('wrong');
       showFlash(sentenceErrorFlashEl, 'wrong');
@@ -3578,10 +3737,10 @@
     }
 
     function getSentenceBuildingTimeLimit() {
-      if (score >= 30) return 7000;
-      if (score >= 20) return 10000;
-      if (score >= 10) return 13000;
-      return 15000;
+      if (score >= 30) return 5000;
+      if (score >= 20) return 8000;
+      if (score >= 10) return 11000;
+      return 13000;
     }
 
     function stopSentenceBuildingTimer() {
@@ -3610,7 +3769,7 @@
       stopSentenceBuildingTimer();
       builderUndoButton.disabled = true;
       builderResetButton.disabled = true;
-      playFeedbackSound('wrong');
+      playSentenceBuildingFeedbackSound('wrong');
       showFlash(builderFlashEl, 'wrong');
       showAnswerFeedback('sentence-building', 'wrong', '아쉬워요!', '시간이 다 됐어요.');
       const attemptedChunks = currentBuilderSelection.map(index => currentSentenceBuildingItem.chunks[index]);
@@ -3834,13 +3993,13 @@
         : '';
     }
 
-    function pickSentenceErrorVariant(item, isReview) {
+    function pickSentenceErrorVariant(item, isReview, variants = item.variants) {
       const forcedVerdict = getForcedSentenceErrorVerdict();
-      if (forcedVerdict && item.variants.includes(forcedVerdict)) return forcedVerdict;
+      if (forcedVerdict && variants.includes(forcedVerdict)) return forcedVerdict;
       const previousVariant = sentenceErrorLastVariantById.get(item.id);
       const oppositeVariant = previousVariant === 'correct' ? 'incorrect' : 'correct';
-      if (isReview && previousVariant && item.variants.includes(oppositeVariant)) return oppositeVariant;
-      return item.variants[Math.floor(Math.random() * item.variants.length)];
+      if (isReview && previousVariant && variants.includes(oppositeVariant)) return oppositeVariant;
+      return variants[Math.floor(Math.random() * variants.length)];
     }
 
     function nextSentenceErrorItem() {
@@ -3855,24 +4014,58 @@
           recentSentenceErrorIds
         );
       } else {
-        const outsideCooldown = SENTENCE_ERROR_ITEMS.filter(item => !recentSentenceErrorIds.includes(item.id));
+        selection = getSentenceErrorPracticeSelection();
+      }
+
+      if (!selection) {
+        const hasUnscheduledVariant = item => item.variants.some(variant => (
+          !sentenceErrorPracticeState.reviews[getSentenceErrorQuestionKey(item.id, variant)]
+        ));
+        const outsideCooldown = SENTENCE_ERROR_ITEMS.filter(item => (
+          !recentSentenceErrorIds.includes(item.id) && hasUnscheduledVariant(item)
+        ));
         let candidates = outsideCooldown.filter(item => item.correct !== lastSentenceErrorCorrect);
         if (!candidates.length) {
-          candidates = SENTENCE_ERROR_ITEMS.filter(item => item.correct !== lastSentenceErrorCorrect);
+          candidates = SENTENCE_ERROR_ITEMS.filter(item => (
+            item.correct !== lastSentenceErrorCorrect && hasUnscheduledVariant(item)
+          ));
         }
-        if (!candidates.length) candidates = outsideCooldown.length ? outsideCooldown : SENTENCE_ERROR_ITEMS;
+        if (!candidates.length) {
+          candidates = outsideCooldown.length
+            ? outsideCooldown
+            : SENTENCE_ERROR_ITEMS.filter(hasUnscheduledVariant);
+        }
+        if (!candidates.length) candidates = SENTENCE_ERROR_ITEMS;
         if (forcedVerdict) {
-          const balancedCandidates = candidates.filter(item => item.variants.includes(forcedVerdict));
+          const balancedCandidates = candidates.filter(item => (
+            item.variants.includes(forcedVerdict)
+            && !sentenceErrorPracticeState.reviews[getSentenceErrorQuestionKey(item.id, forcedVerdict)]
+          ));
           if (balancedCandidates.length) candidates = balancedCandidates;
         }
         const item = pickWeightedItem(candidates);
-        selection = { item, id: item.id, isReview: false };
+        const availableVariants = item.variants.filter(variant => (
+          !sentenceErrorPracticeState.reviews[getSentenceErrorQuestionKey(item.id, variant)]
+        ));
+        selection = {
+          item,
+          id: item.id,
+          isReview: false,
+          availableVariants: availableVariants.length ? availableVariants : item.variants
+        };
       }
 
       currentSentenceErrorItem = selection.item;
       currentStudyItemId = studyMode ? selection.id : '';
       currentStudyItemIsReview = studyMode && selection.isReview;
-      currentSentenceErrorVariant = pickSentenceErrorVariant(currentSentenceErrorItem, currentStudyItemIsReview);
+      currentSentenceErrorVariant = selection.variant || pickSentenceErrorVariant(
+        currentSentenceErrorItem,
+        currentStudyItemIsReview,
+        selection.availableVariants
+      );
+      currentSentenceErrorQuestionKey = studyMode
+        ? ''
+        : getSentenceErrorQuestionKey(currentSentenceErrorItem.id, currentSentenceErrorVariant);
       sentenceErrorLastVariantById.set(currentSentenceErrorItem.id, currentSentenceErrorVariant);
       recentSentenceErrorIds.push(currentSentenceErrorItem.id);
       if (recentSentenceErrorIds.length > SENTENCE_ERROR_COOLDOWN) recentSentenceErrorIds.shift();
@@ -3913,6 +4106,15 @@
       return true;
     }
 
+    function formatSentenceBuildingChunk(item, chunk) {
+      if (score < SENTENCE_BUILDING_HINT_REMOVAL_SCORE) return chunk;
+      let formatted = chunk.replace(/[.,!?;:]/g, '');
+      if (chunk !== item.answer[0]) return formatted;
+      const firstWord = formatted.match(/^[A-Za-z]+/)?.[0] || '';
+      if (!SENTENCE_BUILDING_LOWERCASE_STARTS.has(firstWord.toLowerCase())) return formatted;
+      return formatted.replace(/^[A-Z]/, letter => letter.toLowerCase());
+    }
+
     function renderSentenceBuildingBoard() {
       const item = currentSentenceBuildingItem;
       builderAnswerEl.replaceChildren();
@@ -3931,7 +4133,7 @@
         const chip = document.createElement('button');
         chip.type = 'button';
         chip.className = 'builder-chip';
-        chip.textContent = item.chunks[chunkIndex];
+        chip.textContent = formatSentenceBuildingChunk(item, item.chunks[chunkIndex]);
         chip.setAttribute('aria-label', `${chip.textContent}, 선택 취소`);
         chip.addEventListener('pointerdown', event => {
           event.preventDefault();
@@ -3946,7 +4148,7 @@
         const chip = document.createElement('button');
         chip.type = 'button';
         chip.className = 'builder-chip';
-        chip.textContent = chunk;
+        chip.textContent = formatSentenceBuildingChunk(item, chunk);
         chip.disabled = currentBuilderSelection.includes(chunkIndex);
         chip.addEventListener('pointerdown', event => {
           event.preventDefault();
@@ -4040,7 +4242,7 @@
       const isCorrect = attemptedChunks.every((chunk, index) => chunk === item.answer[index]);
       if (isCorrect) {
         const studyResult = studyMode ? recordStudyAnswer(currentStudyItemId, true) : null;
-        playFeedbackSound('correct');
+        playSentenceBuildingFeedbackSound('correct');
         score += 1;
         builderScoreEl.textContent = score;
         builderBestEl.textContent = studyMode ? getPendingStudyCount() : Math.max(score, getPlayerBest('sentence-building'));
@@ -4068,7 +4270,7 @@
         builderScoreEl.textContent = score;
         builderBestEl.textContent = getPendingStudyCount();
       }
-      playFeedbackSound('wrong');
+      playSentenceBuildingFeedbackSound('wrong');
       showFlash(builderFlashEl, 'wrong');
       showAnswerFeedback('sentence-building', 'wrong', '아쉬워요!', '정답을 같이 확인해 봐요.');
       const explanation = createSentenceBuildingExplanation(item, attemptedChunks);
@@ -4109,7 +4311,14 @@
       sentenceErrorEmptyEl.hidden = true;
       currentStudyItemId = '';
       currentStudyItemIsReview = false;
+      currentSentenceErrorQuestionKey = '';
       if (studyMode && STUDY_ACTIVITY_KEYS.has(activity)) studyState = loadStudyState();
+      if (activity === 'sentence-error' && !studyMode) {
+        sentenceErrorPracticeState = loadSentenceErrorPracticeState();
+        sentenceErrorRetryQuestionKey = sentenceErrorPracticeState.lastWrongKey;
+      } else {
+        sentenceErrorRetryQuestionKey = '';
+      }
       updateStudyModeUI();
 
       if (activity === 'prime') {
@@ -4202,6 +4411,17 @@
       return title;
     }
 
+    function getAchievementResultMessage(activity, value) {
+      const threshold = activity === 'sentence-building'
+        ? 20
+        : activity === 'sentence-error' ? 50 : Number.POSITIVE_INFINITY;
+      if (value <= threshold) return '';
+      const createMessage = ACHIEVEMENT_RESULT_MESSAGES[
+        Math.floor(Math.random() * ACHIEVEMENT_RESULT_MESSAGES.length)
+      ];
+      return createMessage(value);
+    }
+
     function finishRound(message, delay = 720, titleDetail = '') {
       acceptingInput = false;
       stopPrimeTimer();
@@ -4221,10 +4441,12 @@
       }
       finalScoreEl.textContent = score;
       finalBestEl.textContent = best;
-      resultMessageEl.classList.toggle('has-rich-explanation', typeof message !== 'string');
+      const achievementMessage = getAchievementResultMessage(activeActivity, score);
+      const displayedMessage = achievementMessage || message;
+      resultMessageEl.classList.toggle('has-rich-explanation', typeof displayedMessage !== 'string');
       resultMessageEl.replaceChildren();
-      if (typeof message === 'string') resultMessageEl.textContent = message;
-      else resultMessageEl.append(message);
+      if (typeof displayedMessage === 'string') resultMessageEl.textContent = displayedMessage;
+      else resultMessageEl.append(displayedMessage);
       leaderboardTitleEl.textContent = `${ACTIVITY_LABELS[activeActivity]} 리더보드`;
       renderLeaderboard(activeActivity);
       window.setTimeout(() => {
@@ -4390,10 +4612,12 @@
     function chooseSentenceError(answer) {
       if (!acceptingInput || activeActivity !== 'sentence-error' || !currentSentenceErrorItem) return;
       acceptingInput = false;
+      const answeredSlowly = isSentenceErrorAnswerSlow();
       stopSentenceErrorTimer();
       const expected = currentSentenceErrorVariant;
 
       if (answer === expected) {
+        recordSentenceErrorPracticeAnswer(true, answeredSlowly);
         const studyResult = studyMode ? recordStudyAnswer(currentStudyItemId, true) : null;
         playFeedbackSound('correct');
         score += 1;
@@ -4450,6 +4674,7 @@
         sentenceErrorScoreEl.textContent = score;
         sentenceErrorBestEl.textContent = getPendingStudyCount();
       }
+      recordSentenceErrorPracticeAnswer(false);
       playFeedbackSound('wrong');
       showFlash(sentenceErrorFlashEl, 'wrong');
       showAnswerFeedback(
