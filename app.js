@@ -86,6 +86,9 @@ const TO_INFINITIVE_II_ITEMS = Array.isArray(window.TO_INFINITIVE_II_ITEMS) ? wi
 const PARTICIPLE_PREPOSITION_ITEMS = validateParticiplePrepositionItems(window.PARTICIPLE_PREPOSITION_ITEMS);
 const PARTICIPLE_PREPOSITION_COOLDOWN = 4;
 const PARTICIPLE_PREPOSITION_TIME_LIMIT = 10000;
+const PARTICIPLE_PREPOSITION_TIME_DECREMENT = 2000;
+const PARTICIPLE_PREPOSITION_TIME_DECREMENT_INTERVAL = 10;
+const PARTICIPLE_PREPOSITION_MIN_TIME_LIMIT = 5000;
 const SENTENCE_BUILDING_ITEMS = Array.isArray(window.SENTENCE_BUILDING_ITEMS) ? window.SENTENCE_BUILDING_ITEMS : [];
 const SENTENCE_BUILDING_COOLDOWN = 3;
 const SENTENCE_BUILDING_PUNCTUATION_REMOVAL_SCORE = 20;
@@ -407,6 +410,7 @@ let prepositionTimeoutId = null;
 let prepositionTickIntervalId = null;
 let prepositionTimerAnimationId = null;
 let prepositionDeadline = 0;
+let prepositionTimeLimit = PARTICIPLE_PREPOSITION_TIME_LIMIT;
 let sentenceBuildingTimeoutId = null;
 let sentenceBuildingTickIntervalId = null;
 let sentenceBuildingTimerAnimationId = null;
@@ -2500,9 +2504,17 @@ function stopParticiplePrepositionTimer() {
   prepositionTimerAnimationId = null;
 }
 
+function getParticiplePrepositionTimeLimit() {
+  const completedIntervals = Math.floor(score / PARTICIPLE_PREPOSITION_TIME_DECREMENT_INTERVAL);
+  return Math.max(
+    PARTICIPLE_PREPOSITION_MIN_TIME_LIMIT,
+    PARTICIPLE_PREPOSITION_TIME_LIMIT - completedIntervals * PARTICIPLE_PREPOSITION_TIME_DECREMENT
+  );
+}
+
 function updateParticiplePrepositionTimer() {
   const remaining = Math.max(0, prepositionDeadline - performance.now());
-  const ratio = remaining / PARTICIPLE_PREPOSITION_TIME_LIMIT;
+  const ratio = remaining / prepositionTimeLimit;
   prepositionTimerBarEl.style.transform = `scaleX(${ratio})`;
   prepositionTimerLabelEl.textContent = `${(remaining / 1000).toFixed(1)}초`;
   prepositionTimerEl.classList.toggle('urgent', ratio <= .34);
@@ -2536,13 +2548,14 @@ function handleParticiplePrepositionTimeout() {
 
 function startParticiplePrepositionTimer() {
   stopParticiplePrepositionTimer();
-  prepositionDeadline = performance.now() + PARTICIPLE_PREPOSITION_TIME_LIMIT;
+  prepositionTimeLimit = getParticiplePrepositionTimeLimit();
+  prepositionDeadline = performance.now() + prepositionTimeLimit;
   prepositionTimerEl.classList.remove('urgent');
   prepositionTimerBarEl.style.transform = 'scaleX(1)';
-  prepositionTimerLabelEl.textContent = `${(PARTICIPLE_PREPOSITION_TIME_LIMIT / 1000).toFixed(1)}초`;
+  prepositionTimerLabelEl.textContent = `${(prepositionTimeLimit / 1000).toFixed(1)}초`;
   prepositionTimeoutId = window.setTimeout(
     handleParticiplePrepositionTimeout,
-    PARTICIPLE_PREPOSITION_TIME_LIMIT
+    prepositionTimeLimit
   );
   prepositionTickIntervalId = window.setInterval(() => {
     if (performance.now() < prepositionDeadline - 100) playFeedbackSound('tick');
