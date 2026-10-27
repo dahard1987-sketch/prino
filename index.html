@@ -13,15 +13,16 @@
   <link rel="apple-touch-icon" sizes="167x167" href="assets/icons/apple-touch-icon-167.png">
   <link rel="apple-touch-icon" sizes="152x152" href="assets/icons/apple-touch-icon-152.png">
   <title>Quick Tap</title>
-  <link rel="stylesheet" href="app.css?v=90b0fc7">
+  <link rel="stylesheet" href="fonts.css?v=compact-1">
+  <link rel="stylesheet" href="app.css?v=compact-1">
 </head>
 <body>
   <section class="screen welcome" id="welcome-screen" aria-labelledby="welcome-title">
     <form class="panel" id="name-form">
-      <button class="icon-button welcome__back" id="back-to-activities" type="button">← 활동 다시 고르기</button>
+      <button class="icon-button welcome__back" id="back-to-activities" type="button">← Quick Tap</button>
       <p class="brand">QUICK TAP</p>
       <span class="activity-chip" id="selected-activity-label"></span>
-      <h1 id="welcome-title">플레이어를<br>선택하세요</h1>
+      <h1 id="welcome-title">플레이어</h1>
       <label class="field-label" for="name-select">이름</label>
       <select class="select" id="name-select" required></select>
       <input class="text-input" id="custom-name" type="text" maxlength="20" autocomplete="name" placeholder="이름을 입력하세요" aria-label="직접 입력할 이름" hidden>
@@ -29,7 +30,7 @@
         <input id="study-mode-input" type="checkbox">
         <strong>학습 모드</strong>
       </label>
-      <button class="primary-button" type="submit">시작하기</button>
+      <button class="primary-button" type="submit">시작</button>
     </form>
   </section>
 
@@ -391,10 +392,10 @@
 
   <script src="ing-data.js"></script>
   <script src="sentence-error-data.js"></script>
-  <script src="to-infinitive-data.js"></script>
+  <script src="to-infinitive-data.js?v=compact-1"></script>
   <script src="sentence-building-data.js"></script>
   <script src="participle-preposition-data.js"></script>
-  <script src="practice-core.js?v=90b0fc7"></script>
-  <script src="app.js?v=90b0fc7"></script>
+  <script src="practice-core.js?v=compact-1"></script>
+  <script src="app.js?v=compact-1"></script>
 </body>
 </html>

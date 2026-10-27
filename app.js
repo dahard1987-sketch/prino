@@ -1,12 +1,3 @@
-const HEPTA_PLAYER_NAMES = [
-  ['강해솔', 'Aurora'], ['고윤서', 'Andy'], ['김세윤', 'Irene'], ['김연재', 'Ella'],
-  ['김윤슬', 'Suri'], ['김하윤', 'Julia'], ['유예빛', 'Bella'], ['이지유', 'Jenny'],
-  ['한대윤', 'Danny'], ['김도윤', 'Yoon'], ['노연호', 'Steve'], ['박선율', 'Sunny'],
-  ['박율', 'Amy'], ['손종현', 'Jonghyun'], ['윤지한', 'Jihan'], ['장세아', 'Se A'],
-  ['정연서', 'Mia'], ['정이안', 'Ian']
-].sort((a, b) => a[0].localeCompare(b[0], 'ko'))
-  .map(([koreanName, englishName]) => `${koreanName}(${englishName})`);
-
 const VERBS = [
   ...['enjoy', 'finish', 'keep', 'stop', 'avoid', 'give up', 'deny', 'mind', 'consider', 'put off'].map(verb => ({ verb, category: 'gerund' })),
   ...['want', 'decide', 'hope', 'expect', 'plan', 'agree', 'ask', 'promise', 'refuse'].map(verb => ({ verb, category: 'infinitive' })),
@@ -885,14 +876,14 @@ function validateParticiplePrepositionItems(rawItems) {
 
 function getLastPlayerStorageKey(activity = activeActivity) {
   return activity === 'sentence-building'
-    ? 'quick-tap-last-player-hepta'
-    : 'quick-tap-last-player';
+    ? LAST_HEPTA_PLAYER_KEY
+    : LAST_PLAYER_KEY;
 }
 
 function populateNames(activity = activeActivity) {
   const names = activity === 'sentence-building' ? HEPTA_PLAYER_NAMES : PLAYER_NAMES;
   nameSelect.replaceChildren();
-  const placeholder = new Option('이름을 선택하세요', '', true, true);
+  const placeholder = new Option('이름', '', true, true);
   placeholder.disabled = true;
   nameSelect.add(placeholder);
   names.forEach(name => nameSelect.add(new Option(name, name)));
@@ -915,7 +906,7 @@ function populateNames(activity = activeActivity) {
 function getLeaderboard(activity) {
   const leaderboard = Object.create(null);
   try {
-    const value = JSON.parse(readStorage(`quick-tap-leaderboard-${activity}`));
+    const value = JSON.parse(readStorage(`quick-tap-sample-leaderboard-${activity}`));
     if (!value || typeof value !== 'object' || Array.isArray(value)) return leaderboard;
     Object.entries(value).forEach(([name, storedScore]) => {
       const normalizedScore = Number(storedScore);
@@ -930,7 +921,7 @@ function getLeaderboard(activity) {
 }
 
 function saveLeaderboard(activity, leaderboard) {
-  writeStorage(`quick-tap-leaderboard-${activity}`, JSON.stringify(leaderboard));
+  writeStorage(`quick-tap-sample-leaderboard-${activity}`, JSON.stringify(leaderboard));
 }
 
 function getPlayerBest(activity) {
@@ -3414,7 +3405,7 @@ sentenceErrorEmptyBackButton.addEventListener('click', backToActivityMenu);
 resetLeaderboardButton.addEventListener('click', () => {
   const label = ACTIVITY_LABELS[activeActivity];
   if (!window.confirm(`${label} 리더보드의 모든 기록을 지울까요?`)) return;
-  removeStorage(`quick-tap-leaderboard-${activeActivity}`);
+  removeStorage(`quick-tap-sample-leaderboard-${activeActivity}`);
   renderLeaderboard(activeActivity);
   finalBestEl.textContent = '0';
   const bestElement = activeActivity === 'prime'

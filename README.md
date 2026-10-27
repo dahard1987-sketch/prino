@@ -69,3 +69,12 @@ node --check practice-core.js
 node --check level3.js
 node --check level3-data.js
 ```
+
+
+## Compact UI
+
+Level 3는 Workbench의 Compact 디자인을 사용합니다. 활동 목록은 사이드바에 두고, 모바일에서는 상단 2열 메뉴로 전환합니다. SUIT를 한글·영문 공통으로 적용하며, 영문 문제 29px/500/-0.02em, 한글 16px/500/-0.025em을 기본으로 사용합니다. 폰트 파일과 OFL 라이선스는 `assets/fonts/`에 포함합니다.
+
+문장 오류 문항의 한국어는 각 문항의 `translation`에 저장하고 해당 문항에서 함께 렌더링합니다. 어순 배열·상황 문항의 인칭, 소유 관계, 경험·완료 표현도 영어와 맞춰 사용합니다.
+
+플레이어 목록은 가상 이름으로 교체했습니다. 기존 일반반·Hepta 명단을 함께 제거했으며, 새 플레이어 선택과 리더보드는 `quick-tap-sample-` 저장 키를 사용합니다. 이전 브라우저 기록에서 기존 학생 이름을 다시 표시하지 않습니다.

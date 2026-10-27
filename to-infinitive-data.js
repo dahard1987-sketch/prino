@@ -118,7 +118,7 @@
     ['You were honest [to tell] the truth.', 'judgment', '진실을 말하다니 너는 정직했다.', '진실을 말하다니', 'honest라고 판단한 근거를 나타냅니다.'],
     ['She was clever [to solve] the problem that way.', 'judgment', '그런 방식으로 문제를 풀다니 그녀는 영리했다.', '그런 방식으로 문제를 풀다니', 'clever라고 판단한 근거를 나타냅니다.'],
     ['He was patient [to explain] it again.', 'judgment', '그것을 다시 설명하다니 그는 참을성이 있었다.', '다시 설명하다니', 'patient라고 판단한 근거를 나타냅니다.'],
-    ['They were irresponsible [to leave] the fire burning.', 'judgment', '불을 켜 둔 채 떠나다니 그들은 무책임했다.', '불을 켜 둔 채 떠나다니', 'irresponsible이라고 판단한 근거를 나타냅니다.'],
+    ['They were irresponsible [to leave] the fire burning.', 'judgment', '불을 피워 둔 채 떠나다니 그들은 무책임했다.', '불을 피워 둔 채 떠나다니', 'irresponsible이라고 판단한 근거를 나타냅니다.'],
     ['You were sensible [to check] the weather first.', 'judgment', '먼저 날씨를 확인하다니 너는 현명했다.', '먼저 날씨를 확인하다니', 'sensible이라고 판단한 근거를 나타냅니다.'],
     ['She was polite [to thank] every guest.', 'judgment', '모든 손님에게 감사 인사를 하다니 그녀는 예의 바랐다.', '모든 손님에게 감사 인사를 하다니', 'polite라고 판단한 근거를 나타냅니다.'],
 
@@ -151,7 +151,7 @@
     ['This story is interesting [to discuss].', 'adjective-modifier', '이 이야기는 토론하기에 흥미롭다.', '토론하기에', '형용사 interesting의 의미를 보충합니다.'],
     ['The machine is simple [to operate].', 'adjective-modifier', '그 기계는 작동하기에 간단하다.', '작동하기에', '형용사 simple의 의미를 보충합니다.'],
     ['The lake is too wide [to swim] across.', 'adjective-modifier', '그 호수는 헤엄쳐 건너기에는 너무 넓다.', '헤엄쳐 건너기에는', '형용사 wide의 정도와 의미를 보충합니다.'],
-    ['The poem is pleasant [to hear] aloud.', 'adjective-modifier', '그 시는 소리 내어 듣기에 좋다.', '소리 내어 듣기에', '형용사 pleasant의 의미를 보충합니다.'],
+    ['The poem is pleasant [to hear] when read aloud.', 'adjective-modifier', '그 시를 낭송하는 소리는 듣기에 좋다.', '듣기에', '형용사 pleasant의 의미를 보충합니다.'],
     ['The sign is too small [to see] from here.', 'adjective-modifier', '그 표지판은 여기서 보기에는 너무 작다.', '보기에는', '형용사 small의 정도와 의미를 보충합니다.'],
 
     ['[To hear] her sing, you would think she was a professional singer.', 'condition', '그녀가 노래하는 것을 듣는다면, 그녀가 전문 가수라고 생각할 것이다.', '그녀가 노래하는 것을 듣는다면', '그녀의 노래를 듣는다는 조건을 제시합니다.'],

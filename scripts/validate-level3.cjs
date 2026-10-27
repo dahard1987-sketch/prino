@@ -22,6 +22,7 @@ for (const category of context.window.LEVEL3.categories) {
     }
     if (item.tiles) assert.equal(item.tiles.join(' '), item.answer, item.id);
     if (category.id === 'error') {
+      assert(/[가-힣]/.test(item.translation), `Missing Korean pair: ${item.id}`);
       assert.equal(item.sentence.split(' ').filter(w => w.replace(/[.,?!]$/, '') === item.wrong).length, 1, item.id);
     }
   }

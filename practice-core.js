@@ -1,10 +1,16 @@
+// Fictional practice rosters. Existing class lists are not used.
 const PLAYER_NAMES = [
-  '박범준', '배승우', '윤해든', '이룩', '이수민', '이우진', '이은수', '이지우',
-  '임윤아', '채범기', '한지아', '김경민', '김시아', '이은성',
-  '강용제', '김예승', '김재윤', '김하준', '박시현', '박이환', '백시율', '이해원',
-  '조현우', '지수연', '황은찬', '김소이', '홍경서', '박정준', '임지율', '장재희', '차예주'
+  '강라온', '권새봄', '남도율', '문하늬', '백다원', '서다온',
+  '성유안', '송하루', '신아린', '안시온', '오로운', '유나봄',
+  '이해솔', '임채린', '전이솔', '정해온', '조하람', '진예담',
+  '차도하', '최루아', '한노을', '허도은', '홍서율', '황예온'
 ].sort((a, b) => a.localeCompare(b, 'ko'));
-
+const HEPTA_PLAYER_NAMES = [
+  'Alex', 'Bailey', 'Casey', 'Drew', 'Eden', 'Finley',
+  'Harper', 'Jamie', 'Jordan', 'Morgan', 'Riley', 'Rowan'
+].map((name, index) => `${PLAYER_NAMES[index]}(${name})`);
+const LAST_PLAYER_KEY = 'quick-tap-sample-last-player';
+const LAST_HEPTA_PLAYER_KEY = 'quick-tap-sample-last-player-hepta';
 
 const STUDY_REVIEW_INTERVALS = [1, 2, 3, 5, 8, 13, 21, 34, 55];
 function recordFibonacciReviewAnswer(
