@@ -111,32 +111,6 @@ const TO_INFINITIVE_II_ANSWER_LABELS = {
   condition: '조건'
 };
 
-const FEEDBACK_TONES = {
-  correct: [
-    { frequency: 587.33, delay: 0, duration: .11, volume: .22, wave: 'triangle' },
-    { frequency: 739.99, delay: .085, duration: .12, volume: .22, wave: 'triangle' },
-    { frequency: 880, delay: .17, duration: .19, volume: .2, wave: 'triangle' }
-  ],
-  wrong: [
-    { frequency: 880, delay: 0, duration: .12, volume: .18, wave: 'triangle' },
-    { frequency: 739.99, delay: .095, duration: .15, volume: .17, wave: 'triangle' },
-    { frequency: 587.33, endFrequency: 440, delay: .21, duration: .32, volume: .17, wave: 'triangle' }
-  ],
-  'builder-correct': [
-    { frequency: 523.25, delay: 0, duration: .13, volume: .3, wave: 'sine' },
-    { frequency: 659.25, delay: .09, duration: .15, volume: .28, wave: 'sine' },
-    { frequency: 783.99, delay: .19, duration: .24, volume: .27, wave: 'sine' }
-  ],
-  'builder-wrong': [
-    { frequency: 392, delay: 0, duration: .16, volume: .27, wave: 'square' },
-    { frequency: 293.66, delay: .14, duration: .28, volume: .24, wave: 'square' }
-  ],
-  'builder-tick': [
-    { frequency: 1320, endFrequency: 980, delay: 0, duration: .042, volume: .07, wave: 'triangle', attack: .003 },
-    { frequency: 2200, endFrequency: 1760, delay: .004, duration: .022, volume: .035, wave: 'sine', attack: .002 }
-  ],
-  tick: [{ frequency: 1046.5, delay: 0, duration: .045, volume: .075, wave: 'triangle' }]
-};
 const SENTENCE_ERROR_CORRECT_KEYS = new Set(['ArrowDown', 'ArrowRight', '2']);
 const SENTENCE_ERROR_INCORRECT_KEYS = new Set(['ArrowUp', 'ArrowLeft', '1']);
 const GRAMMAR_KEY_ANSWERS = {
@@ -364,7 +338,6 @@ let currentStudyItemIsReview = false;
 let lastRoundOverTitle = '';
 let acceptingInput = false;
 let activitySessionId = 0;
-let audioContext = null;
 let sentenceBuildingBgmFadeAnimationId = null;
 let sentenceBuildingBgmMix = null;
 let sentenceBuildingBgmTargetMix = -1;
@@ -1284,13 +1257,7 @@ function celebrateStreak(value) {
   streakCelebrationTimeoutId = window.setTimeout(clearStreakCelebration, isMajor ? 2200 : 1650);
 }
 
-function prepareAudio() {
-  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-  if (!AudioContextClass) return null;
-  if (!audioContext) audioContext = new AudioContextClass();
-  if (audioContext.state === 'suspended') audioContext.resume();
-  return audioContext;
-}
+function prepareAudio() { return window.QuickTapAudio.prepare(); }
 
 function getSentenceBuildingIntenseMix() {
   const stepIndex = score - SENTENCE_BUILDING_CROSSFADE_START_SCORE;
@@ -1393,34 +1360,7 @@ function playSentenceBuildingFeedbackSound(type) {
   playFeedbackSound(`builder-${type}`);
 }
 
-function playFeedbackSound(type) {
-  if (!prepareAudio()) return;
-  const startTime = audioContext.currentTime;
-  const tones = FEEDBACK_TONES[type] || [];
-
-  tones.forEach(tone => {
-    const oscillator = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    const toneStart = startTime + tone.delay;
-    const toneEnd = toneStart + tone.duration;
-    oscillator.type = tone.wave || 'triangle';
-    oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
-    if (tone.endFrequency) {
-      oscillator.frequency.exponentialRampToValueAtTime(tone.endFrequency, toneEnd);
-    }
-    gain.gain.setValueAtTime(.0001, toneStart);
-    gain.gain.exponentialRampToValueAtTime(tone.volume, toneStart + (tone.attack || .018));
-    gain.gain.exponentialRampToValueAtTime(.0001, toneEnd);
-    oscillator.connect(gain);
-    gain.connect(audioContext.destination);
-    oscillator.addEventListener('ended', () => {
-      oscillator.disconnect();
-      gain.disconnect();
-    }, { once: true });
-    oscillator.start(toneStart);
-    oscillator.stop(toneEnd);
-  });
-}
+function playFeedbackSound(type) { window.QuickTapAudio.play(type); }
 
 function resetFlashFeedback() {
   primeFlashEl.className = 'flash';
