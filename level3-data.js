@@ -73,22 +73,6 @@ window.LEVEL3 = (() => {
       choice('A: Why are you smiling?\nB: I have ___ won two tickets! It happened a moment ago.', 'just', ['never', 'ever', 'yet'], 'a moment ago라는 상황 설명에서 방금 일어났음을 알 수 있어요.'),
       choice('A: Do you know this board game?\nB: Yes! My cousins and I ___ played it several times.', 'have', ['has', 'are', 'did'], 'My cousins and I는 복수 주어이므로 have를 써요.'),
       choice('This is our first visit to the aquarium. We have ___ seen a real shark before.', 'never', ['already', 'just', 'yet'], '실제 상어를 전에 본 경험이 없으므로 never를 써요.')
-    ]},
-    { id: 'personal', name: 'Your Turn', korean: '나의 경험으로 대답하기', symbol: 'You → Your story', items: [
-      { prompt: 'Have you ever baked cookies?', options: ['Yes, I have.', 'No, I haven’t.'], followups: ['I have baked them once.', 'I have baked them many times.', 'I have never baked them.'] },
-      { prompt: 'Have you ever slept in a tent?', source: 'book', options: ['Yes, I have.', 'No, I haven’t.'], followups: ['I have slept in a tent once.', 'I have slept in a tent several times.', 'I have never slept in a tent.'] },
-      { prompt: 'Have you ever flown a kite?', options: ['Yes, I have.', 'No, I haven’t.'], followups: ['I have flown a kite once.', 'I have flown a kite many times.', 'I have never flown a kite.'] },
-      { prompt: 'Have you finished your homework yet?', options: ['Yes, I have.', 'No, I haven’t.'], followups: ['I have already finished it.', 'I haven’t finished it yet.'] },
-      { prompt: 'Have you ever grown a plant?', options: ['Yes, I have.', 'No, I haven’t.'], followups: ['I have grown a plant once.', 'I have grown many plants.', 'I have never grown a plant.'] },
-      { prompt: 'Have you ever made a snowman?', options: ['Yes, I have.', 'No, I haven’t.'], followups: ['I have made one once.', 'I have made one many times.', 'I have never made one.'] }
-    ]},
-    { id: 'listening', name: 'Listen & Choose', korean: '듣고 의미 고르기', symbol: '▶ Listen', items: [
-      { ...choice('들은 문장의 뜻은?', '그녀는 시를 세 편 썼다.', ['그녀는 시를 쓴 적이 없다.', '그녀는 아직 시를 쓰지 않았다.', '그녀는 내일 시를 쓸 것이다.'], 'has written three poems는 지금까지 시를 세 편 썼다는 뜻이에요.', 'book'), audio: 'She has written three poems.' },
-      { ...choice('들은 문장의 뜻은?', '그들은 방금 다리를 건넜다.', ['그들은 다리를 건넌 적이 없다.', '그들은 아직 다리를 건너지 않았다.', '그들은 다리를 건너는 중이다.'], 'have just crossed는 방금 건넜다는 뜻이에요.'), audio: 'They have just crossed the bridge.' },
-      { ...choice('들은 문장의 뜻은?', '그는 아직 로봇을 만들지 않았다.', ['그는 이미 로봇을 만들었다.', '그는 방금 로봇을 만들었다.', '그는 로봇을 두 번 만들었다.'], 'has not built ... yet은 아직 만들지 않았다는 뜻이에요.'), audio: 'He has not built the robot yet.' },
-      { ...choice('들은 문장의 뜻은?', '그녀는 낙타를 타 본 적이 없다.', ['그녀는 방금 낙타를 탔다.', '그녀는 낙타를 두 번 탔다.', '그녀는 이미 낙타를 탔다.'], 'has never ridden은 타 본 경험이 없다는 뜻이에요.'), audio: 'She has never ridden a camel.' },
-      { ...choice('들은 문장의 뜻은?', '우리는 이미 표를 샀다.', ['우리는 아직 표를 사지 않았다.', '우리는 표를 잃어버렸다.', '우리는 표를 산 적이 없다.'], 'have already bought는 이미 샀다는 뜻이에요.'), audio: 'We have already bought the tickets.' },
-      { ...choice('들은 문장의 뜻은?', '너는 무지개를 본 적이 있니?', ['너는 무지개를 그렸니?', '너는 아직 숙제를 안 했니?', '너는 방금 집에 왔니?'], 'Have you ever seen은 본 경험이 있는지 묻는 표현이에요.'), audio: 'Have you ever seen a rainbow?' }
     ]}
   ];
   categories.forEach(category => category.items.forEach((item, index) => { item.id = `${category.id}-${index + 1}`; item.source ||= 'original'; }));

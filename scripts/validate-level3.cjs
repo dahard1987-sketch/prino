@@ -24,8 +24,6 @@ for (const category of context.window.LEVEL3.categories) {
     if (category.id === 'error') {
       assert.equal(item.sentence.split(' ').filter(w => w.replace(/[.,?!]$/, '') === item.wrong).length, 1, item.id);
     }
-    if (category.id === 'listening') assert(item.audio);
-    if (category.id === 'personal') assert(item.options.length && item.followups.length);
   }
 }
 assert(book > 0 && book < ids.size / 2);
