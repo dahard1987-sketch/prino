@@ -40,7 +40,7 @@
   }
   function menu() {
     screen(); category = null;
-    app.append(node('p', 'eyebrow', 'QUICK TAP / LEVEL 3'), node('h1', '', 'Level 3'), node('p', 'intro', '문법을 고르고, 문장을 만들고, 의미를 연결해 보세요.'));
+    app.append(node('p', 'eyebrow', 'QUICK TAP / LEVEL 3'), node('h1', '', 'Level 3'));
     const banner = node('section', 'unit-banner'); banner.append(node('span', 'unit-number', '02'));
     const heading = node('div'); heading.append(node('h2', '', '현재완료 I: 경험, 완료'), node('p', '', 'Present perfect · Experience & completion')); banner.append(heading); app.append(banner);
     const section = node('div', 'section-heading'); section.append(node('h2', '', '활동 선택'), node('span', '', '시간 도전 · 학습 모드 · 무작위 문제')); app.append(section);
@@ -55,14 +55,13 @@
     const wrap = node('section', 'practice'); wrap.append(button('← Level 3 활동', 'back', menu), node('p', 'eyebrow', 'UNIT 02'), node('h1', '', c.name), node('p', 'intro', c.korean));
     const card = node('form', 'question-card setup');
     const label = node('label', 'field-label', '플레이어'); label.htmlFor = 'player'; const select = node('select'); select.id = 'player'; select.required = true;
-    select.add(new Option('이름을 선택하세요', '')); PLAYER_NAMES.forEach(n => select.add(new Option(n, n))); select.add(new Option('직접 입력', '__custom__'));
+    select.add(new Option('플레이어', '')); PLAYER_NAMES.forEach(n => select.add(new Option(n, n))); select.add(new Option('직접 입력', '__custom__'));
     let previous = ''; try { previous = localStorage.getItem('quick-tap-last-player') || ''; } catch {} if (previous) select.value = PLAYER_NAMES.includes(previous) ? previous : '__custom__';
     const custom = node('input'); custom.type = 'text'; custom.maxLength = 20; custom.placeholder = '이름'; custom.setAttribute('aria-label', '직접 입력할 이름'); custom.hidden = select.value !== '__custom__'; custom.required = !custom.hidden; if (!custom.hidden) custom.value = previous || '';
     select.onchange = () => { custom.hidden = select.value !== '__custom__'; custom.required = !custom.hidden; };
     card.append(label, select, custom);
     const mode = node('label', 'mode-label'); const check = node('input'); check.type = 'checkbox'; mode.append(check, document.createTextNode(' 학습 모드 (시간 제한 없음)'));
     if (c.id !== 'personal') card.append(mode);
-    card.append(node('p', 'note', c.id === 'personal' ? '자신에게 맞는 답을 선택해요. 점수와 시간 제한은 없어요.' : '시간 도전: 정답이면 다음 문제, 오답·시간 초과이면 라운드 종료. 연속 정답에 따라 제한 시간이 짧아져요. 학습 모드에서는 오답을 간격을 두고 복습해요.'));
     const start = node('button', 'primary', '시작하기'); start.type = 'submit'; card.append(start);
     card.onsubmit = e => { e.preventDefault(); player = select.value === '__custom__' ? custom.value.trim() : select.value; if (!player) { custom.focus(); return; } try { localStorage.setItem('quick-tap-last-player', player); } catch {} study = check.checked; startRound(); };
     wrap.append(card); app.append(wrap);
@@ -91,13 +90,13 @@
     if (category.id !== 'personal') tools.append(button(study ? '시간 도전' : '학습 모드', 'text-button', () => { study = !study; startRound(); })); wrap.append(tools);
     if (!study && category.id !== 'personal') { const meta = node('div', 'timer-meta'); meta.append(node('span', '', '남은 시간'), Object.assign(node('strong', '', category.id === 'listening' ? '듣기 후 시작' : `${timeLimit() / 1000}초`), { id: 'timer-label' })); const track = node('div', 'timer-track'); const bar = node('span'); bar.id = 'timer-bar'; track.append(bar); wrap.append(meta, track); }
     if (study) wrap.append(node('p', 'note', `복습 대기 ${Object.keys(review.reviews).length}문항 · 시간 제한 없음`));
-    const card = node('div', 'question-card'); card.id = 'question-card'; card.append(node('p', 'instruction', category.instruction)); wrap.append(card); app.append(wrap);
+    const card = node('div', 'question-card'); card.id = 'question-card'; wrap.append(card); app.append(wrap);
     if (['build', 'transform'].includes(category.id)) renderBuilder(card);
     else if (category.id === 'error') renderError(card);
     else if (category.id === 'personal') renderPersonal(card);
     else {
       if (category.id === 'listening') renderListening(card);
-      card.append(node('p', category.id === 'context' ? 'context' : 'prompt', question.prompt)); renderChoices(card, question.choices, answer => finish(answer === question.answer, answer));
+      if (category.id !== 'listening') card.append(node('p', category.id === 'context' ? 'context' : 'prompt', question.prompt)); renderChoices(card, question.choices, answer => finish(answer === question.answer, answer));
     }
     const feedback = node('div'); feedback.id = 'feedback'; feedback.setAttribute('role', 'status'); feedback.setAttribute('aria-live', 'polite'); card.append(feedback);
     if (category.id !== 'listening') startTimer();
@@ -115,11 +114,12 @@
     const actions = node('div', 'actions'); actions.append(button('다시 놓기', 'secondary', () => { if (!locked) { selection = []; update(); } }), check); card.append(assembled, bank, actions); update();
   }
   function renderError(card) {
+    card.append(node('p', 'step', '1 / 2'));
     const sentence = node('div', 'word-sentence'); const words = question.sentence.split(' '); const wrongIndex = words.findIndex(w => w.replace(/[.,?!]$/,'') === question.wrong);
     words.forEach((word,index) => { const b = button(word, 'word', () => {
       if (locked || phase) return;
       if (index !== wrongIndex) { finish(false, word); return; }
-      phase = 1; sentence.querySelectorAll('button').forEach(n => n.disabled = true); b.classList.add('found'); card.querySelector('.instruction').textContent = '2단계 · 올바른 표현을 고르세요.';
+      phase = 1; sentence.querySelectorAll('button').forEach(n => n.disabled = true); b.classList.add('found'); card.querySelector('.step').textContent = '2 / 2';
       renderChoices(sentence.parentElement, question.choices, answer => finish(answer === question.answer, answer));
     }); sentence.append(b); }); card.append(sentence);
   }
@@ -127,12 +127,10 @@
     card.append(node('p', 'prompt', question.prompt));
     renderChoices(card, question.options, answer => {
       card.querySelectorAll('.choices button').forEach(b => { b.disabled = true; if (b.textContent === answer) b.classList.add('selected'); });
-      card.append(node('p', 'instruction', '조금 더 이야기해 보세요.'));
       const negative = answer.startsWith('No'); const followups = question.followups.filter(x => negative ? /never|haven’t/.test(x) : !/never|haven’t/.test(x));
       renderChoices(card, followups, detail => {
         if (locked) return; locked = true; card.querySelectorAll('.choices button').forEach(b => { b.disabled = true; if (b.textContent === detail) b.classList.add('selected'); });
-        const label = node('label', 'optional', '더 말하고 싶다면? (선택 입력 · 채점하지 않아요)'); const input = node('input'); input.type = 'text'; input.maxLength = 180; input.placeholder = '예: I baked cookies with my dad.'; label.append(input); card.append(label);
-        const note = node('p', 'note', '선택한 내용과 입력한 문장은 서버로 전송되지 않아요.'); card.append(note);
+        const label = node('label', 'optional', '추가 입력 (선택)'); const input = node('input'); input.type = 'text'; input.maxLength = 180; label.append(input); card.append(label);
         card.append(button('다음 질문', 'primary', () => { score++; nextQuestion(); }));
       });
     });
@@ -144,10 +142,10 @@
       speechToken++; const token = speechToken; speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(question.audio); utterance.lang = 'en-US'; utterance.rate = .85;
       const voice = speechSynthesis.getVoices().find(v => /^en[-_]US/i.test(v.lang)) || speechSynthesis.getVoices().find(v => /^en/i.test(v.lang)); if (voice) utterance.voice = voice;
       utterance.onend = () => { if (token !== speechToken || locked) return; speechFinished = true; play.textContent = '↻ 다시 듣기'; startTimer(); };
-      utterance.onerror = () => { if (token !== speechToken || locked) return; stopTimer(); play.textContent = '▶ 다시 듣기'; message('음성을 재생하지 못했어요. 다시 시도하거나 다른 활동을 선택하세요.', false); };
+      utterance.onerror = () => { if (token !== speechToken || locked) return; stopTimer(); play.textContent = '▶ 다시 듣기'; message('음성 재생 오류', false); };
       speechSynthesis.speak(utterance);
     }); play.disabled = !supported; card.append(play);
-    if (!supported) card.append(node('p', 'note', '이 브라우저에서는 듣기를 지원하지 않아요. 다른 브라우저나 활동을 선택하세요.'));
+    if (!supported) card.append(node('p', 'note', '음성 미지원 브라우저'));
   }
   function message(text, good) { const box = document.querySelector('#feedback'); box.className = `feedback ${good ? 'good' : 'bad'}`; box.textContent = text; }
   function correctSentence() { return category.id === 'error' ? question.sentence.replace(question.wrong, question.answer) : question.answer; }
