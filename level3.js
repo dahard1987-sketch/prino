@@ -104,7 +104,7 @@
     startTimer();
   }
   function renderChoices(parent, options, choose) {
-    const choices = node('div', 'choices'); shuffle(options).forEach(answer => choices.append(button(answer, 'answer', () => { if (!locked) choose(answer); }))); parent.insertBefore(choices, parent.querySelector('#feedback')); 
+    const choices = node('div', 'choices'); shuffle(options).forEach(answer => choices.append(button(answer, 'answer', () => { if (!locked) choose(answer); }))); parent.insertBefore(choices, parent.querySelector('#feedback'));
   }
   function renderBuilder(content, card) {
     const [label, ...sentence] = question.cue.split('\n');
