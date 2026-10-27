@@ -43,7 +43,6 @@
     app.append(node('p', 'eyebrow', 'QUICK TAP / LEVEL 3'), node('h1', '', 'Level 3'));
     const banner = node('section', 'unit-banner'); banner.append(node('span', 'unit-number', '02'));
     const heading = node('div'); heading.append(node('h2', '', '현재완료 I: 경험, 완료'), node('p', '', 'Present perfect · Experience & completion')); banner.append(heading); app.append(banner);
-    const section = node('div', 'section-heading'); section.append(node('h2', '', '활동 선택')); app.append(section);
     const grid = node('div', 'activity-grid');
     categories.forEach(c => {
       const card = button('', 'activity', () => welcome(c));
@@ -52,7 +51,7 @@
   }
   function welcome(c) {
     screen(); category = c;
-    const wrap = node('section', 'practice'); wrap.append(button('← Level 3 활동', 'back', menu), node('p', 'eyebrow', 'UNIT 02'), node('h1', '', c.name));
+    const wrap = node('section', 'practice'); wrap.append(button('← Level 3', 'back', menu), node('p', 'eyebrow', 'UNIT 02'), node('h1', '', c.name));
     const card = node('form', 'question-card setup');
     const label = node('label', 'field-label', '플레이어'); label.htmlFor = 'player'; const select = node('select'); select.id = 'player'; select.required = true;
     select.add(new Option('플레이어', '')); PLAYER_NAMES.forEach(n => select.add(new Option(n, n))); select.add(new Option('직접 입력', '__custom__'));
@@ -84,7 +83,7 @@
   }
   function nextQuestion() {
     screen(); question = pick(); selection = []; tiles = []; locked = false; phase = 0; speechFinished = false;
-    const wrap = node('section', 'practice'); wrap.append(button('← 활동 선택', 'back', menu));
+    const wrap = node('section', 'practice'); wrap.append(button('← Level 3', 'back', menu));
     const head = node('div', 'session-head'); head.append(node('h1', '', category.name), node('span', 'counter', `${study ? '학습' : category.id === 'personal' ? '응답' : '연속'} ${score} · 최고 ${best()}`)); wrap.append(head);
     const tools = node('div', 'session-tools'); tools.append(node('span', '', player), button('이름 바꾸기', 'text-button', () => welcome(category)));
     if (category.id !== 'personal') tools.append(button(study ? '시간 도전' : '학습 모드', 'text-button', () => { study = !study; startRound(); })); wrap.append(tools);
@@ -171,7 +170,7 @@
   function result(attempted) {
     screen(); const wrap = node('section', 'practice'); wrap.append(node('p', 'eyebrow', 'ROUND OVER'), node('h1', '', attempted === '시간 초과' ? '시간 초과' : '정답 확인'), node('p', 'summary-score', `${score}개 연속`), node('p', 'intro', `${player} · 나의 최고 기록 ${best()}`));
     const card = node('div', 'question-card'); card.append(node('p', 'context', question.sentence || question.cue || (question.audio ? question.audio : question.prompt)), node('p', 'note', `내 답: ${attempted || '(선택 없음)'}`), node('p', 'prompt', correctSentence()), node('p', 'intro', question.explanation));
-    const actions = node('div', 'actions'); actions.append(button('다시 시작', 'primary', startRound), button('학습 모드로 연습', 'secondary', () => { study = true; startRound(); }), button('활동 선택', 'secondary', menu)); card.append(actions); wrap.append(card);
+    const actions = node('div', 'actions'); actions.append(button('다시 시작', 'primary', startRound), button('학습 모드로 연습', 'secondary', () => { study = true; startRound(); }), button('Level 3', 'secondary', menu)); card.append(actions); wrap.append(card);
     const list = node('ol', 'leaderboard'); Object.entries(read(boardKey(), {})).sort((a,b) => b[1]-a[1]).slice(0,10).forEach(([name, value]) => list.append(node('li', '', `${name} · ${value}`))); wrap.append(node('h2', 'leader-title', `${category.name} 리더보드`), list); app.append(wrap);
   }
   window.addEventListener('pagehide', cleanup);
