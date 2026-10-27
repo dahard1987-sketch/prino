@@ -1853,3 +1853,6 @@ button:focus-visible, input:focus-visible, select:focus-visible {
     font-size: clamp(1.3rem, 6.3vw, 1.85rem);
   }
 }
+
+/* Level navigation leaves existing game screens intact. */
+.level-navigation{display:flex;gap:10px;margin:0 0 22px}.level-navigation a{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:14px 20px;border-radius:14px;background:rgba(37,89,152,.25);border:1px solid rgba(37,89,152,.65);color:#fff;text-decoration:none;font-weight:800}.level-navigation a[href="level3.html"]{background:#255998}.level-navigation a:focus-visible{outline:3px solid #fff;outline-offset:3px}
