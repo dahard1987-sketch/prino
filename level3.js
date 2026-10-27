@@ -43,16 +43,16 @@
     app.append(node('p', 'eyebrow', 'QUICK TAP / LEVEL 3'), node('h1', '', 'Level 3'));
     const banner = node('section', 'unit-banner'); banner.append(node('span', 'unit-number', '02'));
     const heading = node('div'); heading.append(node('h2', '', '현재완료 I: 경험, 완료'), node('p', '', 'Present perfect · Experience & completion')); banner.append(heading); app.append(banner);
-    const section = node('div', 'section-heading'); section.append(node('h2', '', '활동 선택'), node('span', '', '시간 도전 · 학습 모드 · 무작위 문제')); app.append(section);
+    const section = node('div', 'section-heading'); section.append(node('h2', '', '활동 선택')); app.append(section);
     const grid = node('div', 'activity-grid');
     categories.forEach(c => {
       const card = button('', 'activity', () => welcome(c));
-      card.append(node('span', 'symbol', c.symbol), node('span', 'arrow', '↗'), node('strong', '', c.name), node('small', '', c.korean), node('span', 'record', `${c.items.length}문항 · ${c.id === 'personal' ? '자유 응답' : '시간 도전 / 학습'}`)); grid.append(card);
+      card.append(node('span', 'symbol', c.symbol), node('span', 'arrow', '↗'), node('strong', '', c.name)); grid.append(card);
     }); app.append(grid);
   }
   function welcome(c) {
     screen(); category = c;
-    const wrap = node('section', 'practice'); wrap.append(button('← Level 3 활동', 'back', menu), node('p', 'eyebrow', 'UNIT 02'), node('h1', '', c.name), node('p', 'intro', c.korean));
+    const wrap = node('section', 'practice'); wrap.append(button('← Level 3 활동', 'back', menu), node('p', 'eyebrow', 'UNIT 02'), node('h1', '', c.name));
     const card = node('form', 'question-card setup');
     const label = node('label', 'field-label', '플레이어'); label.htmlFor = 'player'; const select = node('select'); select.id = 'player'; select.required = true;
     select.add(new Option('플레이어', '')); PLAYER_NAMES.forEach(n => select.add(new Option(n, n))); select.add(new Option('직접 입력', '__custom__'));
