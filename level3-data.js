@@ -51,7 +51,7 @@ window.LEVEL3 = (() => {
       error('Have your uncle found his keys?', 'Have', 'Has', ['Did', 'Is', 'Does'], 'your uncle은 단수이므로 Has로 질문해요.'),
       error('We have not chose a song yet.', 'chose', 'chosen', ['choose', 'choosing', 'chooses'], 'have not 뒤에는 과거분사 chosen을 써요.'),
       error('Lily has never ate sushi.', 'ate', 'eaten', ['eat', 'eating', 'eats'], 'eat의 과거분사는 eaten이에요.'),
-      error('I haven’t never touched a snake.', 'haven’t', 'have', ['has', 'did', 'am'], 'never에 이미 부정 의미가 있으므로 have never를 써요.'),
+      error('I have never touch a snake.', 'touch', 'touched', ['touches', 'touching', 'to touch'], 'have 뒤에는 과거분사 touched를 써요.'),
       error('The train have just left.', 'have', 'has', ['is', 'does', 'having'], 'The train은 단수이므로 has를 써요.')
     ]},
     { id: 'situation', name: 'Read the Situation', korean: '상황과 의미 연결하기', symbol: 'Scene → Sentence', items: [

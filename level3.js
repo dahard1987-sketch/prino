@@ -97,6 +97,7 @@
     else {
       if (category.id === 'listening') renderListening(card);
       if (category.id !== 'listening') card.append(node('p', category.id === 'context' ? 'context' : 'prompt', question.prompt)); renderChoices(card, question.choices, answer => finish(answer === question.answer, answer));
+      if (category.id === 'listening') card.querySelectorAll('.answer').forEach(b => b.disabled = true);
     }
     const feedback = node('div'); feedback.id = 'feedback'; feedback.setAttribute('role', 'status'); feedback.setAttribute('aria-live', 'polite'); card.append(feedback);
     if (category.id !== 'listening') startTimer();
@@ -141,8 +142,8 @@
       if (!supported || locked) return;
       speechToken++; const token = speechToken; speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(question.audio); utterance.lang = 'en-US'; utterance.rate = .85;
       const voice = speechSynthesis.getVoices().find(v => /^en[-_]US/i.test(v.lang)) || speechSynthesis.getVoices().find(v => /^en/i.test(v.lang)); if (voice) utterance.voice = voice;
-      utterance.onend = () => { if (token !== speechToken || locked) return; speechFinished = true; play.textContent = '↻ 다시 듣기'; startTimer(); };
-      utterance.onerror = () => { if (token !== speechToken || locked) return; stopTimer(); play.textContent = '▶ 다시 듣기'; message('음성 재생 오류', false); };
+      utterance.onend = () => { if (token !== speechToken || locked) return; speechFinished = true; card.querySelectorAll('.answer').forEach(b => b.disabled = false); play.textContent = '↻ 다시 듣기'; startTimer(); };
+      utterance.onerror = () => { if (token !== speechToken || locked) return; play.textContent = '▶ 다시 듣기'; message('음성 재생 오류', false); };
       speechSynthesis.speak(utterance);
     }); play.disabled = !supported; card.append(play);
     if (!supported) card.append(node('p', 'note', '음성 미지원 브라우저'));
@@ -161,7 +162,7 @@
       message(milestone ? `✓ ${score}개 연속 정답!` : '✓ 정답!', true);
       nextTask = setTimeout(nextQuestion, study ? 800 : score % 100 === 0 ? 2050 : milestone ? 1500 : 650);
     } else {
-      message(`${attempted === '시간 초과' ? '시간 초과' : '다시 확인해요.'}\n정답: ${correctSentence()}\n${question.explanation}`, false);
+      message(`${attempted === '시간 초과' ? '시간 초과' : '오답'}\n정답: ${correctSentence()}\n${question.explanation}`, false);
       const box = document.querySelector('#feedback'); box.style.whiteSpace = 'pre-line';
       if (study) box.append(button('다음 문제', 'primary', nextQuestion));
       else { recordBest(); nextTask = setTimeout(() => result(attempted), 760); }
